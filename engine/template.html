@@ -45,10 +45,16 @@
        a solid void base. */
     background:var(--bg-lo) var(--surface-gradient) no-repeat fixed;
     color:var(--phosphor); font-family:var(--font-body); font-size:17px;
-    line-height:1.65; overflow-x:hidden; min-height:100%;
+    line-height:1.65; overflow:hidden; height:100%;
   }
-  /* Scanlines live in their own fixed overlay (#tube) so enhancement 06 can bow
-     them like curved glass WITHOUT ever touching the readable text or choices. */
+  /* 06 TUBE WARP v2: the whole readable screen scrolls INSIDE this fixed,
+     viewport-sized frame, and the barrel filter bows THIS frame. Because it is
+     fixed and scrolls internally, the filter region is stable -- content can never
+     reflow out of the box (the v1 soft-lock) and nothing magnifies past the column. */
+  #crt{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden}
+  /* Scanlines (now a child of #crt) curve WITH the glass: when the warp filter is
+     active #crt is their containing block, so they pin to the frame and bow with it;
+     when it is off they pin to the (identical) viewport box, unwarped. */
   .tube{
     position:fixed;inset:0;pointer-events:none;z-index:50;mix-blend-mode:multiply;transition:opacity .9s ease;
     background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
@@ -185,16 +191,21 @@
 </style>
 </head>
 <body>
-<!-- 06 TUBE WARP: scanline overlay; the barrel filter bows THIS, never the text -->
-<div class="tube" id="tube" aria-hidden="true"></div>
-<!-- 01/03/04 fixed FX overlays: tier bleed, vsync roll, terminal heartbeat, madness wash -->
+<!-- 01/03/04 fixed FX overlays: tier bleed, vsync roll, terminal heartbeat, madness wash.
+     Kept OUTSIDE #crt -- radial glows read best flat/undistorted. -->
 <div class="fx" id="fx" aria-hidden="true">
   <div class="fx-bleed"></div><div class="fx-roll"></div><div class="fx-heart"></div><div class="fx-wash"></div>
 </div>
 <!-- 06 TUBE WARP: the barrel-distortion filter is injected here at runtime -->
 <svg id="warpdefs" width="0" height="0" aria-hidden="true" style="position:fixed;width:0;height:0;overflow:hidden;pointer-events:none"><defs></defs></svg>
-<div class="wrap screen" id="root"></div>
-<!-- 03 THE WATCHING: intrusive line overlay -->
+<!-- 06 TUBE WARP v2: fixed viewport frame; the barrel filter bows everything inside it
+     (scanlines + HUD + story) as one piece of curved glass. The ONE scroll container. -->
+<div id="crt">
+  <!-- scanline overlay; pinned to the frame, curves with it -->
+  <div class="tube" id="tube" aria-hidden="true"></div>
+  <div class="wrap screen" id="root"></div>
+</div>
+<!-- 03 THE WATCHING: intrusive line overlay (flat, above the glass) -->
 <div class="watch" id="watch" aria-hidden="true"></div>
 <script>
 /* ===== content injected at build time ===== */
@@ -208,7 +219,14 @@ const root = document.getElementById("root");
 const html = document.documentElement;
 const fxEl = document.getElementById("fx");
 const watchEl = document.getElementById("watch");
+const crtEl = document.getElementById("crt"); // 06v2: the fixed scroll frame (window no longer scrolls)
 let episode=null, state=null;
+/* The window is locked (body overflow:hidden); #crt is the scroll container, so
+   every "back to top" must scroll the frame, not the window. */
+function scrollTop(smooth){
+  if(crtEl) crtEl.scrollTo({top:0, behavior: smooth ? "smooth" : "auto"});
+  else window.scrollTo(0,0);
+}
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const esc=(s)=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
@@ -234,34 +252,25 @@ function setScreen(play){
   if(play && FEAT.tiers && tier!=="stable" && tier!=="gone") html.setAttribute("data-tier",tier);
   else html.removeAttribute("data-tier");
 }
-/* 01 dim + 06 barrel warp, composed onto the story content (#sc) ONLY. A CSS
-   filter establishes a containing block, so filtering #root would break the
-   sticky HUD; the HUD is a sibling of #sc and stays pinned and unwarped. */
-function applyContentFilter(){
-  const el=document.getElementById("sc");
-  if(el){
-    const play=isPlayNode(), tier=state?tierOf(state.sanity):"stable";
-    let f="";
-    if(play && FEAT.tiers){
-      if(tier==="strained") f="brightness(.93) saturate(.96)";
-      else if(tier==="critical") f="brightness(.84) saturate(.9)";
-      else if(tier==="terminal") f="brightness(.74) saturate(.85)";
-    }
-    el.style.filter=f;
+/* 06v2 TUBE WARP -- tier dim + barrel bulge composed into ONE filter on the fixed
+   #crt frame, so the whole screen (scanlines, HUD, story) curves and dims as one
+   piece of glass. The frame is viewport-sized and scrolls internally, so the filter
+   region is stable: displacement only shifts painted pixels WITHIN the frame and can
+   never reflow content out of the box (the v1 soft-lock). Sanity-gated: flat at high
+   sanity, the bow eases in below ~60 and peaks at terminal. Cleared off-play. */
+function applyScreenFilter(){
+  if(!crtEl) return;
+  const parts=[], play=isPlayNode(), tier=(play&&state)?tierOf(state.sanity):"stable";
+  if(play && FEAT.tiers){
+    if(tier==="strained") parts.push("brightness(.93)","saturate(.96)");
+    else if(tier==="critical") parts.push("brightness(.84)","saturate(.9)");
+    else if(tier==="terminal") parts.push("brightness(.74)","saturate(.85)");
   }
-  applyTubeWarp();
-}
-/* 06 TUBE WARP (safe): bow the scanline overlay (#tube) only - never the text -
-   so the glass appears to curve as you descend, with zero risk to legibility or
-   the choices. Eases in below ~55 sanity; cleared on every non-play screen. */
-function applyTubeWarp(){
-  const tube=document.getElementById("tube"); if(!tube) return;
-  let f="";
-  if(isPlayNode() && FEAT.warp && state && !REDUCED){
+  if(play && FEAT.warp && state && !REDUCED){
     const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*42;
-    if(scale>0.5){ ensureTubeWarp(scale); f="url(#tubewarp)"; }
+    if(scale>0.5){ ensureTubeWarp(scale); parts.push("url(#tubewarp)"); }
   }
-  tube.style.filter=f;
+  crtEl.style.filter=parts.join(" ");
 }
 
 /* 06 — TUBE WARP: a convex r^2 displacement map bows the content like a tube.
@@ -282,7 +291,7 @@ function barrelMap(){
 }
 function ensureTubeWarp(scale){
   const defs=document.querySelector("#warpdefs defs");
-  const w=window.innerWidth||1, h=window.innerHeight||1; // the overlay IS the viewport
+  const w=window.innerWidth||1, h=window.innerHeight||1; // #crt is viewport-sized
   defs.innerHTML =
     '<filter id="tubewarp" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
     '<feImage href="'+barrelMap()+'" preserveAspectRatio="none" x="0" y="0" width="'+w+'" height="'+h+'" result="m"></feImage>'+
@@ -311,7 +320,7 @@ function startEpisode(ep){
   episode=ep;
   state={ sanity: ep.startSanity??100, inventory:[...(ep.startInventory||[])], flags:{}, entered:{}, current: ep.start };
   html.classList.remove("crush","madness");
-  goto(ep.start); window.scrollTo(0,0);
+  goto(ep.start); scrollTop(false);
 }
 function goto(id){
   const node=episode.nodes[id];
@@ -320,7 +329,7 @@ function goto(id){
   if(node.onEnter && !state.entered[id]) applyEffects(node.onEnter);
   state.entered[id]=true; setScreen(true);
   if(state.sanity<=0 && !node.ending) return renderMadness();
-  render(); window.scrollTo({top:0,behavior:"smooth"});
+  render(); scrollTop(true);
   startWatch();
 }
 function pickText(node){
@@ -368,7 +377,7 @@ function render(){
     + `${node.title?`<div class="nodetitle glitchable">${node.title}</div>`:""}`
     + `<div class="prose glitchable">${pickText(node)}</div>` + choices
     + `</div>` + footer();
-  applyContentFilter();
+  applyScreenFilter();
 }
 function choose(idx){
   const c=episode.nodes[state.current].choices[idx];
@@ -452,16 +461,16 @@ function typewrite(el, text, speed, done){
 }
 function renderEnding(end){
   clearWatch(); recordScar(end.type, end.stamp);
-  setScreen(false); html.removeAttribute("data-tier"); applyTubeWarp();
+  setScreen(false); html.removeAttribute("data-tier"); applyScreenFilter();
   if(!FEAT.endings || REDUCED){
     root.innerHTML = `<div class="ending"><div class="stamp ${end.type}">${end.stamp}</div>
       <div class="prose glitchable">${end.text}</div>
       <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
-    window.scrollTo({top:0,behavior:"smooth"}); return;
+    scrollTop(true); return;
   }
   html.classList.add("crush");
   root.innerHTML = `<div class="ending"><div class="endblack"><span class="cursor"></span></div></div>` + footer();
-  window.scrollTo({top:0,behavior:"smooth"});
+  scrollTop(true);
   setTimeout(()=>{
     root.innerHTML = `<div class="ending"><div class="stamp ${end.type} glow" id="endstamp"></div>
       <div class="prose glitchable endprose" id="endprose" style="display:none">${end.text}</div>
@@ -476,17 +485,17 @@ function renderEnding(end){
 function renderMadness(){
   clearWatch(); recordScar("madness","// COHERENCE LOST");
   html.removeAttribute("data-tier"); html.classList.add("madness");
-  html.style.setProperty("--glitch","0.12"); applyTubeWarp();
+  html.style.setProperty("--glitch","0.12"); applyScreenFilter();
   if(!FEAT.endings || REDUCED){
     root.innerHTML = `<div class="ending"><div class="stamp madness">// COHERENCE LOST</div>
       <div class="prose madprose">
         <p>The ship was always like this. You were always here. The others left because you asked them to, didn't you, didn't you, and the smiling face on the wall is just your face, it's only ever been your face, awake and awake and awake and-</p>
         <p>You stop looking for the way out. There was never a way out of a place you never left.</p></div>
       <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
-    window.scrollTo({top:0,behavior:"smooth"}); return;
+    scrollTop(true); return;
   }
   root.innerHTML = `<div class="ending"><div class="endblack"><span class="cursor solid"></span></div></div>` + footer();
-  window.scrollTo({top:0,behavior:"smooth"});
+  scrollTop(true);
   setTimeout(()=>{
     root.innerHTML = `<div class="ending"><div class="stamp madness">// COHERENCE LOST</div>
       <div class="prose madprose">
@@ -514,7 +523,7 @@ function titleScreen(){
   episode=null; state=null; clearWatch();
   html.removeAttribute("data-tier"); html.classList.remove("crush","madness");
   html.style.setProperty("--glitch","0"); html.style.setProperty("--bleed","0");
-  root.style.filter=""; applyTubeWarp();
+  applyScreenFilter();
   const scars = FEAT.scars ? loadScars() : {};
   const words=(MANIFEST.title||"WAKE ALONE").split(" ");
   const cards = EPISODES.map((ep,i)=>{
@@ -531,12 +540,12 @@ function titleScreen(){
     <div class="bigtitle glitchable glow">${words.join("<br>")}</div>
     <div class="sub">${MANIFEST.subtitle||""}<span class="cursor"></span></div>
     <div class="eplist">${cards}</div></div>` + footer();
-  window.scrollTo(0,0);
+  scrollTop(false);
 }
 function footer(){ return `<div class="footer">skein v0.1 — neural integrity at 0% ends the run</div>`; }
 
 setInterval(tickHud, 720);
-window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); applyContentFilter(); } });
+window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); applyScreenFilter(); } });
 titleScreen();
 </script>
 </body>

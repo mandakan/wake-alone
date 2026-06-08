@@ -2,36 +2,25 @@
 
 Ideas worth doing later, with enough context to pick them up cold.
 
-## Tube warp v2 - true fixed-viewport CRT bulge
+## Tube warp v2 - true fixed-viewport CRT bulge  [SHIPPED 2026-06-08]
 
-**Status:** backlog. **Why it's here:** the shipped tube warp (enhancement 06)
-bows the *scanline overlay only* (`#tube`), which is safe but subtle - it never
-touches the readable text. A fuller "the whole screen is curved glass" bulge
-needs the content itself to warp, and that is the part that's hard to do without
-clipping.
+**Status:** done. Built into `engine/template.html`; spec at
+`docs/superpowers/specs/2026-06-08-tube-warp-v2-design.md`. The whole readable
+screen (HUD + story + scanlines) now scrolls inside a fixed, viewport-sized `#crt`
+frame, and the barrel `feDisplacementMap` (plus the tier dim) is composed into one
+filter on that frame, so the content itself curves as one piece of glass. Still
+sanity-gated (flat at high sanity, eases in below ~60) and `FEAT.warp` /
+`prefers-reduced-motion` still gate it.
 
-**The trap (already hit once):** applying an SVG `feDisplacementMap` directly to
-the reflowing story content (`#sc`) in the full-page engine magnified the text
-past the reading column (clipped by `overflow-x:hidden`) AND clipped its own
-filter region, which *hid the choice buttons and soft-locked the run*. Don't put
-a displacement filter on flowing, full-page content.
+Both v2 traps were resolved and verified live (headless Chromium on the built
+`dist/index.html`, 390x740):
+- **Clipping soft-lock (v1's bug):** fixed by filtering the fixed frame, not the
+  reflowing `#sc`. At terminal sanity both choices stayed fully in-viewport.
+- **`filter` breaks `position:sticky`:** did NOT break here -- the filter is on the
+  scroll container itself, and the sticky HUD pins to `top:0` correctly after
+  scrolling. The "in-flow HUD" fallback was not needed.
 
-**The v2 approach:** restructure the runtime so all content scrolls *inside* a
-fixed, viewport-sized "tube" element (like the design demo's fixed device), and
-apply the barrel displacement to that fixed frame. Because the frame is a fixed
-size and scrolls internally, the filter region is stable and nothing reflows out
-of it.
-
-Things to solve in v2:
-- The sticky HUD: a CSS `filter` creates a containing block, which breaks
-  `position:sticky`. Either keep the HUD outside the warped frame, or make the
-  warped frame the scroll container and the HUD `sticky` relative to it.
-- Scroll: content scrolls inside the tube, not the window. Reconcile with the
-  current `window.scrollTo` calls in `goto`/`render`.
-- Perf: a displacement filter on a tall, scrolling frame re-rasterizes on scroll.
-  Cap the bow, and profile on mobile.
-- Readability: ease the bow in only at low sanity (as now) and keep the centre
-  - where the player reads - close to flat.
-
-Until then, `FEAT.warp = true` drives the safe overlay-only bow; flip it off in
-`engine/template.html` to remove even that.
+Still open / tunable later: profile the scroll re-rasterize on low-end mobile (most
+nodes fit one viewport, so the filter applies once); and the bow magnitude is still
+the v1 cap (`warpT*warpT*42`) -- it reads as a gentle curve and can be pushed harder
+if wanted.
