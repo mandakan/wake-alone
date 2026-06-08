@@ -13,9 +13,15 @@
     --red:#ff3b30; --green:#5ad17a; --glitch:0;
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Deep-void base on the root so overscroll/rubber-band stays dark (not gray),
+     and dark UI chrome (scrollbars). */
+  html{background:#020302; color-scheme:dark}
   html,body{height:100%}
   body{
-    background:radial-gradient(120% 90% at 50% 10%, #11150f 0%, var(--bg) 60%, #020302 100%);
+    /* The radial glow is the screen's only light source: pin it to the viewport
+       (background-attachment:fixed) so it never restarts or seams on scroll, over
+       a solid void base. */
+    background:#020302 radial-gradient(120% 90% at 50% 10%, #11150f 0%, var(--bg) 60%, #020302 100%) no-repeat fixed;
     color:var(--phosphor); font-family:"IBM Plex Mono",monospace; font-size:17px;
     line-height:1.65; overflow-x:hidden; min-height:100%;
   }
