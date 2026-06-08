@@ -20,7 +20,7 @@
       ]
     },
     "listen": {
-      "text": "<p>You hold your breath and let the vessel speak. The hull pops as it cools. Somewhere far down the spine of the ship, something drags - a long, wet, unhurried sound - and stops, as if it heard you holding still.</p><p>You decide not to listen anymore.</p>",
+      "text": "<p>You hold your breath and let the ship speak. The hull ticks as it cools. Then, far down the spine, a drag - long, unhurried - that stops the instant you go still, as if it had been listening for exactly that.</p><p>You decide not to listen anymore.</p>",
       "onEnter": { "sanity": -8 },
       "choices": [ { "text": "Get out of the pod.", "to": "cryobay_up" } ]
     },
@@ -34,7 +34,7 @@
     },
     "locker_done": {
       "title": "Cryo-bay C",
-      "text": "<p>Inside: a hand torch, still charged, and a single med-gel ampoule - the field kind, for when a mind starts to slip its moorings. You take both. The light feels like a small, stupid kind of courage.</p>",
+      "text": "<p>A hand torch, still charged. A single med-gel ampoule beside it - the field kind, for when a mind starts to slip its moorings. You take both. The light feels like a small, stupid kind of courage.</p>",
       "choices": [ { "text": "Step out into the corridor.", "to": "corridor" } ]
     },
     "corridor": {
@@ -93,7 +93,7 @@
       },
       "choices": [
         { "text": "Take the hydrospanner from the toolbox.", "requires": { "notItem": "wrench" }, "effects": { "add": ["wrench"] }, "to": "engineering" },
-        { "text": "Open the reactor access panel.", "requires": { "item": "wrench", "notFlag": "power" }, "locked": "Open the reactor access panel. (bolted - need a tool)", "effects": { "flags": { "power": true } }, "to": "engineering_power" },
+        { "text": "Open the reactor access panel.", "requires": { "item": "wrench", "notFlag": "power" }, "locked": "Open the reactor access panel. (bolted shut - you need the hydrospanner from the toolbox)", "effects": { "flags": { "power": true } }, "to": "engineering_power" },
         { "text": "Back to the corridor.", "to": "corridor" }
       ]
     },
@@ -123,7 +123,7 @@
     },
     "darkgap_blind": {
       "title": "The dark stretch",
-      "text": "<p>You kill the light and trust your hands. Halfway through, your fingers find a face on the wall at chest height - warm, smiling, patient - and it turns to follow your palm as you pass. You do not stop. You do not breathe. Something is missing from you when you reach the far side, and you don't know yet what it was.</p>",
+      "text": "<p>You kill the light and trust your hands. Halfway through, your fingers find warmth on the wall at chest height - the give of a face, and the slow turn of it following your palm as you pass. You do not stop. You do not breathe. Something is missing from you when you reach the far side, and you don't know yet what it was.</p>",
       "choices": [
         { "text": "Continue to the escape bay.", "to": "escape" },
         { "text": "Retreat to the corridor.", "to": "corridor" }
