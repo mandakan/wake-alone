@@ -23,9 +23,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # The steps below run only when a release was just created.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: ${{ steps.release.outputs.release_created }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         if: ${{ steps.release.outputs.release_created }}
         with:
           node-version: 22
