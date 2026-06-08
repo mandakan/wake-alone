@@ -86,8 +86,8 @@ it to pass an episode; fix the episode.
 
 It also runs a **prose linter** (`tools/prose-lint.mjs`) over every text field to keep episodes
 from reading like generated slop. Hard `ERROR`s: non-ASCII punctuation (em-dash, curly quotes,
-ellipsis -- the top LLM tells; house style is ASCII, calibrated to `derelict`) and essay/marketing
-register (`delve`, `leverage`, `seamless`, ...). Advisory `warn`s: horror cliches, robotic cadence
+ellipsis - the top LLM tells) and doubled dashes (stories use a single hyphen `-`; house style is
+ASCII, calibrated to `derelict`), and essay/marketing register (`delve`, `leverage`, `seamless`, ...). Advisory `warn`s: horror cliches, robotic cadence
 (uniform sentence length, repeated openers, "X, Y, and Z" triads, copy-pasted phrases),
 first-person slips outside quoted speech, plus two solver-backed coherence checks -- a `sanityText`
 variant that can never display, and prose that says "your <item>" where the player can't hold it.

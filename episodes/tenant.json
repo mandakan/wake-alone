@@ -9,7 +9,7 @@
   "nodes": {
     "galley": {
       "title": "Galley",
-      "text": "<p>You surface from a sleep you don't remember choosing, cheek stuck to a galley table. Eleven trays are set. Steam still ghosts off the nearest meal -- protein paste, a spoon laid down mid-bite, a half-drunk cup with the ring still wet.</p><p>No one is at the table. No one is anywhere. A single work glove lies on the deck by the hatch, palm up, fingers slightly curled, as if its owner had set it down meaning to come straight back.</p>",
+      "text": "<p>You surface from a sleep you don't remember choosing, cheek stuck to a galley table. Eleven trays are set. Steam still ghosts off the nearest meal - protein paste, a spoon laid down mid-bite, a half-drunk cup with the ring still wet.</p><p>No one is at the table. No one is anywhere. A single work glove lies on the deck by the hatch, palm up, fingers slightly curled, as if its owner had set it down meaning to come straight back.</p>",
       "choices": [
         { "text": "Pick up the glove.", "requires": { "notFlag": "glove" }, "effects": { "sanity": -8, "flags": { "glove": true } }, "to": "galley" },
         { "text": "Check the galley's wall-mounted first-aid station.", "requires": { "notFlag": "aidg" }, "effects": { "add": ["medgel"], "flags": { "aidg": true } }, "to": "galley" },
@@ -44,7 +44,7 @@
     },
     "quarters_music": {
       "title": "Crew quarters",
-      "text": "<p>Your thumb finds the switch and the static cuts out. For one second the quarters are truly silent. Then, from somewhere deeper in the ship, the same track starts again -- the same hiss, the same dead air at the end of the song -- and it is not playing from any speaker you can see.</p>",
+      "text": "<p>Your thumb finds the switch and the static cuts out. For one second the quarters are truly silent. Then, from somewhere deeper in the ship, the same track starts again - the same hiss, the same dead air at the end of the song - and it is not playing from any speaker you can see.</p>",
       "choices": [
         { "text": "Back to the corridor.", "to": "corridor" }
       ]
@@ -53,7 +53,7 @@
       "title": "Cargo hold",
       "text": "<p>The hold is a cathedral of stacked containers, most sealed, a few cracked open and spilling packing foam like snow. A maintenance station is bolted to the bulkhead: a tool rack, a first-aid box, a torch on a charging hook. Cold air pours down from a vent and pools at your ankles. One open container, off in the dark, is dripping.</p>",
       "sanityText": {
-        "40": "<p>The containers climb into a dark the lights don't reach, and they are stacked wrong now -- leaning inward, the way trees lean over a path that wants you to keep walking. Foam drifts down through the cold air. It is not snow. You keep telling yourself that, and the hold keeps not agreeing.</p>"
+        "40": "<p>The containers climb into a dark the lights don't reach, and they are stacked wrong now - leaning inward, the way trees lean over a path that wants you to keep walking. Foam drifts down through the cold air. It is not snow. You keep telling yourself that, and the hold keeps not agreeing.</p>"
       },
       "choices": [
         { "text": "Take the torch from the charging hook.", "requires": { "notItem": "flashlight" }, "effects": { "add": ["flashlight"] }, "to": "hold" },
@@ -74,7 +74,7 @@
     },
     "hold_glove": {
       "title": "Cargo hold",
-      "text": "<p>Your fingers close on the topmost glove and lift it free. It is warm to the wrist and it holds its shape -- the curl of fingers, the press of a palm -- and as you raise it to the light it tightens, gently, around your own hand, the way you would squeeze a hand you were glad to see. You drop it. It lands among its hundreds and you cannot tell any more which one was yours, or whether that was ever the right question.</p>",
+      "text": "<p>Your fingers close on the topmost glove and lift it free. It is warm to the wrist and it holds its shape - the curl of fingers, the press of a palm - and as you raise it to the light it tightens, gently, around your own hand, the way you would squeeze a hand you were glad to see. You drop it. It lands among its hundreds and you cannot tell any more which one was yours, or whether that was ever the right question.</p>",
       "choices": [
         { "text": "Back to the hold.", "to": "hold" },
         { "text": "Back to the corridor.", "to": "corridor" }
@@ -82,9 +82,9 @@
     },
     "engine": {
       "title": "Engine room",
-      "text": "<p>The drive is a wall of warm steel that ticks as it idles. The shuttle bay clamp draws its lock-power from a junction here -- a fat conduit feeding the docking cradle, so no shuttle can release while the ship still holds it. A diagnostic screen scrolls green. Everything nominal. Everything fine. Nobody home.</p>",
+      "text": "<p>The drive is a wall of warm steel that ticks as it idles. The shuttle bay clamp draws its lock-power from a junction here - a fat conduit feeding the docking cradle, so no shuttle can release while the ship still holds it. A diagnostic screen scrolls green. Everything nominal. Everything fine. Nobody home.</p>",
       "sanityText": {
-        "40": "<p>The drive ticks like something swallowing. The conduit to the shuttle clamp runs along the wall, and it is not quite a conduit any more -- it pulses, slow and full, carrying something thicker than current down toward the cradle. The diagnostic screen scrolls green. Everything nominal. The word has stopped meaning anything.</p>"
+        "40": "<p>The drive ticks like something swallowing. The conduit to the shuttle clamp runs along the wall, and it is not quite a conduit any more - it pulses, slow and full, carrying something thicker than current down toward the cradle. The diagnostic screen scrolls green. Everything nominal. The word has stopped meaning anything.</p>"
       },
       "choices": [
         { "text": "Cut the clamp conduit with the bolt cutters.", "requires": { "item": "cutters", "notFlag": "power" }, "locked": "Cut the clamp conduit. (you'd need a tool strong enough to part it)", "effects": { "sanity": -10, "flags": { "power": true } }, "to": "engine_cut" },
@@ -94,14 +94,14 @@
     },
     "engine_cut": {
       "title": "Engine room",
-      "text": "<p>The cutters bite. There's a flat bang and the conduit goes dark, and aft of you the docking clamp lets go with a shudder you feel through the deck plates. Lock-power gone. The shuttle is free to release -- if you can get it to recognise you. The drive's ticking falters, just for a moment, as though the ship felt that.</p>",
+      "text": "<p>The cutters bite. There's a flat bang and the conduit goes dark, and aft of you the docking clamp lets go with a shudder you feel through the deck plates. Lock-power gone. The shuttle is free to release - if you can get it to recognise you. The drive's ticking falters, just for a moment, as though the ship felt that.</p>",
       "choices": [
         { "text": "Back to the corridor.", "to": "corridor" }
       ]
     },
     "engine_log": {
       "title": "Engine room",
-      "text": "<p>You scroll back past the nominal greens to the last shift. The entries start ordinary -- coolant, course, a joke logged by someone bored. Then: <em>\"crew complement 11, confirmed 11, recount 12, recount 12, recount 12.\"</em> The same engineer, logging the same recount, every minute, for an hour. Then nothing. You stop reading. You do not want to know what the twelfth one was doing while she counted.</p>",
+      "text": "<p>You scroll back past the nominal greens to the last shift. The entries start ordinary - coolant, course, a joke logged by someone bored. Then: <em>\"crew complement 11, confirmed 11, recount 12, recount 12, recount 12.\"</em> The same engineer, logging the same recount, every minute, for an hour. Then nothing. You stop reading. You do not want to know what the twelfth one was doing while she counted.</p>",
       "choices": [
         { "text": "Back to the corridor.", "to": "corridor" }
       ]
@@ -113,9 +113,7 @@
         "40": "<p>The bay is cold enough to ache. The shuttle waits in its cradle with its hatch open like a mouth, and you can't tell any more whether it is offering you a way out or simply hungry in the same patient way the rest of the ship is hungry. The console waits. A chip. The clamp unpowered. Two small honesties between you and the dark.</p>"
       },
       "choices": [
-        { "text": "Insert the chip and release the shuttle.", "requires": { "item": "chip", "flag": "power" }, "to": "end_escape" },
-        { "text": "Insert the chip and release the shuttle.", "requires": { "item": "chip", "notFlag": "power" }, "locked": "Insert the chip. (the clamp still holds -- it's drawing lock-power)" },
-        { "text": "Release the shuttle.", "requires": { "notItem": "chip", "flag": "power" }, "locked": "Release the shuttle. (no access chip -- the console won't recognise you)" },
+        { "text": "Insert the chip and release the shuttle.", "requires": { "item": "chip", "flag": "power" }, "to": "end_escape", "locked": "Insert the chip and release. (the console needs a valid access chip, and the docking clamp must be unpowered)" },
         { "text": "Force the hatch and seal yourself inside without clearance.", "requires": { "notItem": "chip", "notFlag": "power" }, "to": "end_sealed" },
         { "text": "Open the bay's outer doors and step out into the cold.", "requires": { "sanityMax": 30 }, "to": "end_void" },
         { "text": "Back to the corridor.", "to": "corridor" }
@@ -125,7 +123,7 @@
       "ending": {
         "type": "escape",
         "stamp": "// RELEASE",
-        "text": "<p>The chip reads green. The clamp is already dead, and the cradle opens its arms. The shuttle drops free of the Amaranth and you burn hard for the black before the console can change its mind.</p><p>Through the port, the freighter shrinks -- every light still on, every system nominal, eleven trays still set, the steam off the food still rising. Twelve places now, you think. You leave that thought with the ship. You are awake. You got out. You will not count the years you spend wondering what almost kept you.</p>"
+        "text": "<p>The chip reads green. The clamp is already dead, and the cradle opens its arms. The shuttle drops free of the Amaranth and you burn hard for the black before the console can change its mind.</p><p>Through the port, the freighter shrinks - every light still on, every system nominal, eleven trays still set, the steam off the food still rising. Twelve places now, you think. You leave that thought with the ship. You are awake. You got out. You will not count the years you spend wondering what almost kept you.</p>"
       }
     },
     "end_sealed": {

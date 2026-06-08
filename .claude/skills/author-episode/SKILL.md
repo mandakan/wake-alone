@@ -29,11 +29,12 @@ the shipped bundle.
 ## Procedure
 
 1. **Read the references first.** Read `CLAUDE.md` (creative bible + sanity economy),
-   `docs/inspiration.md` (the public-domain source bible -- craft rules and motifs for the
-   haunted-ship feeling; inspiration only, never verbatim, never named IP), `docs/style-cards.md`
-   (distilled prose technique per source), and `episodes/derelict.json` (the canonical, validated
-   example). The `corpus/` folder holds a few complete PD reference texts -- study them for cadence
-   and structure, but never copy phrasing (see `corpus/SOURCES.md`). Match the house tone.
+   `docs/craft-lessons.md` (the feedback ledger - every rule learned from user/playtester feedback;
+   honor all of them), `docs/inspiration.md` (the public-domain source bible - craft rules and
+   motifs; inspiration only, never verbatim, never named IP), `docs/style-cards.md` (distilled prose
+   technique per source), and `episodes/derelict.json` (the canonical, validated example). The
+   `corpus/` folder holds a few complete PD reference texts - study them for cadence and structure,
+   but never copy phrasing (see `corpus/SOURCES.md`). Match the house tone.
 
 2. **Scaffold with the dials:**
    `npm run new -- --id <slug> --title "<TITLE>" --byline "<line>" --size <size> --punishment <level>`
@@ -56,8 +57,9 @@ the shipped bundle.
    - `spec(...): death ratio / dead endings ...` -> add nasty endings to meet the punishment floor.
    - `soft-lock` -> a required item/flag is never granted. `non-existent node` -> a `to` typo.
      `unknown requires/effects key` -> a misspelled gate that silently does nothing.
-   - prose `ERROR`s -> non-ASCII punctuation (write `--`, straight quotes, `...`) or essay-register
-     slop (`delve`, `leverage`, `seamless`, ...). Rewrite in the sparse second-person voice.
+   - prose `ERROR`s -> non-ASCII punctuation or a doubled `--` (use a single hyphen `-` for dashes;
+     straight quotes; `...`) or essay-register slop (`delve`, `leverage`, `seamless`, ...). Rewrite
+     in the sparse second-person voice.
      `npm run lint episodes/<id>.json` runs the prose checks alone.
    - advisory `warn`s (play-time outside the size range, cruel-but-no-madness, dead item/flag,
      dead choice, horror cliches, robotic cadence, first-person slips, never-shown sanityText,
@@ -67,9 +69,20 @@ the shipped bundle.
    second person, and prefer concrete specific detail over generic atmosphere. After a draft, a
    `clean-prose` pass over each text field catches what the linter can't.
 
-5. **Build and report:** run `npm run build`, then tell the user the report metrics — node count,
-   reachable endings, death ratio, estimated play-time, and the best escape's surviving sanity —
-   so they can judge difficulty against the dials they asked for.
+5. **Final read against the ledger.** Re-read the episode against `docs/craft-lessons.md` - every
+   lesson must hold (especially: legible endings whose cause and mechanic are explicit; single-hyphen
+   dashes; gated choices written as one positive-gate choice with a `to` and a `locked` hint). Fix
+   anything that does not.
+
+6. **Build and report:** run `npm run build`, then tell the user the report metrics - node count,
+   reachable endings, death ratio, estimated play-time, and the best escape's surviving sanity - so
+   they can judge difficulty against the dials they asked for.
+
+## When the user gives feedback on a story
+
+Capture it so it cannot recur. Add a numbered lesson to `docs/craft-lessons.md` (what was said, the
+rule, how it is enforced). If it can be checked by code, add a `prose-lint`/`validate` rule plus a
+self-test; if it is a durable preference, also save it to agent memory. Then apply the fix.
 
 ## Hard constraints
 

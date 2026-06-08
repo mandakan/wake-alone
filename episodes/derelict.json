@@ -15,7 +15,7 @@
       ]
     },
     "listen": {
-      "text": "<p>You hold your breath and let the vessel speak. The hull pops as it cools. Somewhere far down the spine of the ship, something drags -- a long, wet, unhurried sound -- and stops, as if it heard you holding still.</p><p>You decide not to listen anymore.</p>",
+      "text": "<p>You hold your breath and let the vessel speak. The hull pops as it cools. Somewhere far down the spine of the ship, something drags - a long, wet, unhurried sound - and stops, as if it heard you holding still.</p><p>You decide not to listen anymore.</p>",
       "onEnter": { "sanity": -8 },
       "choices": [ { "text": "Get out of the pod.", "to": "cryobay_up" } ]
     },
@@ -29,12 +29,12 @@
     },
     "locker_done": {
       "title": "Cryo-bay C",
-      "text": "<p>Inside: a hand torch, still charged, and a single med-gel ampoule -- the field kind, for when a mind starts to slip its moorings. You take both. The light feels like a small, stupid kind of courage.</p>",
+      "text": "<p>Inside: a hand torch, still charged, and a single med-gel ampoule - the field kind, for when a mind starts to slip its moorings. You take both. The light feels like a small, stupid kind of courage.</p>",
       "choices": [ { "text": "Step out into the corridor.", "to": "corridor" } ]
     },
     "corridor": {
       "title": "Spinal corridor",
-      "text": "<p>The corridor is a throat of dead consoles and floating dust. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where the lights are out entirely -- a black gap the torch beam won't quite fill.</p>",
+      "text": "<p>The corridor is a throat of dead consoles and floating dust. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where the lights are out entirely - a black gap the torch beam won't quite fill.</p>",
       "sanityText": {
         "40": "<p>The corridor breathes. You know corridors don't, you <em>know</em> it, but the walls swell and settle and the dust hangs like it's deciding something. Three doorways. A black gap ahead that is looking back.</p>"
       },
@@ -55,7 +55,7 @@
     },
     "bridge_log": {
       "title": "Bridge",
-      "text": "<p>The captain's voice is calm in the way of someone who has already given up. <em>\"We woke it in the ore. It doesn't want the ship. It wants us awake when it-- \"</em> The recording ends in a sound you will hear again behind your eyes for as long as you have eyes.</p>",
+      "text": "<p>The captain's voice is calm in the way of someone who has already given up. <em>\"We woke it in the ore. It doesn't want the ship. It wants us awake when it - \"</em> The recording ends in a sound you will hear again behind your eyes for as long as you have eyes.</p>",
       "choices": [ { "text": "Back to the corridor.", "to": "corridor" } ]
     },
     "medbay": {
@@ -77,29 +77,29 @@
     },
     "medbay_sheet": {
       "title": "Med-bay",
-      "text": "<p>You shouldn't have. The body is intact and entirely wrong -- the face fixed mid-expression, not pain, not fear. <em>Attention.</em> Whatever happened, this one was paying attention right to the end. You let the sheet fall.</p>",
+      "text": "<p>You shouldn't have. The body is intact and entirely wrong - the face fixed mid-expression, not pain, not fear. <em>Attention.</em> Whatever happened, this one was paying attention right to the end. You let the sheet fall.</p>",
       "choices": [ { "text": "Back to the corridor.", "to": "corridor" } ]
     },
     "engineering": {
       "title": "Engineering",
-      "text": "<p>The reactor is a cold black slab. Main power is offline -- that's why the ship is a tomb. A sealed access panel could bring it back, but it's bolted shut. A toolbox lies spilled across the deck plating.</p>",
+      "text": "<p>The reactor is a cold black slab. Main power is offline - that's why the ship is a tomb. A sealed access panel could bring it back, but it's bolted shut. A toolbox lies spilled across the deck plating.</p>",
       "sanityText": {
-        "30": "<p>The reactor hums even though it's dead. You can feel it in your fillings. The panel is bolted shut. The toolbox has spilled, and the tools point -- all of them -- toward the dark stretch of corridor.</p>"
+        "30": "<p>The reactor hums even though it's dead. You can feel it in your fillings. The panel is bolted shut. The toolbox has spilled, and the tools point - all of them - toward the dark stretch of corridor.</p>"
       },
       "choices": [
         { "text": "Take the hydrospanner from the toolbox.", "requires": { "notItem": "wrench" }, "effects": { "add": ["wrench"] }, "to": "engineering" },
-        { "text": "Open the reactor access panel.", "requires": { "item": "wrench", "notFlag": "power" }, "locked": "Open the reactor access panel. (bolted -- need a tool)", "effects": { "flags": { "power": true } }, "to": "engineering_power" },
+        { "text": "Open the reactor access panel.", "requires": { "item": "wrench", "notFlag": "power" }, "locked": "Open the reactor access panel. (bolted - need a tool)", "effects": { "flags": { "power": true } }, "to": "engineering_power" },
         { "text": "Back to the corridor.", "to": "corridor" }
       ]
     },
     "engineering_power": {
       "title": "Engineering",
-      "text": "<p>The panel comes free. You re-seat the breakers and the reactor catches with a deep, resentful hum. Down the corridor, lights stutter to life one bank at a time -- racing toward the dark stretch, then dying again exactly where it begins.</p>",
+      "text": "<p>The panel comes free. You re-seat the breakers and the reactor catches with a deep, resentful hum. Down the corridor, lights stutter to life one bank at a time - racing toward the dark stretch, then dying again exactly where it begins.</p>",
       "choices": [ { "text": "Back to the corridor.", "to": "corridor" } ]
     },
     "darkgap": {
       "title": "The dark stretch",
-      "text": "<p>The gap swallows the torchlight whole. Air moves against your face -- exhaled, not vented. Something is here with you, between you and the escape bay beyond.</p>",
+      "text": "<p>The gap swallows the torchlight whole. Air moves against your face - exhaled, not vented. Something is here with you, between you and the escape bay beyond.</p>",
       "choices": [
         { "text": "Raise the torch and look directly at it.", "requires": { "item": "flashlight", "notFlag": "sawit" }, "effects": { "sanity": -15, "add": ["keycard"], "flags": { "sawit": true } }, "to": "darkgap_lit" },
         { "text": "Kill the torch and feel along the wall in the black.", "requires": { "notFlag": "feltpast" }, "effects": { "sanity": -35, "flags": { "feltpast": true } }, "to": "darkgap_blind" },
@@ -110,7 +110,7 @@
     },
     "darkgap_lit": {
       "title": "The dark stretch",
-      "text": "<p>You raise the beam. It's the captain -- or it's wearing the captain -- folded into the ceiling space, head tilted with that same terrible attention. It does not move toward you. It simply lets you see. A keycard hangs from the corpse's belt; you take it with hands that won't stop shaking, and it lets you.</p>",
+      "text": "<p>You raise the beam. It's the captain - or it's wearing the captain - folded into the ceiling space, head tilted with that same terrible attention. It does not move toward you. It simply lets you see. A keycard hangs from the corpse's belt; you take it with hands that won't stop shaking, and it lets you.</p>",
       "choices": [
         { "text": "Continue to the escape bay.", "to": "escape" },
         { "text": "Retreat to the corridor.", "to": "corridor" }
@@ -118,7 +118,7 @@
     },
     "darkgap_blind": {
       "title": "The dark stretch",
-      "text": "<p>You kill the light and trust your hands. Halfway through, your fingers find a face on the wall at chest height -- warm, smiling, patient -- and it turns to follow your palm as you pass. You do not stop. You do not breathe. Something is missing from you when you reach the far side, and you don't know yet what it was.</p>",
+      "text": "<p>You kill the light and trust your hands. Halfway through, your fingers find a face on the wall at chest height - warm, smiling, patient - and it turns to follow your palm as you pass. You do not stop. You do not breathe. Something is missing from you when you reach the far side, and you don't know yet what it was.</p>",
       "choices": [
         { "text": "Continue to the escape bay.", "to": "escape" },
         { "text": "Retreat to the corridor.", "to": "corridor" }
@@ -128,9 +128,7 @@
       "title": "Escape bay",
       "text": "<p>One pod remains in its cradle, intact, waiting. Its console asks for two things: command authorisation, and power.</p>",
       "choices": [
-        { "text": "Insert the captain's keycard and launch.", "requires": { "item": "keycard", "flag": "power" }, "to": "end_escape" },
-        { "text": "Insert the keycard and launch.", "requires": { "notItem": "keycard" }, "locked": "Insert authorisation. (no keycard -- the captain had it)" },
-        { "text": "Launch.", "requires": { "item": "keycard", "notFlag": "power" }, "locked": "Launch. (no power -- the reactor is dead)" },
+        { "text": "Insert the captain's keycard and launch.", "requires": { "item": "keycard", "flag": "power" }, "to": "end_escape", "locked": "Insert authorisation and launch. (the console is dark - it needs the captain's keycard and a live reactor)" },
         { "text": "Forget the pod. Open the outer airlock and walk out into the stars.", "requires": { "sanityMax": 35 }, "to": "end_airlock" },
         { "text": "Back to the corridor.", "to": "corridor" }
       ]
@@ -139,7 +137,7 @@
       "ending": {
         "type": "escape",
         "stamp": "// LAUNCH",
-        "text": "<p>The pod tears free of the cradle. Through the port, the Kestrel-9 shrinks to a dead grey splinter against impossible stars -- and on its hull, for just a moment, something turns to watch you go. Then distance takes it.</p><p>You are awake. You are alone. You are alive. Two of those will fade with time.</p>"
+        "text": "<p>The pod tears free of the cradle. Through the port, the Kestrel-9 shrinks to a dead grey splinter against impossible stars - and on its hull, for just a moment, something turns to watch you go. Then distance takes it.</p><p>You are awake. You are alone. You are alive. Two of those will fade with time.</p>"
       }
     },
     "end_airlock": {

@@ -37,7 +37,7 @@
     },
     "bridge": {
       "title": "Bridge",
-      "text": "<p>The bridge is a cathedral of dead glass. Every console is dark; the great forward port shows the same handful of stars it has shown for forty years, none of them grown any nearer. The captain's seat faces the dark, and the captain is in it, and has been for nine days, hands folded, waiting out the cold with the patience the ship was named for.</p><p>On the helm, under your frost-furred fingers when you reach for it, lies the manual reactor key -- the one the watch is meant to turn the instant the core falters. It was an arm's length from your chair. It is an arm's length from you now.</p>",
+      "text": "<p>The bridge is a cathedral of dead glass. Every console is dark; the great forward port shows the same handful of stars it has shown for forty years, none of them grown any nearer. The captain's seat faces the dark, and the captain is in it, and has been for nine days, hands folded, waiting out the cold with the patience the ship was named for.</p><p>On the helm, under your frost-furred fingers when you reach for it, lies the manual reactor key - the one the watch is meant to turn the instant the core falters. It was an arm's length from your chair. It is an arm's length from you now.</p>",
       "choices": [
         { "text": "Take the reactor key.", "requires": { "notItem": "key" }, "effects": { "add": ["key"] }, "to": "bridge" },
         { "text": "Sit in the captain's seat and look at what you let die.", "requires": { "notFlag": "satcaptain" }, "effects": { "sanity": -30, "flags": { "satcaptain": true } }, "to": "bridge" },
@@ -56,7 +56,7 @@
     },
     "lock": {
       "title": "Lifeboat lock",
-      "text": "<p>The lifeboat cradle is empty. The single boat the ship carried, the one mercy for four hundred souls, is gone -- launched, days ago, by hands that did the arithmetic and counted you among the lost. The lock cycled and they went, the ones who would fit, out into a dark that will not reach a star in their lifetimes either. They only could not bear to wait in here with the cold and the chair and you.</p><p>The outer hatch is still here. Manual. It opens with a wheel a child could turn, onto the same dark they chose. Frost has reached the spokes. Your hand fits them exactly.</p>",
+      "text": "<p>The lifeboat cradle is empty. The single boat the ship carried, the one mercy for four hundred souls, is gone - launched, days ago, by hands that did the arithmetic and counted you among the lost. The lock cycled and they went, the ones who would fit, out into a dark that will not reach a star in their lifetimes either. They only could not bear to wait in here with the cold and the chair and you.</p><p>The outer hatch is still here. Manual. It opens with a wheel a child could turn, onto the same dark they chose. Frost has reached the spokes. Your hand fits them exactly.</p>",
       "choices": [
         { "text": "Press your face to the inner port and watch where the boat went.", "requires": { "notFlag": "watched" }, "effects": { "sanity": -30, "flags": { "watched": true } }, "to": "lock" },
         { "text": "Turn the wheel. Follow them out.", "to": "end_airlock" },
@@ -81,7 +81,7 @@
       "ending": {
         "type": "dead",
         "stamp": "// LOCK CYCLED",
-        "text": "<p>The wheel gives easily. The dark takes the air in one soft pull and then takes you, and for a single clean moment before the cold there is no chair and no log and no four words, only the same emptiness the others chose, and you go out into it after them the way you should have gone awake into the reactor deck -- too late, and willing, and alone.</p>"
+        "text": "<p>The wheel gives easily. The dark takes the air in one soft pull and then takes you, and for a single clean moment before the cold there is no chair and no log and no four words, only the same emptiness the others chose, and you go out into it after them the way you should have gone awake into the reactor deck - too late, and willing, and alone.</p>"
       }
     },
     "end_stop": {

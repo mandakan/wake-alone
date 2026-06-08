@@ -14,8 +14,10 @@
 // (so CI enforces it) and runnable standalone: node tools/prose-lint.mjs [file...]
 
 // Non-ASCII punctuation -> the ASCII the house style wants instead.
+// House style uses a single hyphen "-" for dashes -- never em/en dashes, never
+// a doubled "--" (which reads as a failed em-dash substitute).
 export const PUNCT_BANS = {
-  "—": "--", "–": "-", "‒": "-", "―": "--",
+  "—": "-", "–": "-", "‒": "-", "―": "-",
   "“": '"', "”": '"', "„": '"', "‟": '"',
   "‘": "'", "’": "'", "‚": "'", "‛": "'",
   "…": "...", " ": "space", " ": "space", " ": "space",
@@ -67,7 +69,10 @@ function lintField(raw, where) {
     }
   }
   const plain = stripTags(raw);
-  // 2. essay/marketing register (ERROR)
+  // 2. doubled dashes (ERROR) -- stories use a single hyphen for dashes
+  const dd = plain.match(/-{2,}/g);
+  if (dd) errors.push(`${where}: doubled dash (x${dd.length}) -- use a single hyphen "-"`);
+  // 3. essay/marketing register (ERROR)
   for (const p of SLOP_ERRORS) if (hasPhrase(plain, p)) errors.push(`${where}: slop phrase "${p}" -- never in this voice`);
   // 3. filler + genre cliches (WARN)
   for (const p of SLOP_WARNS) if (hasPhrase(plain, p)) warnings.push(`${where}: filler "${p}" (consider cutting)`);

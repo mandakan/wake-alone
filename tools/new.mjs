@@ -40,7 +40,7 @@ export function buildSkeleton(resolved) {
 
   const hubChoices = [{ text: "Press deeper into the dark.", to: "room1" }];
   if (!noEscape) {
-    hubChoices.push({ text: "Make for the way out.", to: "escape", requires: { item: "key", flag: "ready" }, locked: "The exit won't give -- you're missing something." });
+    hubChoices.push({ text: "Make for the way out.", to: "escape", requires: { item: "key", flag: "ready" }, locked: "The exit won't give - you're missing something." });
   }
   for (let d = 1; d <= deadMin; d++) {
     nodes[`dead${d}`] = { ending: { type: "dead", stamp: `// DEAD ${d}`, text: `<p>A nasty ending (${d}). Replace this with a specific, earned death.</p>` } };
@@ -60,7 +60,7 @@ export function buildSkeleton(resolved) {
     }
     // required: the chain loops back to the hub. forbidden: it funnels into death.
     const to = r < rooms ? `room${r + 1}` : noEscape ? "dead1" : "hub";
-    const lastHint = noEscape ? "The dark closes the loop -- this beat ends in death." : "Flip the `ready` flag here.";
+    const lastHint = noEscape ? "The dark closes the loop - this beat ends in death." : "Flip the `ready` flag here.";
     const node = {
       title: `Branch ${r}`,
       text: `<p>Explorable beat ${r}. ${isFirst && !noEscape ? "Plant the key here." : isLast ? lastHint : "Dread, a detail, a small cost."}</p>`,
@@ -71,7 +71,7 @@ export function buildSkeleton(resolved) {
   }
 
   if (!noEscape) {
-    nodes.escape = { ending: { type: "escape", stamp: "// LAUNCH", text: "<p>The survival ending -- hard-won. Replace this.</p>" } };
+    nodes.escape = { ending: { type: "escape", stamp: "// LAUNCH", text: "<p>The survival ending - hard-won. Replace this.</p>" } };
   }
   return nodes;
 }

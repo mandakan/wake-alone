@@ -230,16 +230,23 @@ export function validateEpisode(ep, name = ep && ep.id) {
         `a few nasty ways to die (>= ${MIN_DEAD_ENDINGS} recommended)`);
     }
 
-    // dead choices: a gate that never opens in any reachable state
-    if (!solver.truncated) {
-      for (const [id, node] of Object.entries(ep.nodes)) {
-        if (node.ending || !Array.isArray(node.choices)) continue;
-        node.choices.forEach((c, i) => {
-          if (c.requires && reached.has(id) && !solver.openableChoices.has(`${id}#${i}`)) {
-            W(`node "${id}" choice[${i}]: requires never met in any reachable state (dead choice)`);
-          }
-        });
-      }
+    // choice integrity: a clickable choice must have a real destination, and a
+    // gate that never opens is dead weight.
+    for (const [id, node] of Object.entries(ep.nodes)) {
+      if (node.ending || !Array.isArray(node.choices)) continue;
+      node.choices.forEach((c, i) => {
+        const openable = solver.openableChoices.has(`${id}#${i}`);
+        const toResolves = c.to !== undefined && !!ep.nodes[c.to];
+        // clickable-but-goes-nowhere -> the engine calls goto(undefined) and crashes.
+        // This happens when a "locked" hint is written with a satisfiable gate
+        // (e.g. notItem on an item you might not hold) instead of a real "to".
+        if (openable && !toResolves) {
+          E(`node "${id}" choice[${i}]: clickable (its requirements can be satisfied) but has no valid "to" -- the engine crashes on click. Give it a real destination, or write the locked state as the positive gate on the real choice (requires the thing + a "locked" hint), not an inverted gate with no "to".`);
+        }
+        if (!solver.truncated && c.requires && reached.has(id) && !openable) {
+          W(`node "${id}" choice[${i}]: requires never met in any reachable state (dead choice)`);
+        }
+      });
     }
   }
 

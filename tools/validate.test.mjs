@@ -283,6 +283,34 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("emdash: non-ASCII error", hasErr(r, "non-ASCII"), r.errors.join("; "));
 }
 
+// --- a clickable choice with no destination is an ERROR (runtime crash class) ---
+{
+  // the "locked" hint uses an inverted gate (notItem) that IS satisfiable when
+  // the player lacks the item, so the engine would render it clickable with no
+  // "to" and crash on click -- exactly the derelict launch bug.
+  const ep = { id: "nogo", title: "N", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "grab key", to: "room" },
+        { text: "launch", to: "x", requires: { item: "key" } },
+        { text: "launch", requires: { notItem: "key" }, locked: "no key" },
+        { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      room: { text: "<p>r</p>", onEnter: { add: ["key"] }, choices: [{ text: "back", to: "hub" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("nogo: clickable-no-destination error", hasErr(r, "crashes on click"), r.errors.join("; "));
+}
+
+// --- prose: a doubled dash is a hard error (stories use single hyphens) ---
+{
+  const ep = { id: "doubledash", title: "D", start: "hub", startSanity: 100,
+    nodes: { hub: { text: "<p>The hall goes on -- and on.</p>", choices: [
+      { text: "out", to: "x" }, { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("doubledash: doubled-dash error", hasErr(r, "doubled dash"), r.errors.join("; "));
+}
+
 // --- prose: essay-register slop is a hard error ---
 {
   const ep = { id: "slop", title: "S", start: "hub", startSanity: 100,

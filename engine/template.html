@@ -127,8 +127,9 @@ function startEpisode(ep){
   goto(ep.start); window.scrollTo(0,0);
 }
 function goto(id){
-  state.current=id;
   const node=episode.nodes[id];
+  if(!node){ console.warn("skein: choice points at missing node",id); return; } // guard; the validator forbids this
+  state.current=id;
   if(node.onEnter && !state.entered[id]) applyEffects(node.onEnter);
   state.entered[id]=true; setGlitch();
   if(state.sanity<=0 && !node.ending) return renderMadness();
