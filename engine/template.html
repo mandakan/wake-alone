@@ -159,9 +159,10 @@
   .hud.corrupt .sanity-label span:last-child{color:var(--red)}
 
   /* ---- 03 THE WATCHING: an intrusive line, then gone ---- */
-  .watch{position:fixed;inset:0;z-index:55;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;padding:0 18px}
-  .watch-line{font-family:var(--font-display);letter-spacing:var(--tracking-display);
-    font-size:clamp(22px,6vw,34px);line-height:1.1;text-align:center;color:var(--phosphor);
+  .watch{position:fixed;inset:0;z-index:55;pointer-events:none}
+  .watch-line{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
+    max-width:min(76vw,460px);font-family:var(--font-display);letter-spacing:var(--tracking-display);
+    font-size:clamp(22px,5vw,32px);line-height:1.12;text-align:center;color:var(--phosphor);
     text-shadow:0 0 14px rgba(255,176,0,.55);animation:watch-in var(--watch-dur,1s) steps(1,end) forwards}
   .watch-line[data-sev="terminal"]{color:var(--red);text-shadow:0 0 16px rgba(255,59,48,.6)}
   @keyframes watch-in{0%{opacity:0}8%{opacity:1}12%{opacity:.1}18%{opacity:1}26%{opacity:.2}30%{opacity:1}82%{opacity:1}88%{opacity:.15}100%{opacity:0}}
@@ -509,11 +510,30 @@ function scheduleWatch(first){
 }
 function flashWatch(tier){
   const pool=watchPool(), line=pool[Math.floor(Math.random()*pool.length)];
-  const dur=tier==="terminal"?"1.15s":"0.85s", pos=rnd(28,64).toFixed(0);
-  watchEl.innerHTML=`<div class="watch-line glitchable" data-sev="${tier}" style="margin-top:${pos}%;--watch-dur:${dur}">${esc(line)}</div>`;
+  const dur=tier==="terminal"?"1.15s":"0.85s";
+  watchEl.innerHTML=`<div class="watch-line glitchable" data-sev="${tier}" style="--watch-dur:${dur}">${esc(line)}</div>`;
+  placeWatchLine(); // scatter the line over the actual room copy, never below it
   corruptProse(tier); // the room copy turns with the line, then snaps back
   const t=setTimeout(()=>{ watchEl.innerHTML=""; restoreProse(); }, tier==="terminal"?1150:850);
   watchTimers.push(t);
+}
+/* Drop the line at a random point WITHIN the visible prose box, then nudge it
+   fully on-screen. Anchoring to the copy (not a fixed viewport %) keeps it over
+   the words on any layout instead of stranded below the content. */
+function placeWatchLine(){
+  const el=watchEl.firstElementChild; if(!el) return;
+  const vw=window.innerWidth||0, vh=window.innerHeight||0;
+  const area=root.querySelector(".prose")||root.querySelector(".sc")||root;
+  const r=area.getBoundingClientRect();
+  const padX=Math.min(50, r.width*0.18);
+  const x0=clamp(r.left+padX,24,vw-24), x1=clamp(r.right-padX,24,vw-24);
+  const y0=clamp(r.top+12,32,vh-32), y1=clamp(r.bottom-12,32,vh-32);
+  let cx=rnd(Math.min(x0,x1),Math.max(x0,x1)), cy=rnd(Math.min(y0,y1),Math.max(y0,y1));
+  el.style.left=cx+"px"; el.style.top=cy+"px";
+  const b=el.getBoundingClientRect(), m=8; // clamp the rendered box into the viewport
+  if(b.left<m) cx+=m-b.left; else if(b.right>vw-m) cx-=b.right-(vw-m);
+  if(b.top<m) cy+=m-b.top; else if(b.bottom>vh-m) cy-=b.bottom-(vh-m);
+  el.style.left=cx+"px"; el.style.top=cy+"px";
 }
 
 /* ---- 04 DEATH GIVEN WEIGHT: the stop, the crush, the inversion ---- */
