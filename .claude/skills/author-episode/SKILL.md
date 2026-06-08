@@ -26,6 +26,28 @@ These are written into the episode as a top-level `"spec"`. With a spec, node co
 ratio become **hard errors** if missed; play-time is advisory. `build.mjs` strips `spec` from
 the shipped bundle.
 
+## The protagonist (who you are - drives hint calibration)
+
+Ask the user (or decide) who the protagonist is, and record it as a top-level `"character"` block:
+
+```json
+"character": { "role": "ship's maintenance engineer", "expertise": ["power systems", "hull", "life support", "hand tools"], "backstory": "..." }
+```
+
+This is the single most important input for **how hints and descriptions are written** (lesson L4 in
+`docs/craft-lessons.md`):
+- **In-domain** (anything in `expertise` - their "backyard"): they know it. Name tools and systems;
+  when a key tool/step is missing for an action they would obviously know, hint it specifically (the
+  `locked` text may name what is missing).
+- **Out-of-domain**: gestalt only - shape, weight, dread - never function, never operating hints,
+  never what part is missing. The character's ignorance is part of the horror.
+- `backstory` shapes voice and what they notice/fear/assume, but should surface **indirectly** - do
+  not dump it into the prose. It often never appears verbatim.
+
+Like `spec`, the `character` block is validated for shape, reported by `validate`, and stripped at
+build (it never ships). If the user gives no protagonist, pick a plausible role for the setting and
+state your assumption.
+
 ## Procedure
 
 1. **Read the references first.** Read `CLAUDE.md` (creative bible + sanity economy),

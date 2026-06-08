@@ -76,6 +76,21 @@ export function validateEpisode(ep, name = ep && ep.id) {
     E(`startSanity must be a number 0..100`);
   if (ep.startInventory !== undefined && !Array.isArray(ep.startInventory))
     E(`startInventory must be an array`);
+
+  // ---- optional protagonist profile (informs hint calibration; stripped at build) ----
+  let character = null;
+  if (ep.character !== undefined) {
+    const c = ep.character;
+    if (typeof c !== "object" || c === null || Array.isArray(c)) E(`character must be an object {role, expertise, backstory}`);
+    else {
+      if (c.role !== undefined && typeof c.role !== "string") E(`character.role must be a string`);
+      if (c.expertise !== undefined && !Array.isArray(c.expertise)) E(`character.expertise must be an array of domain strings`);
+      if (c.backstory !== undefined && typeof c.backstory !== "string") E(`character.backstory must be a string`);
+      for (const k of Object.keys(c)) if (!["role", "expertise", "backstory"].includes(k)) W(`character: unknown key "${k}" (use role/expertise/backstory)`);
+      character = { role: c.role ?? null, expertise: Array.isArray(c.expertise) ? c.expertise : [] };
+    }
+  }
+
   if (typeof ep.nodes !== "object" || ep.nodes === null) {
     return finish(name, errors, warnings, null); // can't go further
   }
@@ -319,6 +334,7 @@ export function validateEpisode(ep, name = ep && ep.id) {
     statesExplored: solver ? solver.statesExplored : null,
     truncated: solver ? solver.truncated : null,
     spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment, escape: resolved.escape } : null,
+    character,
     escape: escapeMode,
     words: wordCount,
     estMinutes,
@@ -489,6 +505,7 @@ function printResult(r) {
       console.log(`${C.dim}  solver: ${solv}${C.dim} · dead endings: ${rp.deadEndings} · madness reachable: ${rp.madnessReachable ? "yes" : "no"} · states: ${rp.statesExplored}${rp.truncated ? " (truncated)" : ""}${C.reset}`);
       const ratio = rp.deathRatio == null ? "?" : `${Math.round(rp.deathRatio * 100)}%`;
       console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`, rp.spec.escape === "forbidden" && "escape=forbidden"].filter(Boolean).join(", ")}` : ""}${C.reset}`);
+      if (rp.character) console.log(`${C.dim}  character: ${rp.character.role || "(unspecified role)"}${rp.character.expertise.length ? ` · knows: ${rp.character.expertise.join(", ")}` : ""}${C.reset}`);
     }
   }
   r.errors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));

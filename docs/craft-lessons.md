@@ -56,3 +56,27 @@ destination to fake per-reason messages - the single `locked` line carries the r
 text can name the requirements.
 **Enforced by:** `validate` errors when any choice is clickable in a reachable state but has no valid
 `to` (self-tested); the engine also guards `goto` against a missing node as defense-in-depth.
+
+## L4 - Hint level is role-relative: in-domain hints, out-of-domain gestalt only
+
+**Feedback:** "Being a maintenance engineer does not mean you know all the details of how to operate
+a medical surgery robot, so no hints and detailed description of functionality (maybe gestalt of the
+items). On the other hand if a key tool is missing to complete an action that is 'in your backyard'
+it should perhaps be hinted." The protagonist needs a backstory as input, even if it only surfaces
+indirectly.
+**Rule:** Calibrate every hint and every object description against the protagonist's expertise
+(declared in the episode's `character` block: `{ role, expertise, backstory }`).
+- **In-domain** (the character's `expertise` - their "backyard"): they know this. Name the tool, the
+  system, the procedure. When a key tool or step is missing to complete an action they would
+  obviously know how to do, hint it - the locked-choice hint may say specifically what is missing
+  ("the bypass needs a hydrospanner you do not have"). Confidence is diegetic and correct.
+- **Out-of-domain** (outside their expertise): describe by **gestalt only** - shape, weight,
+  impression, dread - never function, never how to operate it, never what part is missing. The
+  character's ignorance is part of the horror: a surgical robot reads as "a many-armed thing folded
+  over the table, patient", not "the actuator needs a calibration key". Do not hand the player
+  knowledge the character would not have.
+- The `backstory` shapes voice and judgment (what they notice, fear, assume) but should surface
+  mostly **indirectly** - do not dump it into the prose.
+**Enforced by:** the `character` block is validated for shape and reported by `validate` (and stripped
+at build); the calibration itself is judgment - checked by the skill while writing and on final read,
+and by the reviewer against the stated profile.

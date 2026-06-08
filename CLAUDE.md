@@ -46,6 +46,7 @@ dist/index.html     build output: standalone, open directly in a browser
 {
   "id": "slug", "title": "TITLE", "byline": "one line shown on the menu",
   "spec": { "size": "standard", "punishment": "standard", "escape": "required" }, // optional; see Generation dials. Stripped at build.
+  "character": { "role": "...", "expertise": ["..."], "backstory": "..." }, // optional; drives hint calibration (see below). Stripped at build.
   "start": "nodeId", "startSanity": 100, "startInventory": [],
   "nodes": {
     "nodeId": {
@@ -113,6 +114,12 @@ variant that can never display, and prose that says "your <item>" where the play
   leave the player above 0 at the escape ending, or the episode is unwinnable.
 - **Gating:** the escape ending should require at least two things assembled from different branches
   (an item + a flag is the standard pattern, as in `derelict`: `keycard` + `power`).
+- **Hint calibration (role-relative):** write hints and object descriptions against the protagonist's
+  `character.expertise`. In-domain ("their backyard"): name tools/systems and hint a missing tool for
+  an action they'd obviously know. Out-of-domain: gestalt only - shape and dread, never function or
+  operating hints. The character's ignorance is part of the horror. See lesson L4 in
+  `docs/craft-lessons.md`. The optional `character` block is the input; its `backstory` surfaces only
+  indirectly.
 
 ## Generation dials (optional `spec`)
 

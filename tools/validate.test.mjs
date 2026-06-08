@@ -213,6 +213,31 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("toosoft: punishment floor error", hasErr(r, 'punishment "cruel"'), r.errors.join("; "));
 }
 
+// --- character: a well-formed protagonist profile validates and is reported ---
+{
+  const ep = { id: "char", title: "C", start: "hub", startSanity: 100,
+    character: { role: "maintenance engineer", expertise: ["power systems", "hull"], backstory: "Twelve years on long-haul tugs." },
+    nodes: { hub: { text: "<p>h</p>", choices: [
+      { text: "out", to: "x" }, { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("character: ok", r.ok, r.errors.join("; "));
+  check("character: role reported", r.report.character && r.report.character.role === "maintenance engineer");
+  check("character: expertise reported", r.report.character && r.report.character.expertise.length === 2);
+}
+
+// --- character: malformed shape is an error ---
+{
+  const ep = { id: "badchar", title: "B", start: "hub", startSanity: 100,
+    character: { role: 42, expertise: "power" },
+    nodes: { hub: { text: "<p>h</p>", choices: [
+      { text: "out", to: "x" }, { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("badchar: role-type error", hasErr(r, "character.role must be a string"));
+  check("badchar: expertise-type error", hasErr(r, "character.expertise must be an array"));
+}
+
 // --- escape=forbidden: a no-way-out story validates clean ---
 {
   const ep = {

@@ -33,7 +33,8 @@ for (const entry of manifest.episodes) {
     console.log(`${C.green}ok${C.reset}   ${ep.id} ${C.dim}(${r.report.nodes} nodes, endings: ${r.report.endings.join("/")})${C.reset}`);
     r.report.items.forEach((i) => usedItems.add(i));
   }
-  delete ep.spec; // authoring metadata; never ship it in the runtime bundle
+  delete ep.spec;      // authoring metadata; never ship it in the runtime bundle
+  delete ep.character; // protagonist profile -- informs generation, surfaces only indirectly
   episodes.push(ep);
 }
 
