@@ -8,6 +8,18 @@
     "expertise": ["reactor", "power systems", "ship mechanics", "watch procedure", "manual cold-start"],
     "backstory": "Eighteen years on the watch, the last six standing the reactor vigil on the 'Long Patience' - the one post where you never sleep, because the manual key is an arm's length away and the core does not wait. You know exactly how cold a reactor has to get before it cannot come back, and exactly how long that took. You were asleep for all of it."
   },
+  "watching": [
+    "THE REACTOR WENT COLD ON YOUR WATCH.",
+    "YOU SLEPT THROUGH ALL OF IT.",
+    "THEY ARE STILL ASLEEP. ALL OF THEM.",
+    "THE COLD IS ALMOST DONE NOW.",
+    "FOUR GENERATIONS. ONE WATCH.",
+    "THE KEY WAS AN ARM AWAY.",
+    "NO STAR. NOT ANYMORE.",
+    "YOUR NAME IS AT THE TOP.",
+    "STILL. EVERYTHING IS STILL.",
+    "YOU LET THE LONG PATIENCE END."
+  ],
   "start": "watchroom",
   "startSanity": 100,
   "startInventory": [],

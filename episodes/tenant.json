@@ -7,6 +7,18 @@
     "expertise": ["cargo holds", "docking clamps", "lock-power systems", "hand tools", "short-haul shuttles"],
     "backstory": "Nine years riding bulk haulers between the belt stations, the kind of work where you learn a ship by the cradle and the conduit, not the crew manifest. You sign on, you stow the load, you ride to the next dock with people whose names you barely catch. You know how a clamp holds a hull and how to make it let go - which is the only reason you are not screaming yet."
   },
+  "watching": [
+    "THEY MEANT TO COME RIGHT BACK.",
+    "THE TRAYS ARE STILL WARM.",
+    "SOMETHING IS WEARING THE CREW.",
+    "PICK UP THE GLOVE.",
+    "YOU ARE THE TENANT NOW.",
+    "IT SIGNED ON AT THE LAST DOCK.",
+    "DON'T LOOK AT THE HATCH.",
+    "THE SHIP IS NOT EMPTY.",
+    "COUNT THE TRAYS. COUNT AGAIN.",
+    "IT IS ALREADY ABOARD."
+  ],
   "start": "galley",
   "startSanity": 100,
   "startInventory": [],

@@ -8,6 +8,18 @@
     "backstory": "Nine years on listening posts at the edge of charted space, training a station's ears on the dark and writing down what comes back. You know every cell, console, and broadcast band aboard VIGIL by feel. The job taught you to wait without moving and to trust a clean signal - which is why a recording the room made of itself, with no one in it, undoes you the way it does."
   },
   "spec": { "size": "standard", "punishment": "standard" },
+  "watching": [
+    "THE STATION IS LISTENING TO YOU.",
+    "SOMETHING ANSWERED THE LAST CALL.",
+    "THE CREW IS STILL ON THE TAPE.",
+    "YOU ARE BEING RECORDED.",
+    "ELEVEN ABOARD. COUNT AGAIN.",
+    "THE DARK IS TRANSMITTING BACK.",
+    "IT LEARNED YOUR VOICE.",
+    "NO ONE WOKE YOU ON PURPOSE.",
+    "PLAY IT AGAIN. THAT WAS YOU.",
+    "THE SIGNAL IS INSIDE NOW."
+  ],
   "start": "bunk",
   "startSanity": 100,
   "startInventory": [],
