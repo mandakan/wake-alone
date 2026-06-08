@@ -213,6 +213,13 @@
   .lab .wsl{margin-top:7px}
   .lab .wsl span{display:block;color:var(--phosphor-dim);font-size:10px;margin-bottom:2px}
   .lab .wsl b{color:var(--green);font-weight:normal}
+  .lab-toggle{display:block;width:100%;text-align:left;background:transparent;border:0;
+    color:var(--phosphor);font-family:var(--font-display);font-size:13px;letter-spacing:2px;
+    padding:0 0 12px;margin:0;cursor:pointer}
+  .lab-caret{float:right;color:var(--phosphor-dim)}
+  .lab.collapsed{width:auto;max-width:none;overflow:visible}
+  .lab.collapsed .lab-body{display:none}
+  .lab.collapsed .lab-toggle{padding-bottom:0}
 </style>
 </head>
 <body>
@@ -293,17 +300,23 @@ const WARP = { strength:160, curve:3, pulse:0.12, pulseSec:5.5, termSec:4.2, mad
 
 /* Where to park the bow and how big to make it, in normalized [-1,1] viewport units.
    center off -> a plain viewport barrel (corner radius = sqrt2). */
+/* ref = the copy's reference px size; displacement is scaled by ref/REF so the bow is
+   PROPORTIONAL to the content, consistent across viewport sizes instead of a fixed pixel
+   count that over-bends the narrow mobile column. REF is the mobile column, so the bow is
+   calibrated to mobile's punchier feel -- a wide desktop column scales UP to match it.
+   CSS px already handle device density; no PPI factor (that would double-count DPR). */
+const WARP_REF=360; // mobile reading column -- the punchy reference we level desktop up to
 function contentFit(){
-  if(!WARP.center) return {cx:0, cy:0, rad:Math.SQRT2};
+  if(!WARP.center) return {cx:0, cy:0, rad:Math.SQRT2, ref:WARP_REF};
   const el=(root.querySelector(".sc")||root), r=el.getBoundingClientRect();
   const vw=window.innerWidth||1, vh=window.innerHeight||1;
-  if(!r.width || !r.height) return {cx:0, cy:0, rad:Math.SQRT2};
+  if(!r.width || !r.height) return {cx:0, cy:0, rad:Math.SQRT2, ref:WARP_REF};
   const top=clamp(r.top,0,vh), bot=clamp(r.bottom,0,vh);
   const cx=clamp(((r.left+r.right)/2/vw)*2-1, -0.6, 0.6);
   const cy=clamp((((top+bot)/2)/vh)*2-1, -0.7, 0.7);
   const hw=r.width/vw, hh=(bot-top)/vh;              // copy half-extents (normalized)
   const rad=clamp(Math.max(hw,hh)*1.2, 0.4, Math.SQRT2); // barrel radius hugs the copy
-  return {cx, cy, rad};
+  return {cx, cy, rad, ref:Math.max(r.width, bot-top)};
 }
 function applyScreenFilter(){
   if(!crtEl) return;
@@ -315,12 +328,12 @@ function applyScreenFilter(){
     else if(tier==="terminal") parts.push("brightness(.74)","saturate(.85)");
   }
   if((mad || (play&&state)) && FEAT.warp && !REDUCED){
-    const fit=contentFit();
+    const fit=contentFit(), sizef=clamp(fit.ref/WARP_REF, 0.6, 2.4); // bow proportional to the copy
     if(mad){
-      warpBase=WARP.strength*0.95; ensureTubeWarp(-warpBase*0.75, fit);
+      warpBase=WARP.strength*0.95*sizef; ensureTubeWarp(-warpBase*0.75, fit);
       parts.push("url(#tubewarp)"); runWarp();
     } else {
-      const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*WARP.strength;
+      const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*WARP.strength*sizef;
       if(scale>0.5){ warpBase=scale; ensureTubeWarp(scale, fit); parts.push("url(#tubewarp)"); runWarp(); }
       else { warpBase=0; stopWarp(); }
     }
@@ -728,7 +741,8 @@ function lab(){
   if(!eps.length){ titleScreen(); return; }
   const opts=eps.map((e,i)=>`<option value="${i}">${esc(e.title)}</option>`).join("");
   const panel=document.createElement("div"); panel.className="lab"; panel.id="lab";
-  panel.innerHTML=`<h2>// SKEIN LAB</h2>
+  panel.innerHTML=`<button class="lab-toggle" id="lab-toggle">// SKEIN LAB <span class="lab-caret">[-]</span></button>
+    <div class="lab-body">
     <div class="grp">
       <label>EPISODE &mdash; watch pool + sample room</label>
       <select id="lab-ep">${opts}</select>
@@ -766,8 +780,14 @@ function lab(){
     <div class="grp" style="border:0;padding-bottom:0">
       <div class="row"><button id="lab-reset">RESET ROOM</button></div>
       <div class="hint">Word-swaps fire at TERMINAL (1-10); CRITICAL (11-30) is char-noise only. HOLD GARBLE freezes corruption so you can read it.</div>
+    </div>
     </div>`;
   document.body.appendChild(panel);
+  // collapsible: default collapsed on narrow screens so it doesn't cover the room
+  const setCollapsed=(c)=>{ panel.classList.toggle("collapsed",c);
+    const car=panel.querySelector(".lab-caret"); if(car) car.textContent=c?"[+]":"[-]"; };
+  document.getElementById("lab-toggle").addEventListener("click", ()=> setCollapsed(!panel.classList.contains("collapsed")));
+  setCollapsed((window.innerWidth||999)<=760);
   labLoad(0);
   const san=document.getElementById("lab-san"); san.value=state.sanity; labSync();
   document.getElementById("lab-ep").addEventListener("change", e=>{ labLoad(+e.target.value); san.value=state.sanity; labSync(); });
