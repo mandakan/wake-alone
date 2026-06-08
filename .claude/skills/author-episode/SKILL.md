@@ -18,10 +18,13 @@ the validator enforces, defined in `tools/spec.mjs`:
 - **punishment**: `gentle` / `standard` / `cruel`. Controls the ratio of nasty endings to escapes
   and how brutal the sanity economy is. `cruel` also expects the run to be losable to madness
   (a path where sanity actually reaches 0).
+- **escape**: `required` (default) / `forbidden`. If the user asks for a story with **no happy
+  ending** / no way out, set `forbidden` (scaffold with `--no-escape`): every path ends in
+  death or madness, and the validator allows it. Any `escape` ending then becomes an error.
 
-These are written into the episode as a top-level `"spec": { "size": ..., "punishment": ... }`.
-With a spec, node count and death ratio become **hard errors** if missed; play-time is advisory.
-`build.mjs` strips `spec` from the shipped bundle.
+These are written into the episode as a top-level `"spec"`. With a spec, node count and death
+ratio become **hard errors** if missed; play-time is advisory. `build.mjs` strips `spec` from
+the shipped bundle.
 
 ## Procedure
 

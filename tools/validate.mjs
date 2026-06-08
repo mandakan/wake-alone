@@ -177,9 +177,13 @@ export function validateEpisode(ep, name = ep && ep.id) {
   if (reachableEndings.length === 0) E(`no ending is reachable from start (the story can never finish)`);
   const structuralEscapes = reachableEndings.filter((id) => ep.nodes[id].ending.type === "escape");
 
-  // ---- optional generation spec (size / punishment dials) ----
+  // ---- optional generation spec (size / punishment / escape dials) ----
   const resolved = resolveSpec(ep.spec);
   if (resolved && resolved.error) E(`spec: ${resolved.error}`);
+  // "required" (default): a survivable escape must exist. "forbidden": the
+  // episode is meant to have no way out -- escapes are an error, but it must
+  // still be completable (some dead/madness ending is reachable).
+  const escapeMode = resolved && resolved.escape ? resolved.escape : "required";
 
   // ---- sanity-aware solver (only when the graph is sound enough to walk) ----
   let solver = null;
@@ -192,11 +196,21 @@ export function validateEpisode(ep, name = ep && ep.id) {
   if (solver) {
     if (solver.startMadness) {
       E(`start node "${ep.start}" drops sanity to 0 on entry (instant madness; unplayable)`);
+    } else if (escapeMode === "forbidden") {
+      // no-way-out story: escapes are an error; it must still be able to end.
+      const escapeNodes = nodeIds.filter((id) => ep.nodes[id].ending && ep.nodes[id].ending.type === "escape");
+      if (escapeNodes.length) {
+        E(`spec(escape=forbidden): this episode is meant to have no way out, but ${escapeNodes.length} "escape" ending(s) exist (${escapeNodes.join(", ")})`);
+      }
+      if (!solver.truncated && solver.deadEndings.size === 0 && !solver.madnessReachable) {
+        E(`spec(escape=forbidden): no "dead" or madness ending is reachable -- the run can never actually end`);
+      }
     } else if (!solver.winnable) {
       if (solver.truncated) {
         W(`solvability not fully verified: state space hit the ${MAX_STATES.toLocaleString()} cap before an escape was found`);
       } else if (structuralEscapes.length === 0) {
-        E(`unwinnable: no "escape" ending is reachable at all (every path dies)`);
+        E(`unwinnable: no "escape" ending is reachable at all (every path dies). ` +
+          `If that is intended, declare spec.escape = "forbidden".`);
       } else {
         E(`unwinnable: an "escape" ending exists but no survivable path reaches it ` +
           `(every route forces sanity to 0 or fails a gate). Lower forced sanity loss or add restores.`);
@@ -283,7 +297,8 @@ export function validateEpisode(ep, name = ep && ep.id) {
     madnessReachable: solver ? solver.madnessReachable : null,
     statesExplored: solver ? solver.statesExplored : null,
     truncated: solver ? solver.truncated : null,
-    spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment } : null,
+    spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment, escape: resolved.escape } : null,
+    escape: escapeMode,
     words: wordCount,
     estMinutes,
     optimalSteps,
@@ -436,10 +451,12 @@ function printResult(r) {
     if (rp.winnable !== null) {
       const solv = rp.winnable
         ? `${C.green}solvable${C.reset} (best escape: ${rp.bestEscapeSanity}% sanity, ${rp.bestEscapePath ? rp.bestEscapePath.length : "?"} steps)`
-        : `${C.red}UNWINNABLE${C.reset}`;
+        : rp.escape === "forbidden"
+          ? `${C.dim}no escape (by design)${C.reset}`
+          : `${C.red}UNWINNABLE${C.reset}`;
       console.log(`${C.dim}  solver: ${solv}${C.dim} · dead endings: ${rp.deadEndings} · madness reachable: ${rp.madnessReachable ? "yes" : "no"} · states: ${rp.statesExplored}${rp.truncated ? " (truncated)" : ""}${C.reset}`);
       const ratio = rp.deathRatio == null ? "?" : `${Math.round(rp.deathRatio * 100)}%`;
-      console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`].filter(Boolean).join(", ")}` : ""}${C.reset}`);
+      console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`, rp.spec.escape === "forbidden" && "escape=forbidden"].filter(Boolean).join(", ")}` : ""}${C.reset}`);
     }
   }
   r.errors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));

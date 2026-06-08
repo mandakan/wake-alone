@@ -16,12 +16,17 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const EP_DIR = join(ROOT, "episodes");
 
 // Build a valid skeleton scaled to a resolved spec (or sensible defaults).
-// Shape: wake -> hub; hub branches to an explore chain (plants key, then a
-// `ready` flag) and to N dead endings; the gated escape needs key + ready.
+//   escape required (default): wake -> hub; hub branches to an explore chain
+//     (plants key, then a `ready` flag) and to N dead endings; the gated escape
+//     needs key + ready.
+//   escape forbidden: no way out. hub branches to N dead endings and an explore
+//     chain that funnels into a death -- every path ends badly, and it validates.
 export function buildSkeleton(resolved) {
   const deadMin = resolved && resolved.deadMin != null ? resolved.deadMin : 2;
   const minNodes = resolved && resolved.minNodes != null ? resolved.minNodes : 6;
-  const rooms = Math.max(1, minNodes - 3 - deadMin); // wake, hub, escape + deaths
+  const noEscape = resolved && resolved.escape === "forbidden";
+  const fixed = noEscape ? 2 : 3; // wake, hub (+ escape)
+  const rooms = Math.max(1, minNodes - fixed - deadMin);
 
   const nodes = {};
   nodes.wake = {
@@ -33,10 +38,10 @@ export function buildSkeleton(resolved) {
     ],
   };
 
-  const hubChoices = [
-    { text: "Press deeper into the dark.", to: "room1" },
-    { text: "Make for the way out.", to: "escape", requires: { item: "key", flag: "ready" }, locked: "The exit won't give -- you're missing something." },
-  ];
+  const hubChoices = [{ text: "Press deeper into the dark.", to: "room1" }];
+  if (!noEscape) {
+    hubChoices.push({ text: "Make for the way out.", to: "escape", requires: { item: "key", flag: "ready" }, locked: "The exit won't give -- you're missing something." });
+  }
   for (let d = 1; d <= deadMin; d++) {
     nodes[`dead${d}`] = { ending: { type: "dead", stamp: `// DEAD ${d}`, text: `<p>A nasty ending (${d}). Replace this with a specific, earned death.</p>` } };
     hubChoices.push({ text: `A tempting mistake (${d}).`, effects: { sanity: -10 }, to: `dead${d}` });
@@ -45,23 +50,29 @@ export function buildSkeleton(resolved) {
 
   for (let r = 1; r <= rooms; r++) {
     const isFirst = r === 1, isLast = r === rooms;
-    // first room plants the key, last room flips `ready`; if the chain is a
-    // single room it must do both, or the escape gate can never open.
     let onEnter;
-    if (isFirst && isLast) onEnter = { add: ["key"], flags: { ready: true } };
-    else if (isFirst) onEnter = { add: ["key"] };
-    else if (isLast) onEnter = { flags: { ready: true } };
-    const to = r < rooms ? `room${r + 1}` : "hub";
+    if (!noEscape) {
+      // first room plants the key, last room flips `ready`; a single-room chain
+      // must do both, or the escape gate can never open.
+      if (isFirst && isLast) onEnter = { add: ["key"], flags: { ready: true } };
+      else if (isFirst) onEnter = { add: ["key"] };
+      else if (isLast) onEnter = { flags: { ready: true } };
+    }
+    // required: the chain loops back to the hub. forbidden: it funnels into death.
+    const to = r < rooms ? `room${r + 1}` : noEscape ? "dead1" : "hub";
+    const lastHint = noEscape ? "The dark closes the loop -- this beat ends in death." : "Flip the `ready` flag here.";
     const node = {
       title: `Branch ${r}`,
-      text: `<p>Explorable beat ${r}. ${r === 1 ? "Plant the key here." : r === rooms ? "Flip the `ready` flag here." : "Dread, a detail, a small cost."}</p>`,
-      choices: [{ text: r < rooms ? "Keep going." : "Head back to the hub.", to }],
+      text: `<p>Explorable beat ${r}. ${isFirst && !noEscape ? "Plant the key here." : isLast ? lastHint : "Dread, a detail, a small cost."}</p>`,
+      choices: [{ text: r < rooms ? "Keep going." : noEscape ? "Walk into it." : "Head back to the hub.", to }],
     };
     if (onEnter) node.onEnter = onEnter;
     nodes[`room${r}`] = node;
   }
 
-  nodes.escape = { ending: { type: "escape", stamp: "// LAUNCH", text: "<p>The survival ending -- hard-won. Replace this.</p>" } };
+  if (!noEscape) {
+    nodes.escape = { ending: { type: "escape", stamp: "// LAUNCH", text: "<p>The survival ending -- hard-won. Replace this.</p>" } };
+  }
   return nodes;
 }
 
@@ -71,7 +82,11 @@ if (isCLI) {
   const args = {};
   const argv = process.argv.slice(2);
   for (let i = 0; i < argv.length; i++) {
-    if (argv[i].startsWith("--")) { args[argv[i].slice(2)] = argv[i + 1]; i++; }
+    if (!argv[i].startsWith("--")) continue;
+    const key = argv[i].slice(2);
+    const next = argv[i + 1];
+    if (next === undefined || next.startsWith("--")) { args[key] = true; } // boolean flag
+    else { args[key] = next; i++; }
   }
   const id = args.id;
   if (!id) { console.error('need --id (e.g. --id tycho). optional: --title "..." --byline "..." --size standard --punishment standard'); process.exit(1); }
@@ -82,6 +97,9 @@ if (isCLI) {
   const spec = {};
   if (args.size) spec.size = args.size;
   if (args.punishment) spec.punishment = args.punishment;
+  // --escape forbidden, or the shorthand --no-escape, for a no-way-out story.
+  if (args.escape) spec.escape = args.escape;
+  else if ("no-escape" in args) spec.escape = "forbidden";
   const hasSpec = Object.keys(spec).length > 0;
   const resolved = hasSpec ? resolveSpec(spec) : null;
   if (resolved && resolved.error) { console.error(`bad spec: ${resolved.error}`); process.exit(1); }

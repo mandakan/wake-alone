@@ -45,7 +45,7 @@ dist/index.html     build output: standalone, open directly in a browser
 ```jsonc
 {
   "id": "slug", "title": "TITLE", "byline": "one line shown on the menu",
-  "spec": { "size": "standard", "punishment": "standard" }, // optional; see Generation dials. Stripped at build.
+  "spec": { "size": "standard", "punishment": "standard", "escape": "required" }, // optional; see Generation dials. Stripped at build.
   "start": "nodeId", "startSanity": 100, "startInventory": [],
   "nodes": {
     "nodeId": {
@@ -91,9 +91,10 @@ it to pass an episode; fix the episode.
 - **Voice:** second person, present-leaning, sparse. Dread over gore. The horror is *attention* —
   the sense of being watched, of a wrongness that waits. Avoid splatter and avoid jump-scare prose.
 - **Length:** ~10–16 nodes. One hub the player returns to, 3–4 explorable branches, a gated exit.
-- **Endings:** at least one `escape` (survival, hard-won) and a *few* `dead` endings — the
-  validator warns below two nasty deaths. `madness` is automatic when sanity hits 0 — you don't
-  author it.
+- **Endings:** by default at least one `escape` (survival, hard-won) and a *few* `dead` endings —
+  the validator warns below two nasty deaths. `madness` is automatic when sanity hits 0 — you don't
+  author it. A deliberate no-way-out episode can drop the escape entirely via
+  `spec.escape = "forbidden"` (see Generation dials).
 - **Sanity economy (start 100):** minor unease −5 to −10; a real scare −12 to −18; a major reveal
   or the central horror −20 to −35. Provide 1–2 `medgel` items (+25 each, consumed) on the map.
   Reason explicitly about the optimal path: total forced sanity loss minus available restores must
@@ -111,9 +112,14 @@ the validator then enforces. The dials and their thresholds live in `tools/spec.
 - **punishment** — `gentle` / `standard` / `cruel`. Sets the death-ratio floor (reachable `dead`
   endings ÷ all reachable endings) and the minimum count of nasty endings; `cruel` also expects
   madness to be reachable. Death ratio and dead-ending count are hard floors.
+- **escape** — `required` (default) / `forbidden`. `required` means a survivable escape must
+  exist (the universal rule). `forbidden` is a no-way-out story: any `escape` ending is an
+  `ERROR`, but it must still be completable (some death/madness ending stays reachable). Scaffold
+  one with `--no-escape` (or `--escape forbidden`).
 
 With a `spec`, missing a hard floor is an `ERROR`. Without one, only the universal rules apply
-(solvable, ≥2 nasty endings advised). The `author-episode` skill drives these dials end to end.
+(solvable with at least one survivable escape, ≥2 nasty endings advised). The `author-episode`
+skill drives these dials end to end.
 
 ## Don't
 

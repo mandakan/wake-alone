@@ -213,5 +213,64 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("toosoft: punishment floor error", hasErr(r, 'punishment "cruel"'), r.errors.join("; "));
 }
 
+// --- escape=forbidden: a no-way-out story validates clean ---
+{
+  const ep = {
+    id: "noexit", title: "NOEXIT", spec: { escape: "forbidden" }, start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "wander", to: "room" },
+        { text: "give in", to: "d1" },
+        { text: "give up", to: "d2" },
+      ]},
+      room: { text: "<p>r</p>", choices: [{ text: "deeper", to: "d1" }] },
+      d1: dead("// A"), d2: dead("// B"),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("noexit: ok (no escape required)", r.ok, r.errors.join("; "));
+  check("noexit: not flagged unwinnable", !hasErr(r, "unwinnable"));
+  check("noexit: report.winnable false", r.report.winnable === false);
+  check("noexit: report.escape forbidden", r.report.escape === "forbidden");
+}
+
+// --- escape=forbidden but an escape ending exists -> ERROR ---
+{
+  const ep = {
+    id: "contradiction", title: "C", spec: { escape: "forbidden" }, start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [{ text: "out", to: "exit" }, { text: "die", to: "d1" }] },
+      exit: escape(), d1: dead(),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("contradiction: not ok", !r.ok);
+  check("contradiction: escape-forbidden error", hasErr(r, "no way out"), r.errors.join("; "));
+}
+
+// --- default (no escape dial): still requires a survivable escape ---
+{
+  const ep = {
+    id: "needsescape", title: "N", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [{ text: "die", to: "d1" }, { text: "die2", to: "d2" }] },
+      d1: dead("// A"), d2: dead("// B"),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("needsescape: not ok by default", !r.ok);
+  check("needsescape: unwinnable hint mentions forbidden", hasErr(r, 'spec.escape = "forbidden"'), r.errors.join("; "));
+}
+
+// --- scaffolder: forbidden skeleton validates clean and has no escape node ---
+{
+  const resolved = resolveSpec({ size: "short", punishment: "cruel", escape: "forbidden" });
+  const ep = { id: "scaf-noexit", title: "S", spec: { size: "short", punishment: "cruel", escape: "forbidden" },
+    start: "wake", startSanity: 100, startInventory: [], nodes: buildSkeleton(resolved) };
+  const r = validateEpisode(ep);
+  check("scaffold forbidden: no errors", r.errors.length === 0, r.errors.join("; "));
+  check("scaffold forbidden: no escape ending", !Object.values(ep.nodes).some((n) => n.ending && n.ending.type === "escape"));
+}
+
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
 process.exit(failed ? 1 : 0);

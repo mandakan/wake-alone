@@ -23,15 +23,20 @@ export const PUNISHMENTS = {
   cruel:    { deathRatioFloor: 0.66, deadMin: 3, expectMadness: true  },
 };
 
+// escape -> whether a survivable "happy" ending is required. "forbidden" makes
+// a no-way-out story (every path ends in death/madness) and still validates.
+export const ESCAPE_MODES = ["required", "forbidden"];
+
 export const DEFAULT_SIZE = "standard";
 export const DEFAULT_PUNISHMENT = "standard";
+export const DEFAULT_ESCAPE = "required";
 
 // Resolve an episode's `spec` into concrete thresholds. Returns null when no
-// spec is declared, or { error } when a dial name is unknown.
+// spec is declared, or { error } when a dial value is unknown.
 export function resolveSpec(spec) {
   if (!spec || typeof spec !== "object") return null;
-  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null };
-  if (out.size == null && out.punishment == null) return null;
+  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null, escape: spec.escape ?? null };
+  if (out.size == null && out.punishment == null && out.escape == null) return null;
   if (out.size != null) {
     if (!SIZES[out.size]) return { error: `unknown size "${out.size}" (use ${Object.keys(SIZES).join("/")})` };
     Object.assign(out, SIZES[out.size]);
@@ -39,6 +44,9 @@ export function resolveSpec(spec) {
   if (out.punishment != null) {
     if (!PUNISHMENTS[out.punishment]) return { error: `unknown punishment "${out.punishment}" (use ${Object.keys(PUNISHMENTS).join("/")})` };
     Object.assign(out, PUNISHMENTS[out.punishment]);
+  }
+  if (out.escape != null && !ESCAPE_MODES.includes(out.escape)) {
+    return { error: `unknown escape "${out.escape}" (use ${ESCAPE_MODES.join("/")})` };
   }
   return out;
 }
@@ -57,5 +65,6 @@ export function describeBrief(resolved) {
   const bits = [];
   if (resolved.size) bits.push(`size=${resolved.size} (${resolved.minNodes}-${resolved.maxNodes} nodes, ~${resolved.minMinutes}-${resolved.maxMinutes} min)`);
   if (resolved.punishment) bits.push(`punishment=${resolved.punishment} (>=${resolved.deadMin} dead endings, death ratio >=${Math.round(resolved.deathRatioFloor * 100)}%${resolved.expectMadness ? ", madness reachable" : ""})`);
+  if (resolved.escape === "forbidden") bits.push(`escape=forbidden (no way out -- every path ends in death)`);
   return bits.join("; ");
 }
