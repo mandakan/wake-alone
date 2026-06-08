@@ -47,3 +47,9 @@ This repo is set up so Claude Code can write new episodes in a closed loop:
    (generate -> validate -> fix -> build) without you in the loop.
 
 Optional: wire `npm run validate` into a Claude Code hook so it runs automatically after edits.
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the episode workflow, the
+[Conventional Commits](https://www.conventionalcommits.org) convention that drives
+releases, and how staging/production deploys work.
