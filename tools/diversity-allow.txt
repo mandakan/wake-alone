@@ -1,0 +1,10 @@
+# Intentional anthology motifs - phrases allowed to recur across episodes.
+# One phrase per line, lowercased; "#" starts a comment; blank lines ignored.
+# A shared phrase matched here is suppressed (no warning). Everything else that
+# recurs across episodes flags as advisory, for a human to judge homage vs. lazy.
+#
+# Add a phrase here only when its recurrence is a deliberate house thread.
+
+attention        # the house "horror is attention" theme
+wake alone
+woke alone

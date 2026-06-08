@@ -33,6 +33,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { resolveSpec, estimateMinutes } from "./spec.mjs";
 import { lintProse } from "./prose-lint.mjs";
+import { DIVERSITY } from "./diversity-config.mjs";
+import { checkDiversity, loadAllowlist } from "./diversity.mjs";
 
 let ITEM_NAMES = {};
 try { ITEM_NAMES = JSON.parse(readFileSync(join(EPISODES_DIR, "..", "engine", "item-names.json"), "utf8")); } catch {}
@@ -532,6 +534,7 @@ if (isCLI) {
   }
   let failed = 0;
   const results = [];
+  const parsedEps = [];
   for (const f of targets) {
     let ep;
     try { ep = JSON.parse(readFileSync(f, "utf8")); }
@@ -542,14 +545,30 @@ if (isCLI) {
       if (!jsonMode) printResult(r);
       continue;
     }
+    parsedEps.push(ep);
     const r = validateEpisode(ep, ep.id || f);
     results.push(r);
     if (!jsonMode) printResult(r);
     if (!r.ok) failed++;
   }
+
+  // Corpus-level diversity check — advisory only, never gates the build. Runs only
+  // when validating the whole manifest (no file args) on 2+ episodes, and only when
+  // enabled in diversity-config.mjs. Single-file runs skip it (it needs the full set).
+  let diversityWarnings = [];
+  if (files.length === 0 && DIVERSITY.enabled && parsedEps.length >= 2) {
+    diversityWarnings = checkDiversity(parsedEps, DIVERSITY, loadAllowlist()).warnings;
+  }
+
   if (jsonMode) {
+    if (diversityWarnings.length)
+      results.push({ name: "(corpus diversity)", errors: [], warnings: diversityWarnings, report: null, ok: true });
     console.log(JSON.stringify(results, null, 2));
   } else {
+    if (diversityWarnings.length) {
+      console.log(`\n${C.bold}diversity (corpus)${C.reset}  ${C.dim}advisory; tune or disable in tools/diversity-config.mjs${C.reset}`);
+      diversityWarnings.forEach((m) => console.log(`  ${C.yellow}warn ${C.reset} ${m}`));
+    }
     console.log(`\n${failed ? C.red : C.green}${targets.length - failed}/${targets.length} episodes valid${C.reset}\n`);
   }
   process.exit(failed ? 1 : 0);

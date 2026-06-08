@@ -81,3 +81,22 @@ indirectly.
 **Enforced by:** the `character` block is validated for shape and reported by `validate` (and stripped
 at build); the calibration itself is judgment - checked by the skill while writing and on final read,
 and by the reviewer against the stated profile.
+
+## L5 - Episodes must be distinct from one another, openings most of all
+
+**Feedback:** "We need to watch out so the stories are not too similar and most importantly do not
+start in the same way with the exact same gestalt or descriptions." The narrow "wake alone in deep
+space" premise pushes every episode toward the same wake/cold/alone/watched beat; that baseline is
+fine, near-identical phrasing is not. Some recurrence is intentional (the house "attention" theme);
+that must be told apart from lazy reuse. The check needs to be tunable and disable-able if not useful.
+**Rule:** Across the anthology, no two episodes should share distinctive phrasing - and openings, most
+of all, must not read as near-copies. Premise vocabulary (wake/cold/alone/...) is shared by design;
+*distinctive* lines are not. A deliberate recurring motif is allowed only by adding it to the motif
+allowlist on purpose, never by letting it slip through.
+**Enforced by:** `tools/diversity.mjs` - a zero-dep, deterministic, **advisory-only** corpus check run
+in `validate`'s whole-manifest pass (so it shows in CI, never gates). Signal 1: shared distinctive
+n-gram phrases across episodes (stopword/common phrasing filtered, intentional motifs suppressed via
+`tools/diversity-allow.txt`). Signal 2: TF-IDF cosine between episode openings, flagged above a
+threshold. All dials and a master `enabled` switch live in `tools/diversity-config.mjs`; self-tested in
+`tools/diversity.test.mjs`. It surfaces reuse for a human to judge (reword vs. allowlist) - it does not
+block.

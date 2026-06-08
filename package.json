@@ -6,7 +6,8 @@
   "scripts": {
     "validate": "node tools/validate.mjs",
     "lint": "node tools/prose-lint.mjs",
-    "test": "node tools/validate.test.mjs",
+    "diversity": "node tools/diversity.mjs",
+    "test": "node tools/validate.test.mjs && node tools/diversity.test.mjs",
     "build": "node tools/build.mjs",
     "new": "node tools/new.mjs",
     "deploy": "wrangler deploy",
