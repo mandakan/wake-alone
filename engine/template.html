@@ -47,11 +47,12 @@
     color:var(--phosphor); font-family:var(--font-body); font-size:17px;
     line-height:1.65; overflow-x:hidden; min-height:100%;
   }
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
+  /* Scanlines live in their own fixed overlay (#tube) so enhancement 06 can bow
+     them like curved glass WITHOUT ever touching the readable text or choices. */
+  .tube{
+    position:fixed;inset:0;pointer-events:none;z-index:50;mix-blend-mode:multiply;transition:opacity .9s ease;
     background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
       rgba(0,0,0,calc(0.18 + 0.25*var(--glitch))) 3px, rgba(0,0,0,calc(0.18 + 0.25*var(--glitch))) 4px);
-    mix-blend-mode:multiply; transition:opacity .9s ease;
   }
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:51;
@@ -168,7 +169,7 @@
     background:radial-gradient(70% 70% at 50% 48%, transparent 40%, rgba(0,0,0,.6) 100%)}
   /* madness inverts the machine: scanlines stop, purple, stillness */
   html.madness body{background:var(--bg-lo) radial-gradient(120% 95% at 50% 12%, #120c1c 0%, #07060b 60%, #030205 100%) no-repeat fixed}
-  html.madness body::before{opacity:0}
+  html.madness .tube{opacity:0}
   html.madness .screen{animation:none}
   .madprose p{color:var(--madness);opacity:0;animation:mad-fade 2.6s ease forwards}
   @keyframes mad-fade{to{opacity:.92}}
@@ -184,6 +185,8 @@
 </style>
 </head>
 <body>
+<!-- 06 TUBE WARP: scanline overlay; the barrel filter bows THIS, never the text -->
+<div class="tube" id="tube" aria-hidden="true"></div>
 <!-- 01/03/04 fixed FX overlays: tier bleed, vsync roll, terminal heartbeat, madness wash -->
 <div class="fx" id="fx" aria-hidden="true">
   <div class="fx-bleed"></div><div class="fx-roll"></div><div class="fx-heart"></div><div class="fx-wash"></div>
@@ -212,11 +215,11 @@ const esc=(s)=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
 /* Every DESCENT enhancement is on; flip any to false to disable it.
-   warp(06) is OFF by default: as an SVG displacement filter on the full-page
-   story content it magnifies text past the column (clipped by overflow-x) and
-   clips its own filter region, which hid the choices and soft-locked the run.
-   It needs a fixed-viewport "tube" rebuild before it can ship safely. */
-const FEAT = { tiers:true, hud:true, watching:true, endings:true, scars:true, warp:false };
+   warp(06) bows the scanline OVERLAY (#tube) only, never the readable content -
+   so it can never clip text or hide choices. (An earlier version warped the
+   content itself and soft-locked the run; see docs/future-enhancements.md for
+   the fuller fixed-viewport tube idea.) */
+const FEAT = { tiers:true, hud:true, watching:true, endings:true, scars:true, warp:true };
 
 /* 01 — the staircase: sanity becomes named tiers. */
 function tierOf(s){ if(s>60)return"stable"; if(s>30)return"strained"; if(s>10)return"critical"; if(s>0)return"terminal"; return"gone"; }
@@ -235,19 +238,30 @@ function setScreen(play){
    filter establishes a containing block, so filtering #root would break the
    sticky HUD; the HUD is a sibling of #sc and stays pinned and unwarped. */
 function applyContentFilter(){
-  const el=document.getElementById("sc"); if(!el) return;
-  const play=isPlayNode(), tier=state?tierOf(state.sanity):"stable";
+  const el=document.getElementById("sc");
+  if(el){
+    const play=isPlayNode(), tier=state?tierOf(state.sanity):"stable";
+    let f="";
+    if(play && FEAT.tiers){
+      if(tier==="strained") f="brightness(.93) saturate(.96)";
+      else if(tier==="critical") f="brightness(.84) saturate(.9)";
+      else if(tier==="terminal") f="brightness(.74) saturate(.85)";
+    }
+    el.style.filter=f;
+  }
+  applyTubeWarp();
+}
+/* 06 TUBE WARP (safe): bow the scanline overlay (#tube) only - never the text -
+   so the glass appears to curve as you descend, with zero risk to legibility or
+   the choices. Eases in below ~55 sanity; cleared on every non-play screen. */
+function applyTubeWarp(){
+  const tube=document.getElementById("tube"); if(!tube) return;
   let f="";
-  if(play && FEAT.tiers){
-    if(tier==="strained") f="brightness(.93) saturate(.96)";
-    else if(tier==="critical") f="brightness(.84) saturate(.9)";
-    else if(tier==="terminal") f="brightness(.74) saturate(.85)";
+  if(isPlayNode() && FEAT.warp && state && !REDUCED){
+    const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*42;
+    if(scale>0.5){ ensureTubeWarp(scale); f="url(#tubewarp)"; }
   }
-  if(play && FEAT.warp && state && !REDUCED){
-    const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*60;
-    if(scale>0.5){ ensureBarrel(scale, el); f=(f?f+" ":"")+"url(#barrel)"; }
-  }
-  el.style.filter=f;
+  tube.style.filter=f;
 }
 
 /* 06 — TUBE WARP: a convex r^2 displacement map bows the content like a tube.
@@ -266,11 +280,11 @@ function barrelMap(){
   }
   ctx.putImageData(img,0,0); BARREL_MAP=cv.toDataURL(); return BARREL_MAP;
 }
-function ensureBarrel(scale, el){
+function ensureTubeWarp(scale){
   const defs=document.querySelector("#warpdefs defs");
-  const box=el||root, w=box.clientWidth||window.innerWidth, h=box.scrollHeight||box.clientHeight||window.innerHeight;
+  const w=window.innerWidth||1, h=window.innerHeight||1; // the overlay IS the viewport
   defs.innerHTML =
-    '<filter id="barrel" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
+    '<filter id="tubewarp" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
     '<feImage href="'+barrelMap()+'" preserveAspectRatio="none" x="0" y="0" width="'+w+'" height="'+h+'" result="m"></feImage>'+
     '<feDisplacementMap in="SourceGraphic" in2="m" scale="'+scale.toFixed(1)+'" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>'+
     '</filter>';
@@ -438,7 +452,7 @@ function typewrite(el, text, speed, done){
 }
 function renderEnding(end){
   clearWatch(); recordScar(end.type, end.stamp);
-  setScreen(false); html.removeAttribute("data-tier");
+  setScreen(false); html.removeAttribute("data-tier"); applyTubeWarp();
   if(!FEAT.endings || REDUCED){
     root.innerHTML = `<div class="ending"><div class="stamp ${end.type}">${end.stamp}</div>
       <div class="prose glitchable">${end.text}</div>
@@ -462,7 +476,7 @@ function renderEnding(end){
 function renderMadness(){
   clearWatch(); recordScar("madness","// COHERENCE LOST");
   html.removeAttribute("data-tier"); html.classList.add("madness");
-  html.style.setProperty("--glitch","0.12");
+  html.style.setProperty("--glitch","0.12"); applyTubeWarp();
   if(!FEAT.endings || REDUCED){
     root.innerHTML = `<div class="ending"><div class="stamp madness">// COHERENCE LOST</div>
       <div class="prose madprose">
@@ -500,7 +514,7 @@ function titleScreen(){
   episode=null; state=null; clearWatch();
   html.removeAttribute("data-tier"); html.classList.remove("crush","madness");
   html.style.setProperty("--glitch","0"); html.style.setProperty("--bleed","0");
-  root.style.filter="";
+  root.style.filter=""; applyTubeWarp();
   const scars = FEAT.scars ? loadScars() : {};
   const words=(MANIFEST.title||"WAKE ALONE").split(" ");
   const cards = EPISODES.map((ep,i)=>{
