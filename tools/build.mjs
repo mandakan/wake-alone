@@ -48,9 +48,12 @@ for (const i of usedItems) {
   if (!itemNames[i]) console.log(`${C.yellow}warn${C.reset} item "${i}" has no label in engine/item-names.json (will show raw id)`);
 }
 
+const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
+
 const inject =
   `MANIFEST = ${JSON.stringify({ title: manifest.title, subtitle: manifest.subtitle })};\n` +
   `ITEM_NAMES = ${JSON.stringify(itemNames)};\n` +
+  `VERSION = ${JSON.stringify(pkg.version)};\n` +
   `EPISODES = ${JSON.stringify(episodes)};`;
 
 const template = readFileSync(join(ROOT, "engine", "template.html"), "utf8");
