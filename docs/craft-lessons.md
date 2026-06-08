@@ -117,3 +117,7 @@ ending variants are the usual offenders because they invite a "poetic" register 
 same legibility bar as ordinary nodes.
 **Enforced by:** this rule + the skill's final-read check (and re-read every `sanityText`/ending
 variant cold, asking "does this parse?"). Subjective - not mechanically checkable.
+**Watch especially:** any reword done to satisfy *another* constraint (breaking a diversity n-gram,
+cutting a cliche, fixing cadence) can quietly trade legibility for the fix. GRAFT's gauge line went
+obscure precisely when it was reworded to break a WARD echo. After any such edit, re-read the new
+sentence cold for sense - do not assume a reword is safe because it cleared the original warning.
