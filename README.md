@@ -1,5 +1,10 @@
 # WAKE ALONE
 
+[![Release](https://github.com/mandakan/wake-alone/actions/workflows/release-please.yml/badge.svg)](https://github.com/mandakan/wake-alone/actions/workflows/release-please.yml)
+[![Deploy staging](https://github.com/mandakan/wake-alone/actions/workflows/deploy-staging.yml/badge.svg)](https://github.com/mandakan/wake-alone/actions/workflows/deploy-staging.yml)
+[![Play](https://img.shields.io/badge/play-wake.urdr.dev-7c3aed)](https://wake.urdr.dev)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 An ever-expanding anthology of *wake-up-alone-in-deep-space* horror choose-your-own-adventures.
 Episodes are written as JSON; a single static HTML engine — **skein** — plays them. Deterministic:
 the AI writes the stories at authoring time, nothing is generated during play.

@@ -10,6 +10,12 @@
   "assets": {
     "directory": "./dist"
   },
+  // Production custom domain. Requires the urdr.dev zone on this Cloudflare account;
+  // wrangler provisions the hostname + cert on deploy. Staging stays on its
+  // *.workers.dev URL.
+  "routes": [
+    { "pattern": "wake.urdr.dev", "custom_domain": true }
+  ],
   "env": {
     "staging": {
       "name": "wake-alone-staging",
