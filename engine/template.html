@@ -71,11 +71,13 @@
   .glow{text-shadow:0 0 calc(8px + 6px*var(--glitch)) rgba(255,176,0,.45)}
   .hud{position:sticky;top:0;z-index:10;background:linear-gradient(180deg, var(--bg) 70%, transparent);
     padding:10px 0 16px;margin-bottom:10px;border-bottom:1px solid var(--phosphor-a18);}
-  .hud-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  .hud-row{display:flex;align-items:flex-start;gap:6px 14px;flex-wrap:wrap;
     font-family:var(--font-display);font-size:clamp(18px,4.5vw,22px);letter-spacing:.5px}
-  .loc{color:var(--phosphor);text-transform:uppercase}
+  .loc{color:var(--phosphor);text-transform:uppercase;line-height:1.15}
   .loc .tag{color:var(--phosphor-dim)}
-  .sanity-wrap{flex:1;min-width:160px}
+  /* The meter sits on its own full-width row so its position never depends on
+     the location label's length (a long LOC used to shove it right + shrink it). */
+  .sanity-wrap{flex:1 0 100%;min-width:0}
   .sanity-label{font-family:var(--font-display);font-size:18px;color:var(--phosphor-dim);display:flex;justify-content:space-between}
   .bar{height:10px;background:var(--bar-track);border:1px solid var(--phosphor-a25);margin-top:2px;position:relative;overflow:hidden}
   .bar > i{display:block;height:100%;transition:width .5s ease, background .5s ease}
