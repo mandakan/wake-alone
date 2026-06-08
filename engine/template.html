@@ -289,7 +289,7 @@ function setScreen(play){
    *Sec: animation periods in seconds (bigger = slower). center: park the bow's
    neutral point on the reading column instead of viewport-centre, so the copy
    bulges symmetrically instead of shearing toward screen-centre. */
-const WARP = { strength:95, curve:0.8, pulse:0.14, pulseSec:5.5, termSec:4.2, madSec:9, center:true };
+const WARP = { strength:90, curve:2.2, pulse:0.12, pulseSec:5.5, termSec:4.2, madSec:9, center:true };
 
 function contentCenterY(){
   if(!WARP.center) return 0;
@@ -332,9 +332,12 @@ function barrelMap(centerY){
   const ctx=cv.getContext("2d"), img=ctx.createImageData(S,S), d=img.data;
   for(let y=0;y<S;y++) for(let x=0;x<S;x++){
     const nx=(x/(S-1))*2-1, ny=((y/(S-1))*2-1)-cy;
-    const rr=Math.sqrt((nx*nx+ny*ny)/2), rad=Math.pow(Math.min(rr,1), WARP.curve);
-    const len=Math.sqrt(nx*nx+ny*ny)||1, ux=nx/len, uy=ny/len; // displace along the radius
-    const dx=-ux*rad, dy=-uy*rad, i=(y*S+x)*4;
+    const rr=Math.min(Math.sqrt((nx*nx+ny*ny)/2),1), rad=Math.pow(rr, WARP.curve);
+    const len=Math.sqrt(nx*nx+ny*ny)||1, ux=nx/len, uy=ny/len;
+    // OUTWARD displacement along the radius, magnitude radius^curve. With +scale this
+    // bows BARREL (center magnified, edges convex); -scale flips it pincushion. curve
+    // MUST be >=~2 to bow -- a linear (curve 1) radial field is just a flat zoom.
+    const dx=ux*rad, dy=uy*rad, i=(y*S+x)*4;
     d[i]=clamp(128+dx*127,0,255); d[i+1]=clamp(128+dy*127,0,255); d[i+2]=128; d[i+3]=255;
   }
   ctx.putImageData(img,0,0); BARREL_MAP=cv.toDataURL(); BARREL_KEY=key; return BARREL_MAP;
@@ -744,7 +747,7 @@ function lab(){
     <div class="grp">
       <label>TUBE WARP <span id="lab-warpv" class="read"></span></label>
       <div class="wsl"><span>STRENGTH <b id="v-strength"></b></span><input type="range" data-warp="strength" min="0" max="220" step="5"></div>
-      <div class="wsl"><span>CURVE (lower = more central bow) <b id="v-curve"></b></span><input type="range" data-warp="curve" min="0.4" max="2" step="0.05"></div>
+      <div class="wsl"><span>CURVE (higher = rounder barrel; &lt;2 flattens to zoom) <b id="v-curve"></b></span><input type="range" data-warp="curve" min="1" max="4" step="0.1"></div>
       <div class="wsl"><span>PULSE depth <b id="v-pulse"></b></span><input type="range" data-warp="pulse" min="0" max="0.6" step="0.02"></div>
       <div class="wsl"><span>BREATH sec (critical) <b id="v-pulseSec"></b></span><input type="range" data-warp="pulseSec" min="2" max="14" step="0.5"></div>
       <div class="wsl"><span>WOBBLE sec (terminal) <b id="v-termSec"></b></span><input type="range" data-warp="termSec" min="2" max="12" step="0.5"></div>
