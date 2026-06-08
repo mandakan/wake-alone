@@ -19,10 +19,12 @@
   "env": {
     "staging": {
       "name": "wake-alone-staging",
-      // Staging custom domain (subdomain of the prod zone). Keep workers_dev on
-      // too, so the *.workers.dev URL also still resolves.
+      // Staging custom domain. Must be a direct subdomain of urdr.dev so the
+      // *.urdr.dev Universal SSL cert covers it -- a third-level name like
+      // staging.wake.urdr.dev is NOT covered and would never get a cert.
+      // Keep workers_dev on too, so the *.workers.dev URL also still resolves.
       "routes": [
-        { "pattern": "staging.wake.urdr.dev", "custom_domain": true }
+        { "pattern": "wake-staging.urdr.dev", "custom_domain": true }
       ],
       "workers_dev": true,
       "assets": {
