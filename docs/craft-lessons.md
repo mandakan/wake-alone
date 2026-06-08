@@ -100,3 +100,20 @@ n-gram phrases across episodes (stopword/common phrasing filtered, intentional m
 threshold. All dials and a master `enabled` switch live in `tools/diversity-config.mjs`; self-tested in
 `tools/diversity.test.mjs`. It surfaces reuse for a human to judge (reword vs. allowlist) - it does not
 block.
+
+## L6 - Atmospheric/degraded prose must still parse on first read: no overcompressed metaphor
+
+**Feedback:** on GRAFT's low-sanity `table` variant - "I don't understand this passage"
+(`the whole has teeth`; `your eye has stopped trusting still`). The degraded variant reached for
+mood and lost sense: a metaphor compressed past its literal meaning (`the whole has teeth`) and a
+clipped, noun-dropped phrase (`trusting still`, meaning stillness) that reads as obscure or like a
+typo.
+**Rule:** This is L2 and the gestalt "not purple" rule applied to *atmosphere*. Dread, drunk,
+glitching, low-sanity, and ending prose are still prose - a reader must parse them on the first
+pass. Do not compress a metaphor until the plain meaning is gone, and do not drop words (especially
+nouns) for rhythm in a way that reads as an error. Gestalt the *image* (suggestive); keep the
+*sentence* legible (determinate). If a reader has to stop and decode it, rewrite. `sanityText` and
+ending variants are the usual offenders because they invite a "poetic" register - hold them to the
+same legibility bar as ordinary nodes.
+**Enforced by:** this rule + the skill's final-read check (and re-read every `sanityText`/ending
+variant cold, asking "does this parse?"). Subjective - not mechanically checkable.
