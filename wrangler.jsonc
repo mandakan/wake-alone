@@ -19,9 +19,11 @@
   "env": {
     "staging": {
       "name": "wake-alone-staging",
-      // Keep the *.workers.dev URL for staging (it has no custom domain).
-      // Once the prod config gained a custom-domain route, wrangler began
-      // disabling workers.dev by default unless set explicitly.
+      // Staging custom domain (subdomain of the prod zone). Keep workers_dev on
+      // too, so the *.workers.dev URL also still resolves.
+      "routes": [
+        { "pattern": "staging.wake.urdr.dev", "custom_domain": true }
+      ],
       "workers_dev": true,
       "assets": {
         "directory": "./dist"

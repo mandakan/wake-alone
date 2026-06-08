@@ -7,6 +7,18 @@
       "locked": false
     },
     {
+      "file": "vigil.json",
+      "locked": false
+    },
+    {
+      "file": "tenant.json",
+      "locked": false
+    },
+    {
+      "file": "becalmed.json",
+      "locked": false
+    },
+    {
       "id": "tycho",
       "title": "SIGNAL LOST",
       "byline": "Relay station Tycho-4. The distress call is in your own voice.",

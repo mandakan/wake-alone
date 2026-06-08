@@ -3,5 +3,8 @@
   "medgel": "med-gel ampoule",
   "keycard": "captain's keycard",
   "wrench": "hydrospanner",
-  "key": "key"
+  "key": "key",
+  "powercell": "charged power cell",
+  "chip": "shuttle access chip",
+  "cutters": "bolt cutters"
 }

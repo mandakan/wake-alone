@@ -1,0 +1,146 @@
+{
+  "id": "tenant",
+  "title": "TENANT",
+  "byline": "Bulk freighter 'Amaranth'. The crew left their dinner warm.",
+  "start": "galley",
+  "startSanity": 100,
+  "startInventory": [],
+  "spec": { "size": "standard", "punishment": "gentle" },
+  "nodes": {
+    "galley": {
+      "title": "Galley",
+      "text": "<p>You surface from a sleep you don't remember choosing, cheek stuck to a galley table. Eleven trays are set. Steam still ghosts off the nearest meal -- protein paste, a spoon laid down mid-bite, a half-drunk cup with the ring still wet.</p><p>No one is at the table. No one is anywhere. A single work glove lies on the deck by the hatch, palm up, fingers slightly curled, as if its owner had set it down meaning to come straight back.</p>",
+      "choices": [
+        { "text": "Pick up the glove.", "requires": { "notFlag": "glove" }, "effects": { "sanity": -8, "flags": { "glove": true } }, "to": "galley" },
+        { "text": "Check the galley's wall-mounted first-aid station.", "requires": { "notFlag": "aidg" }, "effects": { "add": ["medgel"], "flags": { "aidg": true } }, "to": "galley" },
+        { "text": "Go to the hatch and out into the corridor.", "to": "corridor" }
+      ]
+    },
+    "corridor": {
+      "title": "Spinal corridor",
+      "text": "<p>The corridor runs the length of the Amaranth, lit by tired strip-lights that buzz when you pass under them. Notices flap on a board: a duty roster, a birthday, a reminder to log coolant levels. Ordinary. The kind of ordinary that someone walked away from in the middle of.</p><p>Doors lead off it: crew quarters to port, the cargo hold to starboard, the engine room aft. A bulkhead hatch ahead stands open on the shuttle bay.</p>",
+      "sanityText": {
+        "40": "<p>The corridor is longer than it was. You are fairly sure of this, the way you are sure of a tooth that has started to ache. The strip-lights buzz, then hush as you pass, as though they would rather not draw attention to you. The roster lists eleven names. You read them and none of them are yours, and one of them, you think, is new.</p>",
+        "20": "<p>The corridor breathes. The strip-lights pulse with it, in, out, and the board of notices has turned to face you wherever you stand. Eleven names. They were never crew. They were tenants, like you, and the ship is patient, and there is room.</p>"
+      },
+      "choices": [
+        { "text": "Crew quarters (port).", "to": "quarters" },
+        { "text": "Cargo hold (starboard).", "to": "hold" },
+        { "text": "Engine room (aft).", "to": "engine" },
+        { "text": "Shuttle bay (ahead).", "to": "bay" }
+      ]
+    },
+    "quarters": {
+      "title": "Crew quarters",
+      "text": "<p>Six bunks, blankets thrown back, the warm hollows of people who got up and never lay down again. A music player on a shelf has run to the end of its track and sits hissing static at the empty room. On the nearest bunk, a personnel locker hangs open: inside, a folded uniform, a photo of a coast, and a shuttle access chip on a lanyard.</p>",
+      "sanityText": {
+        "40": "<p>Six bunks. The hollows in the blankets are the right shape for sleepers, but slightly too deep, as if a weight had pressed them down and stayed long after the people left. The music player hisses. Under the hiss, if you let it, you can hear it keeping time with your breathing.</p>"
+      },
+      "choices": [
+        { "text": "Lift the access chip from the locker.", "requires": { "notFlag": "tookchip" }, "effects": { "add": ["chip"], "flags": { "tookchip": true } }, "to": "quarters" },
+        { "text": "Switch off the hissing music player.", "requires": { "notFlag": "music" }, "effects": { "sanity": -14, "flags": { "music": true } }, "to": "quarters_music" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "quarters_music": {
+      "title": "Crew quarters",
+      "text": "<p>Your thumb finds the switch and the static cuts out. For one second the quarters are truly silent. Then, from somewhere deeper in the ship, the same track starts again -- the same hiss, the same dead air at the end of the song -- and it is not playing from any speaker you can see.</p>",
+      "choices": [
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "hold": {
+      "title": "Cargo hold",
+      "text": "<p>The hold is a cathedral of stacked containers, most sealed, a few cracked open and spilling packing foam like snow. A maintenance station is bolted to the bulkhead: a tool rack, a first-aid box, a torch on a charging hook. Cold air pours down from a vent and pools at your ankles. One open container, off in the dark, is dripping.</p>",
+      "sanityText": {
+        "40": "<p>The containers climb into a dark the lights don't reach, and they are stacked wrong now -- leaning inward, the way trees lean over a path that wants you to keep walking. Foam drifts down through the cold air. It is not snow. You keep telling yourself that, and the hold keeps not agreeing.</p>"
+      },
+      "choices": [
+        { "text": "Take the torch from the charging hook.", "requires": { "notItem": "flashlight" }, "effects": { "add": ["flashlight"] }, "to": "hold" },
+        { "text": "Take the bolt cutters from the tool rack.", "requires": { "notItem": "cutters" }, "effects": { "add": ["cutters"] }, "to": "hold" },
+        { "text": "Open the first-aid box.", "requires": { "notFlag": "aid1" }, "effects": { "add": ["medgel"], "flags": { "aid1": true } }, "to": "hold" },
+        { "text": "Cross to the open container that is dripping.", "requires": { "notFlag": "container" }, "effects": { "sanity": -25, "flags": { "container": true } }, "to": "hold_container" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "hold_container": {
+      "title": "Cargo hold",
+      "text": "<p>You lean over the cracked seal and look in. The container is full of gloves. Hundreds of work gloves, paired and folded, every one warm, every one shaped to a hand that is not there. As you watch, the topmost pair flexes, slow, closing on nothing, and settles. You step back. You do not run, because running is a kind of attention, and you have understood by now that attention is the thing it feeds on.</p>",
+      "choices": [
+        { "text": "Reach in and lift one glove out.", "requires": { "notFlag": "tookglove" }, "effects": { "sanity": -12, "flags": { "tookglove": true } }, "to": "hold_glove" },
+        { "text": "Back to the hold.", "to": "hold" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "hold_glove": {
+      "title": "Cargo hold",
+      "text": "<p>Your fingers close on the topmost glove and lift it free. It is warm to the wrist and it holds its shape -- the curl of fingers, the press of a palm -- and as you raise it to the light it tightens, gently, around your own hand, the way you would squeeze a hand you were glad to see. You drop it. It lands among its hundreds and you cannot tell any more which one was yours, or whether that was ever the right question.</p>",
+      "choices": [
+        { "text": "Back to the hold.", "to": "hold" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "engine": {
+      "title": "Engine room",
+      "text": "<p>The drive is a wall of warm steel that ticks as it idles. The shuttle bay clamp draws its lock-power from a junction here -- a fat conduit feeding the docking cradle, so no shuttle can release while the ship still holds it. A diagnostic screen scrolls green. Everything nominal. Everything fine. Nobody home.</p>",
+      "sanityText": {
+        "40": "<p>The drive ticks like something swallowing. The conduit to the shuttle clamp runs along the wall, and it is not quite a conduit any more -- it pulses, slow and full, carrying something thicker than current down toward the cradle. The diagnostic screen scrolls green. Everything nominal. The word has stopped meaning anything.</p>"
+      },
+      "choices": [
+        { "text": "Cut the clamp conduit with the bolt cutters.", "requires": { "item": "cutters", "notFlag": "power" }, "locked": "Cut the clamp conduit. (you'd need a tool strong enough to part it)", "effects": { "sanity": -10, "flags": { "power": true } }, "to": "engine_cut" },
+        { "text": "Read the night-watch diagnostic log.", "requires": { "notFlag": "log" }, "effects": { "sanity": -20, "flags": { "log": true } }, "to": "engine_log" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "engine_cut": {
+      "title": "Engine room",
+      "text": "<p>The cutters bite. There's a flat bang and the conduit goes dark, and aft of you the docking clamp lets go with a shudder you feel through the deck plates. Lock-power gone. The shuttle is free to release -- if you can get it to recognise you. The drive's ticking falters, just for a moment, as though the ship felt that.</p>",
+      "choices": [
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "engine_log": {
+      "title": "Engine room",
+      "text": "<p>You scroll back past the nominal greens to the last shift. The entries start ordinary -- coolant, course, a joke logged by someone bored. Then: <em>\"crew complement 11, confirmed 11, recount 12, recount 12, recount 12.\"</em> The same engineer, logging the same recount, every minute, for an hour. Then nothing. You stop reading. You do not want to know what the twelfth one was doing while she counted.</p>",
+      "choices": [
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "bay": {
+      "title": "Shuttle bay",
+      "text": "<p>The bay is colder than the rest of the ship. A single short-haul shuttle sits in its cradle, hatch open, ready, as though someone had been about to board and thought better of it. Its console wants two things before it will release: a valid access chip, and the docking clamp unpowered.</p>",
+      "sanityText": {
+        "40": "<p>The bay is cold enough to ache. The shuttle waits in its cradle with its hatch open like a mouth, and you can't tell any more whether it is offering you a way out or simply hungry in the same patient way the rest of the ship is hungry. The console waits. A chip. The clamp unpowered. Two small honesties between you and the dark.</p>"
+      },
+      "choices": [
+        { "text": "Insert the chip and release the shuttle.", "requires": { "item": "chip", "flag": "power" }, "to": "end_escape" },
+        { "text": "Insert the chip and release the shuttle.", "requires": { "item": "chip", "notFlag": "power" }, "locked": "Insert the chip. (the clamp still holds -- it's drawing lock-power)" },
+        { "text": "Release the shuttle.", "requires": { "notItem": "chip", "flag": "power" }, "locked": "Release the shuttle. (no access chip -- the console won't recognise you)" },
+        { "text": "Force the hatch and seal yourself inside without clearance.", "requires": { "notItem": "chip", "notFlag": "power" }, "to": "end_sealed" },
+        { "text": "Open the bay's outer doors and step out into the cold.", "requires": { "sanityMax": 30 }, "to": "end_void" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "end_escape": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// RELEASE",
+        "text": "<p>The chip reads green. The clamp is already dead, and the cradle opens its arms. The shuttle drops free of the Amaranth and you burn hard for the black before the console can change its mind.</p><p>Through the port, the freighter shrinks -- every light still on, every system nominal, eleven trays still set, the steam off the food still rising. Twelve places now, you think. You leave that thought with the ship. You are awake. You got out. You will not count the years you spend wondering what almost kept you.</p>"
+      }
+    },
+    "end_sealed": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// CONTAINED",
+        "text": "<p>You wrench the hatch shut and dog it from the inside and slump into the pilot's seat, breathing hard, safe. The console glows red. The clamp still grips the cradle; the shuttle will not move, will never move, because you never freed it. Behind the sealed hatch the ship settles into a new and comfortable stillness, the way a host settles once a guest has stopped trying to leave.</p><p>You sit in your little airtight box with your warm chip and your warm breath, and you wait, and the warmth keeps rising, and somewhere a roster updates to read twelve.</p>"
+      }
+    },
+    "end_void": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// DEPRESSURISED",
+        "text": "<p>The outer doors part on a wedge of stars and the air leaves the bay in one long sigh, and you go with it, and the cold is so much kinder than the warmth was. You always hated how warm everything had become. Out here nothing is waiting. Out here there is nothing at all, and you open your arms to it.</p><p>The bay reseals behind you. The trays stay warm. The ship has room.</p>"
+      }
+    }
+  }
+}
