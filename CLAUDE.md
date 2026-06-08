@@ -66,7 +66,21 @@ dist/index.html     build output: standalone, open directly in a browser
 What the validator enforces (so design around it): every `to` resolves; no orphan/unreachable
 nodes; every non-ending node has a real exit; at least one ending is reachable; any item/flag
 named in `requires` must be obtainable somewhere; `requires`/`effects` keys must be spelled
-correctly. It does **not** prove the game is winnable with enough sanity — that's on the author.
+correctly.
+
+It also runs a **sanity-aware solver** that mirrors the engine runtime (onEnter fires once,
+sanity clamps 0–100, sanity ≤ 0 at a non-ending point is instant madness, med-gel is a free
++25 action usable at any node). The solver enforces, as hard `ERROR`s:
+- **Solvability:** at least one *survivable* path must actually reach an `escape` ending — not
+  just be reachable on the map. An episode that is winnable-on-paper but forces madness on every
+  route fails. (`npm run validate` reports the best escape's surviving sanity and step count.)
+
+And as advisory `warn`s: too few reachable `dead` endings (a horror episode should offer a
+few — see Endings below), dead choices (a `requires` that never opens), and dead items/flags
+(obtained or set but never read by any gate).
+
+The solver is itself covered by `npm test` (fixture episodes with known verdicts). Don't weaken
+it to pass an episode; fix the episode.
 
 ## Creative bible (keep episodes consistent)
 
@@ -75,8 +89,9 @@ correctly. It does **not** prove the game is winnable with enough sanity — tha
 - **Voice:** second person, present-leaning, sparse. Dread over gore. The horror is *attention* —
   the sense of being watched, of a wrongness that waits. Avoid splatter and avoid jump-scare prose.
 - **Length:** ~10–16 nodes. One hub the player returns to, 3–4 explorable branches, a gated exit.
-- **Endings:** at least one `escape` (survival, hard-won) and one `dead`. `madness` is automatic
-  when sanity hits 0 — you don't author it.
+- **Endings:** at least one `escape` (survival, hard-won) and a *few* `dead` endings — the
+  validator warns below two nasty deaths. `madness` is automatic when sanity hits 0 — you don't
+  author it.
 - **Sanity economy (start 100):** minor unease −5 to −10; a real scare −12 to −18; a major reveal
   or the central horror −20 to −35. Provide 1–2 `medgel` items (+25 each, consumed) on the map.
   Reason explicitly about the optimal path: total forced sanity loss minus available restores must

@@ -26,6 +26,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Self-test the validator
+        run: npm test
       - name: Validate episodes
         run: npm run validate
       - name: Build bundle

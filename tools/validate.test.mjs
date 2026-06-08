@@ -1,0 +1,178 @@
+#!/usr/bin/env node
+// validate.test.mjs — self-tests for the validator/solver. Zero deps.
+// Each fixture is a tiny episode with a known verdict; we assert the validator
+// reaches it. Run: node tools/validate.test.mjs  (npm test). Exit 1 on failure.
+
+import { validateEpisode } from "./validate.mjs";
+
+let passed = 0, failed = 0;
+const C = { red:"\x1b[31m", green:"\x1b[32m", dim:"\x1b[2m", reset:"\x1b[0m" };
+
+function check(label, cond, detail = "") {
+  if (cond) { passed++; }
+  else { failed++; console.log(`  ${C.red}FAIL${C.reset} ${label}${detail ? `  ${C.dim}${detail}${C.reset}` : ""}`); }
+}
+const hasErr  = (r, s) => r.errors.some((m) => m.includes(s));
+const hasWarn = (r, s) => r.warnings.some((m) => m.includes(s));
+
+// ending helpers
+const escape = (stamp = "// OUT") => ({ ending: { type: "escape", stamp, text: "<p>out</p>" } });
+const dead   = (stamp = "// DEAD") => ({ ending: { type: "dead", stamp, text: "<p>dead</p>" } });
+
+// --- fixture: clean, winnable, 2 dead endings, no dead items/flags ---
+{
+  const ep = {
+    id: "clean", title: "CLEAN", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "open door", to: "exit", requires: { item: "key" }, locked: "locked" },
+        { text: "search closet", to: "closet" },
+        { text: "jump in pit", to: "pit" },
+        { text: "touch the void", to: "void" },
+      ]},
+      closet: { text: "<p>c</p>", onEnter: { add: ["key"], sanity: -10 }, choices: [{ text: "back", to: "hub" }] },
+      exit: escape(), pit: dead("// PIT"), void: dead("// VOID"),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("clean: ok", r.ok, r.errors.join("; "));
+  check("clean: winnable", r.report.winnable === true);
+  check("clean: 2 dead endings", r.report.deadEndings === 2, `got ${r.report?.deadEndings}`);
+  check("clean: no warnings", r.warnings.length === 0, r.warnings.join("; "));
+}
+
+// --- fixture: unwinnable — escape exists but onEnter cost forces madness first ---
+{
+  const ep = {
+    id: "unwinnable", title: "U", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "crawl into the tunnel", to: "tunnel" },
+        { text: "lie down", to: "grave" },
+      ]},
+      tunnel: { text: "<p>t</p>", onEnter: { sanity: -100 }, choices: [{ text: "out", to: "exit" }] },
+      exit: escape(), grave: dead(),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("unwinnable: not ok", !r.ok);
+  check("unwinnable: flagged unwinnable", hasErr(r, "unwinnable"), r.errors.join("; "));
+  check("unwinnable: solver winnable=false", r.report.winnable === false);
+}
+
+// --- fixture: solvable ONLY by grabbing and using med-gel (tests gel modeling) ---
+{
+  const ep = {
+    id: "gel", title: "GEL", start: "hub", startSanity: 30,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "grab the gel", to: "shelf" },
+        { text: "steady yourself and open the door", to: "exit", requires: { sanityMin: 50 }, locked: "not steady enough" },
+        { text: "panic 1", to: "d1" },
+        { text: "panic 2", to: "d2" },
+      ]},
+      shelf: { text: "<p>s</p>", onEnter: { add: ["medgel"] }, choices: [{ text: "back", to: "hub" }] },
+      exit: escape(), d1: dead("// A"), d2: dead("// B"),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("gel: ok", r.ok, r.errors.join("; "));
+  check("gel: winnable via gel", r.report.winnable === true);
+  check("gel: no unwinnable error", !hasErr(r, "unwinnable"));
+}
+
+// --- fixture: onEnter fires once — a revisited hub must not re-charge its cost ---
+{
+  // hub costs -60 on first enter (100 -> 40). You leave to a branch and come back.
+  // If onEnter re-applied on return (40 -> 0) the escape would be unreachable.
+  const ep = {
+    id: "once", title: "ONCE", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", onEnter: { sanity: -60 }, choices: [
+        { text: "fetch key", to: "room", requires: { notItem: "key" }, locked: "have key" },
+        { text: "leave", to: "exit", requires: { item: "key" }, locked: "need key" },
+        { text: "die", to: "g1" }, { text: "die2", to: "g2" },
+      ]},
+      room: { text: "<p>r</p>", onEnter: { add: ["key"] }, choices: [{ text: "back", to: "hub" }] },
+      exit: escape(), g1: dead("// X"), g2: dead("// Y"),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("once: ok (onEnter once)", r.ok, r.errors.join("; "));
+  check("once: winnable", r.report.winnable === true);
+}
+
+// --- fixture: soft-lock — requires an item that is never obtainable ---
+{
+  const ep = {
+    id: "softlock", title: "S", start: "hub",
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "open", to: "exit", requires: { item: "ghostkey" }, locked: "locked" },
+        { text: "die", to: "grave" },
+      ]},
+      exit: escape(), grave: dead(),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("softlock: not ok", !r.ok);
+  check("softlock: soft-lock error", hasErr(r, "soft-lock"), r.errors.join("; "));
+}
+
+// --- fixture: dangling pointer — solver must be skipped, structural error raised ---
+{
+  const ep = {
+    id: "dangling", title: "D", start: "hub",
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "go", to: "nowhere" },
+        { text: "die", to: "grave" },
+      ]},
+      grave: dead(),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("dangling: not ok", !r.ok);
+  check("dangling: non-existent node error", hasErr(r, "non-existent node"));
+  check("dangling: solver skipped", r.report.winnable === null);
+}
+
+// --- fixture: only one nasty ending — advisory warn, still valid ---
+{
+  const ep = {
+    id: "onedeath", title: "1", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "leave", to: "exit" },
+        { text: "die", to: "grave" },
+      ]},
+      exit: escape(), grave: dead(),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("onedeath: ok (advisory only)", r.ok, r.errors.join("; "));
+  check("onedeath: nasty-ending warn", hasWarn(r, "nasty ways to die"));
+}
+
+// --- fixture: dead item + dead flag warnings ---
+{
+  const ep = {
+    id: "deadrefs", title: "DR", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "pocket the trinket", to: "a", effects: { add: ["trinket"], flags: { seen: true } } },
+        { text: "leave", to: "exit" },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      a: { text: "<p>a</p>", choices: [{ text: "back", to: "hub" }] },
+      exit: escape(), d1: dead("// A"), d2: dead("// B"),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("deadrefs: ok", r.ok, r.errors.join("; "));
+  check("deadrefs: dead item warn", hasWarn(r, 'item "trinket"'));
+  check("deadrefs: dead flag warn", hasWarn(r, 'flag "seen"'));
+}
+
+console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
+process.exit(failed ? 1 : 0);

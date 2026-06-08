@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "validate": "node tools/validate.mjs",
+    "test": "node tools/validate.test.mjs",
     "build": "node tools/build.mjs",
     "new": "node tools/new.mjs",
     "deploy": "wrangler deploy",
