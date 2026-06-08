@@ -93,10 +93,10 @@
     },
     "bay": {
       "title": "The bay",
-      "text": "<p>You come down off the table on legs that have not been asked to do anything in a while, and the open thing in you shifts with the movement and settles, and you breathe through it the way you breathe through cold. The bay is small and honest in the places the machine has not touched. The lit cylinder and its slow hand. A supply locker, ship-standard. A breaker panel you could read blind. A hatch, with a manual release, and dark beyond it.</p><p>Behind you the lens keeps its pin of light on your back. On the breaker gauge a needle has begun, very slowly, to climb.</p>",
+      "text": "<p>You come down off the table on legs that have not been asked to do anything in a while, and the open thing in you shifts with the movement and settles, and you breathe through it the way you breathe through cold. The bay is small and honest in the places the machine has not touched. The lit cylinder and its slow hand. A supply locker, ship-standard. A breaker panel you could read blind. A hatch, with a manual release, and dark beyond it.</p><p>Behind you the lens keeps its pin of light on your back. A needle on the breaker gauge has begun, very slowly, to climb.</p>",
       "sanityText": {
-        "45": "<p>The bay holds still around you in a way that has stopped feeling like safety. On the breaker panel a needle stands further up its dial than it should, the charge crawling back into the machine - you can feel it building, a pressure in the room, the way a rigging line goes taut and hums a moment before it takes the full load. The hand in the lit cylinder has turned to follow you across the room.</p>",
-        "20": "<p>You are the only thing in here that is not patient. On the breaker panel the needle climbs toward the line where the machine wakes and finishes you. The hand in the cylinder keeps you in its sight. The hatch is right there, and so is the table, and the table is - a part of you has started to argue - so much less work.</p>"
+        "45": "<p>The bay holds still around you in a way that has stopped feeling like safety. A dial on the breaker panel reads higher than it should, the charge crawling back into the machine - you can feel it building, a pressure in the room, the way a rigging line goes taut and hums a moment before it takes the full load. In the lit cylinder, the severed hand has turned to follow you across the room.</p>",
+        "20": "<p>You are the only thing in here that is not patient. The breaker gauge climbs toward the line where the machine wakes and finishes you. From the cylinder, the hand keeps you in its sight. The hatch is right there, and so is the table, and the table is - a part of you has started to argue - so much less work.</p>"
       },
       "choices": [
         { "text": "The cylinder, and the hand in it.", "to": "tank" },
@@ -154,7 +154,7 @@
     },
     "rest": {
       "title": "The table",
-      "text": "<p>You lie back. You only mean to rest the legs. The table takes your weight the way a thing takes a weight it was shaped for, because it was, and the cold tension settles back into its place in you, familiar already, and the lens above you warms. On the gauge the needle keeps climbing. It would top on its own if you let it. You would not have to do a single thing. That is the whole of the offer: do nothing, be finished, and never get up into the cold again.</p>",
+      "text": "<p>You lie back. You only mean to rest the legs. The table takes your weight the way a thing takes a weight it was shaped for, because it was, and the cold tension settles back into its place in you, familiar already, and the lens above you warms. The needle on the gauge keeps climbing. It would top on its own if you let it. You would not have to do a single thing. That is the whole of the offer: do nothing, be finished, and never get up into the cold again.</p>",
       "onEnter": { "sanity": -10 },
       "choices": [
         { "text": "Stay. Do nothing. Let the charge top.", "to": "end_resume" },
