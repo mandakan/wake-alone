@@ -127,10 +127,22 @@ Generally not copyright-restricted in the US (17 U.S.C. 105). Best use: referenc
 crucially -- **audio**, since vintage sound recordings are not PD by age. Caveats: avoid the
 insignia/logo/seal; skip any asset marked with a third-party copyright holder.
 
-## Strong candidates -- pending a publication-date check
+## Confirmed in the second pass (use freely, with the noted exclusions)
 
-Named in scope but NOT independently verified in this pass. Each is very likely PD by US
-publication date, but confirm the date (and, for translations, the translator) before relying.
+A targeted verification pass cleared the items below. The four genuinely tricky ones resolved:
+
+- **Maupassant, "The Horla" (1887):** use a public-domain English translation -- Jonathan Sturges
+  (1890) or the McMaster/Henderson/Quesada translation (on Gutenberg/Wikisource). NOT a modern
+  translation.
+- **M.R. James:** the four collections (1904, 1911, 1919, 1925) and the stories appended through
+  1929 are PD. **EXCLUDE three post-1930 stories** -- "The Experiment" (1931), "The Malice of
+  Inanimate Objects" (1933), and "A Vignette" (1936).
+- **Frank Hurley's *Endurance* photographs (1914-17):** confirmed PD and on Wikimedia Commons
+  (published pre-1930). The richest real polar-isolation imagery available license-free.
+- **Odilon Redon:** the *noirs* -- *A Edgar Poe* (1882), *Les Origines* (1883) -- are PD; the
+  Public Domain Review hosts them. Thematically perfect (Redon illustrating Poe).
+
+The rest are clean PD by publication date:
 
 - **Edgar Allan Poe** (d. 1849; works PD): confinement and atmosphere -- *The Fall of the House
   of Usher*, *MS. Found in a Bottle*, *A Descent into the Maelstrom*, *The Pit and the Pendulum*.
@@ -151,15 +163,15 @@ publication date, but confirm the date (and, for translations, the translator) b
 - **Real events:** the Franklin Expedition (1845) and Shackleton's *Endurance* -- doomed/marooned
   crews in a hostile void. Facts are PD; specific expedition photographs need a date/source check.
 
-## Open questions to close before leaning on the "pending" list
+## Remaining open questions
 
-- Confirm US PD status + (for translations) translator dates for Chambers, Maupassant, Gilman,
-  M.R. James.
-- Identify specific reusable high-res scans for Piranesi, Friedrich, Haeckel, Goya, Redon.
+- Identify specific reusable high-res scans for Piranesi, Friedrich, Haeckel, and Goya (the
+  hosting institutions' digital-file terms are legally weak but worth a glance).
 - Identify which amateur-press Lovecraft works are actually PD (per Joshi) vs. those that entered
   copyright via Weird Tales / Arkham House -- only those, if any, could be quoted rather than only
-  echoed as DNA.
-- Find PD primary material (journals, government photos) for the Franklin and Shackleton events.
+  echoed as DNA. (Default: echo as DNA, do not quote.)
+- Confirm PD primary material (journals, photos) for the Franklin Expedition specifically;
+  Shackleton/Hurley imagery is already cleared above.
 
 ## References (verified pass)
 

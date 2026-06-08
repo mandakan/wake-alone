@@ -30,8 +30,10 @@ the shipped bundle.
 
 1. **Read the references first.** Read `CLAUDE.md` (creative bible + sanity economy),
    `docs/inspiration.md` (the public-domain source bible -- craft rules and motifs for the
-   haunted-ship feeling; inspiration only, never verbatim, never named IP), and
-   `episodes/derelict.json` (the canonical, validated example). Match its structure and tone.
+   haunted-ship feeling; inspiration only, never verbatim, never named IP), `docs/style-cards.md`
+   (distilled prose technique per source), and `episodes/derelict.json` (the canonical, validated
+   example). The `corpus/` folder holds a few complete PD reference texts -- study them for cadence
+   and structure, but never copy phrasing (see `corpus/SOURCES.md`). Match the house tone.
 
 2. **Scaffold with the dials:**
    `npm run new -- --id <slug> --title "<TITLE>" --byline "<line>" --size <size> --punishment <level>`
