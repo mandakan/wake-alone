@@ -210,6 +210,9 @@
   .lab .read{color:var(--green)}
   .lab .read.tier-critical,.lab .read.tier-terminal{color:var(--red)}
   .lab .hint{color:var(--phosphor-ghost);font-size:10px;margin-top:6px;line-height:1.45}
+  .lab .wsl{margin-top:7px}
+  .lab .wsl span{display:block;color:var(--phosphor-dim);font-size:10px;margin-bottom:2px}
+  .lab .wsl b{color:var(--green);font-weight:normal}
 </style>
 </head>
 <body>
@@ -280,6 +283,21 @@ function setScreen(play){
    region is stable: displacement only shifts painted pixels WITHIN the frame and can
    never reflow content out of the box (the v1 soft-lock). Sanity-gated: flat at high
    sanity, the bow eases in below ~60 and peaks at terminal. Cleared off-play. */
+/* 06 — TUBE WARP. Tunable so the look can be dialled in live from the lab (#lab).
+   strength: peak displacement px. curve: radial exponent (<1 bows the mid-field
+   harder, 2 = only the edges). pulse: breathing depth at strained/critical.
+   *Sec: animation periods in seconds (bigger = slower). center: park the bow's
+   neutral point on the reading column instead of viewport-centre, so the copy
+   bulges symmetrically instead of shearing toward screen-centre. */
+const WARP = { strength:95, curve:0.8, pulse:0.14, pulseSec:5.5, termSec:4.2, madSec:9, center:true };
+
+function contentCenterY(){
+  if(!WARP.center) return 0;
+  const el=(root.querySelector(".sc")||root), r=el.getBoundingClientRect(), vh=window.innerHeight||1;
+  if(!r.height) return 0;
+  const cy=(clamp(r.top,0,vh)+clamp(r.bottom,0,vh))/2; // middle of the visible copy
+  return clamp((cy/vh)*2-1, -0.7, 0.7);                // -> normalized [-1,1]
+}
 function applyScreenFilter(){
   if(!crtEl) return;
   const parts=[], mad=html.classList.contains("madness");
@@ -289,69 +307,70 @@ function applyScreenFilter(){
     else if(tier==="critical") parts.push("brightness(.84)","saturate(.9)");
     else if(tier==="terminal") parts.push("brightness(.74)","saturate(.85)");
   }
-  if(mad && FEAT.warp && !REDUCED){
-    // madness: reality settled into the wrong shape -- a held, breathing pincushion
-    warpBase=80; ensureTubeWarp(-80); parts.push("url(#tubewarp)"); startWarpWobble();
-  } else if(play && FEAT.warp && state && !REDUCED){
-    const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*85;
-    if(scale>0.5){
-      warpBase=scale; ensureTubeWarp(scale); parts.push("url(#tubewarp)");
-      if(tier==="terminal") startWarpWobble(); else stopWarpWobble();
-    } else stopWarpWobble();
-  } else stopWarpWobble();
+  if((mad || (play&&state)) && FEAT.warp && !REDUCED){
+    const cy=contentCenterY();
+    if(mad){
+      warpBase=WARP.strength*0.95; ensureTubeWarp(-warpBase*0.75, cy);
+      parts.push("url(#tubewarp)"); runWarp();
+    } else {
+      const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*WARP.strength;
+      if(scale>0.5){ warpBase=scale; ensureTubeWarp(scale, cy); parts.push("url(#tubewarp)"); runWarp(); }
+      else { warpBase=0; stopWarp(); }
+    }
+  } else { warpBase=0; stopWarp(); }
   crtEl.style.filter=parts.join(" ");
 }
 
-/* 06 — TUBE WARP: a convex r^2 displacement map bows the content like a tube.
-   Built once on a canvas, then stretched to the content's exact pixel box via
-   filterUnits="userSpaceOnUse" (percentage feImage subregions strand the map
-   in a corner). Re-sized on resize so the bow is resolution-independent. */
-let BARREL_MAP=null;
-function barrelMap(){
-  if(BARREL_MAP) return BARREL_MAP;
+/* Convex displacement map, regenerated only when curve/centre change (cached by key).
+   Magnitude = radius^curve along the radial direction; neutral point shifted to cy so
+   the bow can centre on the copy. A NEGATIVE feDisplacementMap scale flips it pincushion. */
+let BARREL_MAP=null, BARREL_KEY="";
+function barrelMap(centerY){
+  const cy=Math.round((centerY||0)*40)/40, key=WARP.curve.toFixed(2)+"|"+cy;
+  if(BARREL_MAP && BARREL_KEY===key) return BARREL_MAP;
   const S=128, cv=document.createElement("canvas"); cv.width=cv.height=S;
   const ctx=cv.getContext("2d"), img=ctx.createImageData(S,S), d=img.data;
   for(let y=0;y<S;y++) for(let x=0;x<S;x++){
-    const nx=(x/(S-1))*2-1, ny=(y/(S-1))*2-1, r=Math.sqrt((nx*nx+ny*ny)/2);
-    // barrel bow; linear radius lifts the mid-field so a centered column curves too,
-    // not just the screen edges. A NEGATIVE feDisplacementMap scale flips it to pincushion.
-    const dx=-nx*r, dy=-ny*r, i=(y*S+x)*4;
+    const nx=(x/(S-1))*2-1, ny=((y/(S-1))*2-1)-cy;
+    const rr=Math.sqrt((nx*nx+ny*ny)/2), rad=Math.pow(Math.min(rr,1), WARP.curve);
+    const len=Math.sqrt(nx*nx+ny*ny)||1, ux=nx/len, uy=ny/len; // displace along the radius
+    const dx=-ux*rad, dy=-uy*rad, i=(y*S+x)*4;
     d[i]=clamp(128+dx*127,0,255); d[i+1]=clamp(128+dy*127,0,255); d[i+2]=128; d[i+3]=255;
   }
-  ctx.putImageData(img,0,0); BARREL_MAP=cv.toDataURL(); return BARREL_MAP;
+  ctx.putImageData(img,0,0); BARREL_MAP=cv.toDataURL(); BARREL_KEY=key; return BARREL_MAP;
 }
-/* Build the SVG filter once per viewport size, then set displacement via a cheap
-   attribute write so the terminal/madness wobble can animate it every frame without
-   re-decoding the map. scale>0 bows barrel; scale<0 bows pincushion. */
-let warpDisp=null, warpDim="";
-function ensureTubeWarp(scale){
+/* Build the SVG filter once per (viewport size + map), then drive displacement via a
+   cheap scale attribute write so the breathing/wobble animates without re-decoding. */
+let warpDisp=null, warpKey="";
+function ensureTubeWarp(scale, centerY){
   const defs=document.querySelector("#warpdefs defs");
-  const w=window.innerWidth||1, h=window.innerHeight||1, dim=w+"x"+h; // #crt is viewport-sized
-  if(!warpDisp || warpDim!==dim){
+  const w=window.innerWidth||1, h=window.innerHeight||1;
+  const href=barrelMap(centerY), key=w+"x"+h+"|"+BARREL_KEY; // BARREL_KEY set by barrelMap()
+  if(!warpDisp || warpKey!==key){
     defs.innerHTML =
       '<filter id="tubewarp" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
-      '<feImage href="'+barrelMap()+'" preserveAspectRatio="none" x="0" y="0" width="'+w+'" height="'+h+'" result="m"></feImage>'+
+      '<feImage href="'+href+'" preserveAspectRatio="none" x="0" y="0" width="'+w+'" height="'+h+'" result="m"></feImage>'+
       '<feDisplacementMap in="SourceGraphic" in2="m" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>'+
       '</filter>';
-    warpDisp=defs.querySelector("feDisplacementMap"); warpDim=dim;
+    warpDisp=defs.querySelector("feDisplacementMap"); warpKey=key;
   }
   warpDisp.setAttribute("scale", scale.toFixed(1));
 }
-/* The wobble: at terminal the bow breathes from barrel through flat into pincushion
-   and back -- the glass can't hold a shape. Self-stops when we leave terminal/madness. */
+/* One loop, params read live each frame (so lab tweaks land instantly):
+   strained/critical -> gentle breathing barrel; terminal -> barrel<->pincushion wobble
+   across zero (can't hold shape); madness -> slow held pincushion breath. */
 let warpRAF=0, warpBase=0;
-function stopWarpWobble(){ if(warpRAF){ cancelAnimationFrame(warpRAF); warpRAF=0; } }
-function startWarpWobble(){
+function stopWarp(){ if(warpRAF){ cancelAnimationFrame(warpRAF); warpRAF=0; } }
+function runWarp(){
   if(warpRAF || REDUCED) return;
   const t0=performance.now();
   const tick=(t)=>{
     const mad=html.classList.contains("madness");
-    const term=!mad && state && isPlayNode() && tierOf(state.sanity)==="terminal";
-    if(!mad && !term){ warpRAF=0; return; }
-    // terminal: crosses zero, barrel <-> pincushion (can't hold shape).
-    // madness: stays negative, a slow breathing pincushion (settled into the wrong shape).
-    const e=(t-t0)/1000, period=mad?2.8:3.4, amp=mad?0.35:0.9, bias=mad?-0.75:0.2;
-    const s=warpBase*(bias + amp*Math.sin(e*2*Math.PI/period));
+    if(!mad && !(state && isPlayNode() && warpBase>0.5)){ warpRAF=0; return; }
+    const e=(t-t0)/1000, w=2*Math.PI; let s;
+    if(mad){ s=(WARP.strength*0.95)*(-0.75 + 0.3*Math.sin(w*e/WARP.madSec)); }
+    else if(tierOf(state.sanity)==="terminal"){ s=warpBase*(0.2 + 0.9*Math.sin(w*e/WARP.termSec)); }
+    else { s=warpBase*(1 + WARP.pulse*Math.sin(w*e/WARP.pulseSec)); }
     if(warpDisp) warpDisp.setAttribute("scale", s.toFixed(1));
     warpRAF=requestAnimationFrame(tick);
   };
@@ -722,6 +741,17 @@ function lab(){
         <button id="lab-mad">MADNESS</button>
       </div>
     </div>
+    <div class="grp">
+      <label>TUBE WARP <span id="lab-warpv" class="read"></span></label>
+      <div class="wsl"><span>STRENGTH <b id="v-strength"></b></span><input type="range" data-warp="strength" min="0" max="220" step="5"></div>
+      <div class="wsl"><span>CURVE (lower = more central bow) <b id="v-curve"></b></span><input type="range" data-warp="curve" min="0.4" max="2" step="0.05"></div>
+      <div class="wsl"><span>PULSE depth <b id="v-pulse"></b></span><input type="range" data-warp="pulse" min="0" max="0.6" step="0.02"></div>
+      <div class="wsl"><span>BREATH sec (critical) <b id="v-pulseSec"></b></span><input type="range" data-warp="pulseSec" min="2" max="14" step="0.5"></div>
+      <div class="wsl"><span>WOBBLE sec (terminal) <b id="v-termSec"></b></span><input type="range" data-warp="termSec" min="2" max="12" step="0.5"></div>
+      <div class="wsl"><span>BREATH sec (madness) <b id="v-madSec"></b></span><input type="range" data-warp="madSec" min="3" max="22" step="0.5"></div>
+      <div class="row"><button id="lab-center">CENTER ON COPY</button></div>
+      <div class="hint">Drop sanity to CRITICAL/TERMINAL first to see the bow. Tell me the value set you like and I'll bake it in as the default.</div>
+    </div>
     <div class="grp" style="border:0;padding-bottom:0">
       <div class="row"><button id="lab-reset">RESET ROOM</button></div>
       <div class="hint">Word-swaps fire at TERMINAL (1-10); CRITICAL (11-30) is char-noise only. HOLD GARBLE freezes corruption so you can read it.</div>
@@ -744,6 +774,20 @@ function lab(){
   });
   document.getElementById("lab-mad").addEventListener("click", ()=>{ if(state){ clearWatch(); labAuto=false; const a=document.getElementById("lab-auto"); if(a)a.classList.remove("on"); renderMadness(); } });
   document.getElementById("lab-reset").addEventListener("click", ()=>{ labLoad(+document.getElementById("lab-ep").value); san.value=state.sanity; labSync(); });
+  // live warp tuning: every slider writes straight into WARP and re-applies
+  function syncWarpUI(){
+    panel.querySelectorAll("input[data-warp]").forEach(inp=>{ const k=inp.dataset.warp;
+      inp.value=WARP[k]; const b=document.getElementById("v-"+k);
+      if(b) b.textContent = (k==="strength" ? WARP[k] : Number(WARP[k]).toFixed(k==="curve"||k==="pulse"?2:1)); });
+    const cb=document.getElementById("lab-center"); if(cb) cb.classList.toggle("on", WARP.center);
+    const sm=document.getElementById("lab-warpv");
+    if(sm) sm.textContent = `{strength:${WARP.strength}, curve:${WARP.curve}, pulse:${WARP.pulse}, pulseSec:${WARP.pulseSec}, termSec:${WARP.termSec}, madSec:${WARP.madSec}, center:${WARP.center}}`;
+  }
+  panel.querySelectorAll("input[data-warp]").forEach(inp=> inp.addEventListener("input", e=>{
+    WARP[inp.dataset.warp]=parseFloat(e.target.value); syncWarpUI(); applyScreenFilter();
+  }));
+  document.getElementById("lab-center").addEventListener("click", ()=>{ WARP.center=!WARP.center; syncWarpUI(); applyScreenFilter(); });
+  syncWarpUI();
 }
 
 setInterval(tickHud, 720);
