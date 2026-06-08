@@ -211,8 +211,12 @@ const rnd=(a,b)=>a+Math.random()*(b-a);
 const esc=(s)=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 const REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-/* Every DESCENT enhancement is on; flip any to false to disable it. */
-const FEAT = { tiers:true, hud:true, watching:true, endings:true, scars:true, warp:true };
+/* Every DESCENT enhancement is on; flip any to false to disable it.
+   warp(06) is OFF by default: as an SVG displacement filter on the full-page
+   story content it magnifies text past the column (clipped by overflow-x) and
+   clips its own filter region, which hid the choices and soft-locked the run.
+   It needs a fixed-viewport "tube" rebuild before it can ship safely. */
+const FEAT = { tiers:true, hud:true, watching:true, endings:true, scars:true, warp:false };
 
 /* 01 — the staircase: sanity becomes named tiers. */
 function tierOf(s){ if(s>60)return"stable"; if(s>30)return"strained"; if(s>10)return"critical"; if(s>0)return"terminal"; return"gone"; }
