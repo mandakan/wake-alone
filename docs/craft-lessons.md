@@ -71,7 +71,8 @@ indirectly.
   obviously know how to do, hint it - the locked-choice hint may say specifically what is missing
   ("the bypass needs a hydrospanner you do not have"). Confidence is diegetic and correct.
 - **Out-of-domain** (outside their expertise): describe by **gestalt only** - shape, weight,
-  impression, dread - never function, never how to operate it, never what part is missing. The
+  impression, dread - never function, never how to operate it, never what part is missing. (Gestalt
+  is the default everywhere - see `docs/gestalt.md`; out-of-domain pushes it to the maximum.) The
   character's ignorance is part of the horror: a surgical robot reads as "a many-armed thing folded
   over the table, patient", not "the actuator needs a calibration key". Do not hand the player
   knowledge the character would not have.

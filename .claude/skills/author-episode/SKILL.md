@@ -52,7 +52,9 @@ state your assumption.
 
 1. **Read the references first.** Read `CLAUDE.md` (creative bible + sanity economy),
    `docs/craft-lessons.md` (the feedback ledger - every rule learned from user/playtester feedback;
-   honor all of them), `docs/inspiration.md` (the public-domain source bible - craft rules and
+   honor all of them), `docs/gestalt.md` (the default prose mode - evoke with charged fragments, let
+   the reader complete the picture; describe less), `docs/inspiration.md` (the public-domain source
+   bible - craft rules and
    motifs; inspiration only, never verbatim, never named IP), `docs/style-cards.md` (distilled prose
    technique per source), and `episodes/derelict.json` (the canonical, validated example). The
    `corpus/` folder holds a few complete PD reference texts - study them for cadence and structure,

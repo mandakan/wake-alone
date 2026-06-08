@@ -103,6 +103,11 @@ variant that can never display, and prose that says "your <item>" where the play
   long-haul freighter, generation ship). Each episode is a new setting; they don't share state.
 - **Voice:** second person, present-leaning, sparse. Dread over gore. The horror is *attention* —
   the sense of being watched, of a wrongness that waits. Avoid splatter and avoid jump-scare prose.
+- **Gestalt by default:** evoke, do not catalogue. Give a few charged, specific fragments (a glove
+  palm-up, a face wearing only *attention*) and let the reader assemble the whole - it is scarier
+  and more theirs. Name the *effect*, not the thing; one controlling image, not three; sensation
+  over specification. This is the default mode for every room, body, and presence - not vagueness
+  (be specific) but omission from knowledge. See `docs/gestalt.md`.
 - **Length:** ~10–16 nodes. One hub the player returns to, 3–4 explorable branches, a gated exit.
 - **Endings:** by default at least one `escape` (survival, hard-won) and a *few* `dead` endings —
   the validator warns below two nasty deaths. `madness` is automatic when sanity hits 0 — you don't
