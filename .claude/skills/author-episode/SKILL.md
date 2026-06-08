@@ -52,8 +52,16 @@ the shipped bundle.
    - `spec(...): death ratio / dead endings ...` -> add nasty endings to meet the punishment floor.
    - `soft-lock` -> a required item/flag is never granted. `non-existent node` -> a `to` typo.
      `unknown requires/effects key` -> a misspelled gate that silently does nothing.
+   - prose `ERROR`s -> non-ASCII punctuation (write `--`, straight quotes, `...`) or essay-register
+     slop (`delve`, `leverage`, `seamless`, ...). Rewrite in the sparse second-person voice.
+     `npm run lint episodes/<id>.json` runs the prose checks alone.
    - advisory `warn`s (play-time outside the size range, cruel-but-no-madness, dead item/flag,
-     dead choice) — address them unless you have a deliberate reason not to.
+     dead choice, horror cliches, robotic cadence, first-person slips, never-shown sanityText,
+     state-incoherent "your <item>") — address them unless you have a deliberate reason not to.
+
+   Write to avoid slop in the first place: vary sentence length, cut filler and cliche, stay in
+   second person, and prefer concrete specific detail over generic atmosphere. After a draft, a
+   `clean-prose` pass over each text field catches what the linter can't.
 
 5. **Build and report:** run `npm run build`, then tell the user the report metrics — node count,
    reachable endings, death ratio, estimated play-time, and the best escape's surviving sanity —

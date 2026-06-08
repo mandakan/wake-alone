@@ -32,6 +32,10 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { resolveSpec, estimateMinutes } from "./spec.mjs";
+import { lintProse } from "./prose-lint.mjs";
+
+let ITEM_NAMES = {};
+try { ITEM_NAMES = JSON.parse(readFileSync(join(EPISODES_DIR, "..", "engine", "item-names.json"), "utf8")); } catch {}
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const EPISODES_DIR = join(ROOT, "episodes");
@@ -283,6 +287,16 @@ export function validateEpisode(ep, name = ep && ep.id) {
     if (!reqFlags.has(fl)) W(`flag "${fl}" is set but never read by any gate (dead flag?)`);
   }
 
+  // ---- prose hygiene + state-coherence (slop linter) ----
+  const prose = lintProse(ep, {
+    nodeItems: solver ? solver.nodeItems : undefined,
+    nodeMinSanity: solver ? solver.nodeMinSanity : undefined,
+    items,
+    itemNames: ITEM_NAMES,
+  });
+  prose.errors.forEach(E);
+  prose.warnings.forEach(W);
+
   const report = {
     nodes: nodeIds.length,
     reachable: reached.size,
@@ -351,12 +365,15 @@ function solve(ep) {
   }
   if (init.sanity <= 0 && !startNode.ending) {
     return { startMadness: true, winnable: false, escapeEndings: new Set(), deadEndings: new Set(),
-      madnessReachable: true, openableChoices: new Set(), bestEscape: null, statesExplored: 0, truncated: false };
+      madnessReachable: true, openableChoices: new Set(), bestEscape: null, statesExplored: 0, truncated: false,
+      nodeItems: new Map(), nodeMinSanity: new Map() };
   }
 
   const escapeEndings = new Set();
   const deadEndings = new Set();
   const openableChoices = new Set();
+  const nodeItems = new Map();      // nodeId -> Set of items possibly held when at the node
+  const nodeMinSanity = new Map();  // nodeId -> lowest sanity the node is ever rendered at
   let madnessReachable = false;
   let bestEscape = null; // {node, sanity, path}
 
@@ -386,6 +403,13 @@ function solve(ep) {
     if (visited.size > MAX_STATES) { truncated = true; break; }
     const { st, key } = queue.shift();
     const node = ep.nodes[st.cur];
+
+    // record what is true at this node, for prose state-coherence
+    if (!nodeItems.has(st.cur)) nodeItems.set(st.cur, new Set());
+    const bag = nodeItems.get(st.cur);
+    for (const it of st.inv) bag.add(it);
+    const prevMin = nodeMinSanity.get(st.cur);
+    nodeMinSanity.set(st.cur, prevMin === undefined ? st.sanity : Math.min(prevMin, st.sanity));
 
     if (node.ending) {
       if (node.ending.type === "escape") {
@@ -435,6 +459,7 @@ function solve(ep) {
     winnable: escapeEndings.size > 0,
     escapeEndings, deadEndings, madnessReachable, openableChoices,
     bestEscape, statesExplored: visited.size, truncated,
+    nodeItems, nodeMinSanity,
   };
 }
 

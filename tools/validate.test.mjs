@@ -272,5 +272,62 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("scaffold forbidden: no escape ending", !Object.values(ep.nodes).some((n) => n.ending && n.ending.type === "escape"));
 }
 
+// --- prose: non-ASCII punctuation is a hard error ---
+{
+  const EM = String.fromCodePoint(0x2014); // em-dash
+  const ep = { id: "emdash", title: "E", start: "hub", startSanity: 100,
+    nodes: { hub: { text: `<p>The corridor goes ${EM} nowhere.</p>`, choices: [
+      { text: "out", to: "x" }, { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("emdash: non-ASCII error", hasErr(r, "non-ASCII"), r.errors.join("; "));
+}
+
+// --- prose: essay-register slop is a hard error ---
+{
+  const ep = { id: "slop", title: "S", start: "hub", startSanity: 100,
+    nodes: { hub: { text: "<p>You delve into the dark.</p>", choices: [
+      { text: "out", to: "x" }, { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("slop: delve is an error", hasErr(r, '"delve"'), r.errors.join("; "));
+}
+
+// --- prose: first-person warns, but quoted speech is exempt ---
+{
+  const ep = { id: "pov", title: "P", start: "hub", startSanity: 100,
+    nodes: { hub: { text: '<p>I run for it. The log says "we are not alone here".</p>', choices: [
+      { text: "out", to: "x" }, { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  const pov = r.warnings.find((w) => w.includes("first-person")) || "";
+  check("pov: flags narrative I", pov.includes("I"), pov);
+  check("pov: exempts quoted we", !pov.includes("we"), pov);
+}
+
+// --- prose: a sanityText variant that can never show warns (solver-backed) ---
+{
+  const ep = { id: "deadsan", title: "D", start: "hub", startSanity: 100,
+    nodes: { hub: { text: "<p>h</p>", sanityText: { "20": "<p>low</p>" }, choices: [
+      { text: "out", to: "x" }, { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("deadsan: never-shown sanityText warn", r.warnings.some((w) => w.includes("never displays")), r.warnings.join("; "));
+}
+
+// --- prose: "your <item>" where the item can't be held there warns (solver-backed) ---
+{
+  const ep = { id: "possess", title: "P", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>your keycard is missing.</p>", choices: [
+        { text: "grab it", to: "room" },
+        { text: "out", to: "x", requires: { item: "keycard" }, locked: "need the card" },
+        { text: "die", to: "d" }, { text: "die2", to: "d2" }] },
+      room: { text: "<p>r</p>", onEnter: { add: ["keycard"] }, choices: [{ text: "out", to: "x" }] },
+      x: escape(), d: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("possess: state-incoherent possession warn", r.warnings.some((w) => w.includes("your keycard") && w.includes("incoherent")), r.warnings.join("; "));
+}
+
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
 process.exit(failed ? 1 : 0);
