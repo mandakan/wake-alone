@@ -188,6 +188,27 @@
 
   /* Accessibility: hold the calm state -- no flicker or cursor blink. */
   @media (prefers-reduced-motion: reduce){ .screen{animation:none} .cursor{animation:none} }
+
+  /* ---- LAB: staging-only FX showcase (#lab). Never reached by players. ---- */
+  .lab{position:fixed;top:0;right:0;z-index:80;width:264px;max-height:100vh;overflow:auto;
+    background:rgba(6,8,10,.93);border-left:1px solid var(--phosphor-dim);
+    font-family:var(--font-display);color:var(--phosphor);font-size:12px;
+    letter-spacing:var(--tracking-hud);padding:14px 14px 22px;line-height:1.5;
+    text-shadow:0 0 6px rgba(255,176,0,.25)}
+  .lab h2{font-size:13px;margin:0 0 12px;letter-spacing:2px}
+  .lab .grp{margin:0 0 13px;padding-bottom:12px;border-bottom:1px solid rgba(255,176,0,.12)}
+  .lab label{display:block;color:var(--phosphor-dim);margin:0 0 5px;font-size:11px}
+  .lab select,.lab input[type=range]{width:100%;background:transparent;color:var(--phosphor);
+    border:1px solid var(--phosphor-dim);font-family:var(--font-display);font-size:11px}
+  .lab .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+  .lab button{flex:1 0 auto;background:transparent;border:1px solid var(--phosphor-dim);
+    color:var(--phosphor);font-family:var(--font-display);font-size:11px;letter-spacing:1px;
+    padding:6px 7px;cursor:pointer}
+  .lab button:hover{border-color:var(--phosphor);box-shadow:0 0 8px rgba(255,176,0,.3)}
+  .lab button.on{background:var(--phosphor);color:#0a0705}
+  .lab .read{color:var(--green)}
+  .lab .read.tier-critical,.lab .read.tier-terminal{color:var(--red)}
+  .lab .hint{color:var(--phosphor-ghost);font-size:10px;margin-top:6px;line-height:1.45}
 </style>
 </head>
 <body>
@@ -585,9 +606,94 @@ function titleScreen(){
 }
 function footer(){ return `<div class="footer">skein v0.1 — neural integrity at 0% ends the run</div>`; }
 
+/* ---- LAB MODE: staging-only FX showcase, opened with #lab on a non-prod host.
+   Drives the SAME engine functions players hit, so it can never drift from play. ---- */
+function labAllowed(){ return /(^$|^localhost$|^127\.0\.0\.1$|staging|\.workers\.dev$)/.test(location.hostname); }
+let labOn=false, labAuto=false, labHold=false;
+function labEpisodes(){ return EPISODES.filter(e=>!e.locked && e.nodes); }
+function labSync(){
+  const t=tierOf(state.sanity);
+  const sv=document.getElementById("lab-sval"); if(sv) sv.textContent=state.sanity;
+  const tv=document.getElementById("lab-tier"); if(tv){ tv.textContent=t.toUpperCase(); tv.className="read tier-"+t; }
+  const hb=document.getElementById("lab-hold"); if(hb) hb.classList.toggle("on",labHold);
+}
+function labRefresh(){ // re-apply the sanity-linked screen state + re-render the sample room
+  if(labHold){ restoreProse(); labHold=false; }
+  setScreen(isPlayNode()); render(); labSync();
+}
+function labLoad(idx){
+  const eps=labEpisodes(), ep=eps[idx]||eps[0]; if(!ep) return;
+  const keep = state ? state.sanity : 100;
+  clearWatch(); labAuto=false; startEpisode(ep);
+  state.sanity=clamp(keep,1,100); labRefresh();
+  const a=document.getElementById("lab-auto"); if(a) a.classList.remove("on");
+}
+function labSanity(v){
+  if(!state) return;
+  v=clamp(v|0,0,100);
+  if(v<=0){ state.sanity=0; renderMadness(); const s=document.getElementById("lab-sval"); if(s)s.textContent=0; return; }
+  state.sanity=v; labRefresh();
+  if(labAuto) startWatch();
+}
+function lab(){
+  if(labOn) return; labOn=true;
+  const eps=labEpisodes();
+  if(!eps.length){ titleScreen(); return; }
+  const opts=eps.map((e,i)=>`<option value="${i}">${esc(e.title)}</option>`).join("");
+  const panel=document.createElement("div"); panel.className="lab"; panel.id="lab";
+  panel.innerHTML=`<h2>// SKEIN LAB</h2>
+    <div class="grp">
+      <label>EPISODE &mdash; watch pool + sample room</label>
+      <select id="lab-ep">${opts}</select>
+    </div>
+    <div class="grp">
+      <label>INTEGRITY <span id="lab-sval" class="read"></span>% &nbsp; TIER <span id="lab-tier" class="read"></span></label>
+      <input type="range" id="lab-san" min="0" max="100" step="1" value="100">
+      <div class="row">
+        <button data-san="80">STABLE</button><button data-san="45">STRAINED</button>
+        <button data-san="20">CRITICAL</button><button data-san="5">TERMINAL</button>
+      </div>
+    </div>
+    <div class="grp">
+      <label>WATCHER / CORRUPTION</label>
+      <div class="row">
+        <button id="lab-flash">FLASH WATCHER</button>
+        <button id="lab-hold">HOLD GARBLE</button>
+      </div>
+      <div class="row">
+        <button id="lab-auto">AUTO CADENCE</button>
+        <button id="lab-mad">MADNESS</button>
+      </div>
+    </div>
+    <div class="grp" style="border:0;padding-bottom:0">
+      <div class="row"><button id="lab-reset">RESET ROOM</button></div>
+      <div class="hint">Word-swaps fire at TERMINAL (1-10); CRITICAL (11-30) is char-noise only. HOLD GARBLE freezes corruption so you can read it.</div>
+    </div>`;
+  document.body.appendChild(panel);
+  labLoad(0);
+  const san=document.getElementById("lab-san"); san.value=state.sanity; labSync();
+  document.getElementById("lab-ep").addEventListener("change", e=>{ labLoad(+e.target.value); san.value=state.sanity; labSync(); });
+  san.addEventListener("input", e=> labSanity(+e.target.value));
+  panel.querySelectorAll("button[data-san]").forEach(b=> b.addEventListener("click", ()=>{ san.value=b.dataset.san; labSanity(+b.dataset.san); }));
+  document.getElementById("lab-flash").addEventListener("click", ()=>{ if(state&&isPlayNode()){ if(labHold){ restoreProse(); labHold=false; labSync(); } flashWatch(tierOf(state.sanity)); } });
+  document.getElementById("lab-hold").addEventListener("click", ()=>{
+    if(!state||!isPlayNode()) return;
+    if(labHold){ restoreProse(); labHold=false; } else { corruptProse(tierOf(state.sanity)); labHold=true; }
+    labSync();
+  });
+  document.getElementById("lab-auto").addEventListener("click", e=>{
+    labAuto=!labAuto; e.target.classList.toggle("on",labAuto);
+    if(labAuto) startWatch(); else clearWatch();
+  });
+  document.getElementById("lab-mad").addEventListener("click", ()=>{ if(state){ clearWatch(); labAuto=false; const a=document.getElementById("lab-auto"); if(a)a.classList.remove("on"); renderMadness(); } });
+  document.getElementById("lab-reset").addEventListener("click", ()=>{ labLoad(+document.getElementById("lab-ep").value); san.value=state.sanity; labSync(); });
+}
+
 setInterval(tickHud, 720);
 window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); applyScreenFilter(); } });
-titleScreen();
+const labHash=()=> location.hash.toLowerCase()==="#lab";
+if(labHash() && labAllowed()) lab(); else titleScreen();
+window.addEventListener("hashchange", ()=>{ if(labHash() && labAllowed() && !labOn) lab(); });
 </script>
 </body>
 </html>
