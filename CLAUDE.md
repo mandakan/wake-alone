@@ -94,6 +94,10 @@ variant that can never display, and prose that says "your <item>" where the play
 
 ## Creative bible (keep episodes consistent)
 
+> For inspiration sources -- public-domain works to draw the haunted-ship feeling from, with
+> per-source craft takeaways and a strict no-verbatim/no-named-IP rule -- see `docs/inspiration.md`.
+
+
 - **Premise:** the protagonist wakes alone in a deep-space setting (derelict, station, lab,
   long-haul freighter, generation ship). Each episode is a new setting; they don't share state.
 - **Voice:** second person, present-leaning, sparse. Dread over gore. The horror is *attention* —

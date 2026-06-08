@@ -28,7 +28,9 @@ the shipped bundle.
 
 ## Procedure
 
-1. **Read the references first.** Read `CLAUDE.md` (creative bible + sanity economy) and
+1. **Read the references first.** Read `CLAUDE.md` (creative bible + sanity economy),
+   `docs/inspiration.md` (the public-domain source bible -- craft rules and motifs for the
+   haunted-ship feeling; inspiration only, never verbatim, never named IP), and
    `episodes/derelict.json` (the canonical, validated example). Match its structure and tone.
 
 2. **Scaffold with the dials:**
