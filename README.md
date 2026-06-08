@@ -1,5 +1,6 @@
 # WAKE ALONE
 
+[![CI](https://github.com/mandakan/wake-alone/actions/workflows/ci.yml/badge.svg)](https://github.com/mandakan/wake-alone/actions/workflows/ci.yml)
 [![Release](https://github.com/mandakan/wake-alone/actions/workflows/release-please.yml/badge.svg)](https://github.com/mandakan/wake-alone/actions/workflows/release-please.yml)
 [![Deploy staging](https://github.com/mandakan/wake-alone/actions/workflows/deploy-staging.yml/badge.svg)](https://github.com/mandakan/wake-alone/actions/workflows/deploy-staging.yml)
 [![Play](https://img.shields.io/badge/play-wake.urdr.dev-7c3aed)](https://wake.urdr.dev)
