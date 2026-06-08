@@ -1,0 +1,153 @@
+{
+  "id": "derelict",
+  "title": "DERELICT",
+  "byline": "Mining vessel \u2018Kestrel-9\u2019. You don't remember going under.",
+  "start": "cryobay",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "cryobay": {
+      "title": "Cryo-bay C",
+      "text": "<p>Cold. The kind that has teeth. You come apart from sleep one nerve at a time, lid of the cryopod hissing back over your face. The bay is dark except for a single amber fault-light, ticking on, off, on.</p><p>Eleven other pods line the wall. Ten of them are open. Empty. The readout above yours blinks a date you don't trust.</p>",
+      "choices": [
+        { "text": "Haul yourself out and stand.", "to": "cryobay_up" },
+        { "text": "Stay still. Listen to the ship first.", "to": "listen" }
+      ]
+    },
+    "listen": {
+      "text": "<p>You hold your breath and let the vessel speak. The hull pops as it cools. Somewhere far down the spine of the ship, something drags \u2014 a long, wet, unhurried sound \u2014 and stops, as if it heard you holding still.</p><p>You decide not to listen anymore.</p>",
+      "onEnter": { "sanity": -8 },
+      "choices": [ { "text": "Get out of the pod.", "to": "cryobay_up" } ]
+    },
+    "cryobay_up": {
+      "title": "Cryo-bay C",
+      "text": "<p>Your legs remember walking before you do. On the wall, an emergency locker hangs half-open, its seal cracked. Beyond the bay, a corridor runs fore and aft into the dark.</p>",
+      "choices": [
+        { "text": "Force the emergency locker the rest of the way open.", "requires": { "notItem": "flashlight" }, "effects": { "add": ["flashlight", "medgel"] }, "to": "locker_done" },
+        { "text": "Step out into the corridor.", "to": "corridor" }
+      ]
+    },
+    "locker_done": {
+      "title": "Cryo-bay C",
+      "text": "<p>Inside: a hand torch, still charged, and a single med-gel ampoule \u2014 the field kind, for when a mind starts to slip its moorings. You take both. The light feels like a small, stupid kind of courage.</p>",
+      "choices": [ { "text": "Step out into the corridor.", "to": "corridor" } ]
+    },
+    "corridor": {
+      "title": "Spinal corridor",
+      "text": "<p>The corridor is a throat of dead consoles and floating dust. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where the lights are out entirely \u2014 a black gap the torch beam won't quite fill.</p>",
+      "sanityText": {
+        "40": "<p>The corridor breathes. You know corridors don't, you <em>know</em> it, but the walls swell and settle and the dust hangs like it's deciding something. Three doorways. A black gap ahead that is looking back.</p>"
+      },
+      "choices": [
+        { "text": "Bridge (fore).", "to": "bridge" },
+        { "text": "Med-bay (port).", "to": "medbay" },
+        { "text": "Engineering (aft).", "to": "engineering" },
+        { "text": "Push into the dark stretch ahead.", "to": "darkgap" }
+      ]
+    },
+    "bridge": {
+      "title": "Bridge",
+      "text": "<p>The viewport is full of stars that aren't any you know. The captain's chair is turned to face the door, empty. The log terminal still has power; the last entry is timestamped, then nothing.</p>",
+      "choices": [
+        { "text": "Play the captain's final log.", "requires": { "notFlag": "heardlog" }, "effects": { "sanity": -12, "flags": { "heardlog": true } }, "to": "bridge_log" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "bridge_log": {
+      "title": "Bridge",
+      "text": "<p>The captain's voice is calm in the way of someone who has already given up. <em>\u201cWe woke it in the ore. It doesn't want the ship. It wants us awake when it\u2014 \u201d</em> The recording ends in a sound you will hear again behind your eyes for as long as you have eyes.</p>",
+      "choices": [ { "text": "Back to the corridor.", "to": "corridor" } ]
+    },
+    "medbay": {
+      "title": "Med-bay",
+      "text": "<p>The med-bay smells of antiseptic and something underneath it. Two crew lie on the slabs under sheets that were white once. A supply cabinet hangs ajar.</p>",
+      "choices": [
+        { "text": "Search the supply cabinet.", "requires": { "notFlag": "tookgel2" }, "effects": { "add": ["medgel"], "flags": { "tookgel2": true } }, "to": "medbay_cab" },
+        { "text": "Lift the sheet on the nearest slab.", "requires": { "notFlag": "liftedsheet" }, "effects": { "sanity": -15, "flags": { "liftedsheet": true } }, "to": "medbay_sheet" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "medbay_cab": {
+      "title": "Med-bay",
+      "text": "<p>One med-gel ampoule rolls to the back of the cabinet. You pocket it. Small mercy.</p>",
+      "choices": [
+        { "text": "Lift the sheet on the nearest slab.", "requires": { "notFlag": "liftedsheet" }, "effects": { "sanity": -15, "flags": { "liftedsheet": true } }, "to": "medbay_sheet" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "medbay_sheet": {
+      "title": "Med-bay",
+      "text": "<p>You shouldn't have. The body is intact and entirely wrong \u2014 the face fixed mid-expression, not pain, not fear. <em>Attention.</em> Whatever happened, this one was paying attention right to the end. You let the sheet fall.</p>",
+      "choices": [ { "text": "Back to the corridor.", "to": "corridor" } ]
+    },
+    "engineering": {
+      "title": "Engineering",
+      "text": "<p>The reactor is a cold black slab. Main power is offline \u2014 that's why the ship is a tomb. A sealed access panel could bring it back, but it's bolted shut. A toolbox lies spilled across the deck plating.</p>",
+      "sanityText": {
+        "30": "<p>The reactor hums even though it's dead. You can feel it in your fillings. The panel is bolted shut. The toolbox has spilled, and the tools point \u2014 all of them \u2014 toward the dark stretch of corridor.</p>"
+      },
+      "choices": [
+        { "text": "Take the hydrospanner from the toolbox.", "requires": { "notItem": "wrench" }, "effects": { "add": ["wrench"] }, "to": "engineering" },
+        { "text": "Open the reactor access panel.", "requires": { "item": "wrench", "notFlag": "power" }, "locked": "Open the reactor access panel. (bolted \u2014 need a tool)", "effects": { "flags": { "power": true } }, "to": "engineering_power" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "engineering_power": {
+      "title": "Engineering",
+      "text": "<p>The panel comes free. You re-seat the breakers and the reactor catches with a deep, resentful hum. Down the corridor, lights stutter to life one bank at a time \u2014 racing toward the dark stretch, then dying again exactly where it begins.</p>",
+      "choices": [ { "text": "Back to the corridor.", "to": "corridor" } ]
+    },
+    "darkgap": {
+      "title": "The dark stretch",
+      "text": "<p>The gap swallows the torchlight whole. Air moves against your face \u2014 exhaled, not vented. Something is here with you, between you and the escape bay beyond.</p>",
+      "choices": [
+        { "text": "Raise the torch and look directly at it.", "requires": { "item": "flashlight", "notFlag": "sawit" }, "effects": { "sanity": -15, "add": ["keycard"], "flags": { "sawit": true } }, "to": "darkgap_lit" },
+        { "text": "Kill the torch and feel along the wall in the black.", "requires": { "notFlag": "feltpast" }, "effects": { "sanity": -35, "flags": { "feltpast": true } }, "to": "darkgap_blind" },
+        { "text": "Continue to the escape bay.", "requires": { "flag": "sawit" }, "to": "escape" },
+        { "text": "Continue to the escape bay.", "requires": { "flag": "feltpast", "notFlag": "sawit" }, "to": "escape" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "darkgap_lit": {
+      "title": "The dark stretch",
+      "text": "<p>You raise the beam. It's the captain \u2014 or it's wearing the captain \u2014 folded into the ceiling space, head tilted with that same terrible attention. It does not move toward you. It simply lets you see. A keycard hangs from the corpse's belt; you take it with hands that won't stop shaking, and it lets you.</p>",
+      "choices": [
+        { "text": "Continue to the escape bay.", "to": "escape" },
+        { "text": "Retreat to the corridor.", "to": "corridor" }
+      ]
+    },
+    "darkgap_blind": {
+      "title": "The dark stretch",
+      "text": "<p>You kill the light and trust your hands. Halfway through, your fingers find a face on the wall at chest height \u2014 warm, smiling, patient \u2014 and it turns to follow your palm as you pass. You do not stop. You do not breathe. Something is missing from you when you reach the far side, and you don't know yet what it was.</p>",
+      "choices": [
+        { "text": "Continue to the escape bay.", "to": "escape" },
+        { "text": "Retreat to the corridor.", "to": "corridor" }
+      ]
+    },
+    "escape": {
+      "title": "Escape bay",
+      "text": "<p>One pod remains in its cradle, intact, waiting. Its console asks for two things: command authorisation, and power.</p>",
+      "choices": [
+        { "text": "Insert the captain's keycard and launch.", "requires": { "item": "keycard", "flag": "power" }, "to": "end_escape" },
+        { "text": "Insert the keycard and launch.", "requires": { "notItem": "keycard" }, "locked": "Insert authorisation. (no keycard \u2014 the captain had it)" },
+        { "text": "Launch.", "requires": { "item": "keycard", "notFlag": "power" }, "locked": "Launch. (no power \u2014 the reactor is dead)" },
+        { "text": "Forget the pod. Open the outer airlock and walk out into the stars.", "requires": { "sanityMax": 35 }, "to": "end_airlock" },
+        { "text": "Back to the corridor.", "to": "corridor" }
+      ]
+    },
+    "end_escape": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// LAUNCH",
+        "text": "<p>The pod tears free of the cradle. Through the port, the Kestrel-9 shrinks to a dead grey splinter against impossible stars \u2014 and on its hull, for just a moment, something turns to watch you go. Then distance takes it.</p><p>You are awake. You are alone. You are alive. Two of those will fade with time.</p>"
+      }
+    },
+    "end_airlock": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// HULL BREACH",
+        "text": "<p>The stars are so kind. They've been calling the whole time and you only just heard. The outer door cycles, the air leaves in a single grateful breath, and you go to meet them smiling.</p><p>The ship logs the breach and powers down its last light.</p>"
+      }
+    }
+  }
+}

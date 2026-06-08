@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAKE ALONE // salvage log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --phosphor:#ffb000; --phosphor-dim:#8a5f00; --bg:#070806; --panel:#0d0f0c;
+    --red:#ff3b30; --green:#5ad17a; --glitch:0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(120% 90% at 50% 10%, #11150f 0%, var(--bg) 60%, #020302 100%);
+    color:var(--phosphor); font-family:"IBM Plex Mono",monospace; font-size:17px;
+    line-height:1.65; overflow-x:hidden; min-height:100%;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+      rgba(0,0,0,calc(0.18 + 0.25*var(--glitch))) 3px, rgba(0,0,0,calc(0.18 + 0.25*var(--glitch))) 4px);
+    mix-blend-mode:multiply;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:51;
+    box-shadow:inset 0 0 220px 60px rgba(0,0,0,0.9);
+    background:radial-gradient(60% 60% at 50% 45%, transparent 60%, rgba(0,0,0,0.55) 100%);
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 22px 120px;position:relative;z-index:1}
+  @keyframes flick{0%,100%{opacity:1} 92%{opacity:1}
+    93%{opacity:calc(1 - 0.5*var(--glitch))} 94%{opacity:1}
+    96%{opacity:calc(1 - 0.7*var(--glitch))} 97%{opacity:1}}
+  .screen{animation:flick 6s infinite steps(1)}
+  .glitchable{text-shadow:
+      calc(1.5px*var(--glitch)) 0 calc(2px*var(--glitch)) rgba(255,0,40,calc(0.7*var(--glitch))),
+      calc(-1.5px*var(--glitch)) 0 calc(2px*var(--glitch)) rgba(0,180,255,calc(0.7*var(--glitch)));}
+  .hud{position:sticky;top:0;z-index:10;background:linear-gradient(180deg, var(--bg) 70%, transparent);
+    padding:10px 0 16px;margin-bottom:10px;border-bottom:1px solid rgba(255,176,0,.18);}
+  .hud-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    font-family:"VT323",monospace;font-size:22px;letter-spacing:.5px}
+  .loc{color:var(--phosphor);text-transform:uppercase}
+  .loc .tag{color:var(--phosphor-dim)}
+  .sanity-wrap{flex:1;min-width:160px}
+  .sanity-label{font-family:"VT323",monospace;font-size:18px;color:var(--phosphor-dim);display:flex;justify-content:space-between}
+  .bar{height:10px;background:#1a1d16;border:1px solid rgba(255,176,0,.25);margin-top:2px;position:relative;overflow:hidden}
+  .bar > i{display:block;height:100%;transition:width .5s ease, background .5s ease}
+  .inv{font-family:"VT323",monospace;font-size:19px;color:var(--phosphor-dim);width:100%;margin-top:4px}
+  .inv b{color:var(--phosphor);font-weight:400}
+  .medbtn{font-family:"VT323",monospace;font-size:19px;cursor:pointer;background:transparent;
+    color:var(--green);border:1px solid var(--green);padding:1px 10px;letter-spacing:.5px;}
+  .medbtn:hover{background:var(--green);color:#021006}
+  .nodetitle{font-family:"VT323",monospace;font-size:30px;color:var(--phosphor);
+    text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px}
+  .prose p{margin:0 0 16px} .prose{margin-bottom:26px}
+  .choice{display:block;width:100%;text-align:left;cursor:pointer;background:rgba(255,176,0,.03);
+    border:1px solid rgba(255,176,0,.28);color:var(--phosphor);font-family:"IBM Plex Mono",monospace;
+    font-size:16px;padding:12px 16px;margin:8px 0;line-height:1.45;transition:background .15s,border-color .15s,transform .05s;}
+  .choice::before{content:"> ";color:var(--phosphor-dim)}
+  .choice:hover{background:rgba(255,176,0,.12);border-color:var(--phosphor)}
+  .choice:active{transform:translateX(2px)}
+  .choice.locked{cursor:not-allowed;color:#5a4a22;border-color:rgba(255,176,0,.1);background:transparent;}
+  .choice.locked::before{content:"x "}
+  .title-screen{padding-top:40px;text-align:center}
+  .bigtitle{font-family:"VT323",monospace;font-size:84px;line-height:.9;letter-spacing:2px}
+  .sub{font-family:"VT323",monospace;font-size:24px;color:var(--phosphor-dim);margin:6px 0 40px}
+  .eplist{max-width:520px;margin:0 auto;text-align:left}
+  .epcard{border:1px solid rgba(255,176,0,.28);padding:16px 18px;margin:12px 0;cursor:pointer;transition:background .15s,border-color .15s}
+  .epcard:hover{background:rgba(255,176,0,.08);border-color:var(--phosphor)}
+  .epcard.locked{cursor:not-allowed;color:#5a4a22;border-color:rgba(255,176,0,.1)}
+  .epcard .epn{font-family:"VT323",monospace;font-size:18px;color:var(--phosphor-dim)}
+  .epcard .ept{font-family:"VT323",monospace;font-size:30px;letter-spacing:1px}
+  .epcard .epb{font-size:14px;color:var(--phosphor-dim);margin-top:4px}
+  .ending{padding-top:30px}
+  .ending .stamp{font-family:"VT323",monospace;font-size:46px;letter-spacing:2px;margin-bottom:18px}
+  .stamp.dead{color:var(--red)} .stamp.escape{color:var(--green)} .stamp.madness{color:#c08bff}
+  .restart{margin-top:30px}
+  .footer{margin-top:60px;font-family:"VT323",monospace;font-size:16px;color:#3a2f12;text-align:center}
+  .cursor{display:inline-block;width:9px;height:18px;background:var(--phosphor);margin-left:3px;
+    animation:blink 1.1s steps(1) infinite;vertical-align:-2px}
+  @keyframes blink{50%{opacity:0}}
+</style>
+</head>
+<body>
+<div class="wrap screen" id="root"></div>
+<script>
+/* ===== content injected at build time ===== */
+let MANIFEST = { title:"WAKE ALONE", subtitle:"preview build (no episodes injected)" };
+let EPISODES = [];
+let ITEM_NAMES = {};
+/*__INJECT__*/
+
+/* ===== engine (deterministic runtime) ===== */
+const root = document.getElementById("root");
+let episode=null, state=null;
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+
+function setGlitch(){
+  const g = state ? ((100-state.sanity)/100) : 0;
+  document.documentElement.style.setProperty("--glitch", g.toFixed(2));
+}
+function applyEffects(e){
+  if(!e) return;
+  if(typeof e.sanity==="number") state.sanity=clamp(state.sanity+e.sanity,0,100);
+  (e.add||[]).forEach(i=>{ if(!state.inventory.includes(i)) state.inventory.push(i); });
+  (e.remove||[]).forEach(i=>{ state.inventory=state.inventory.filter(x=>x!==i); });
+  if(e.flags) Object.assign(state.flags, e.flags);
+}
+function meets(req){
+  if(!req) return true;
+  if(req.item && !state.inventory.includes(req.item)) return false;
+  if(req.notItem && state.inventory.includes(req.notItem)) return false;
+  if(typeof req.sanityMax==="number" && state.sanity>req.sanityMax) return false;
+  if(typeof req.sanityMin==="number" && state.sanity<req.sanityMin) return false;
+  if(req.flag && !state.flags[req.flag]) return false;
+  if(req.notFlag && state.flags[req.notFlag]) return false;
+  return true;
+}
+function startEpisode(ep){
+  episode=ep;
+  state={ sanity: ep.startSanity??100, inventory:[...(ep.startInventory||[])], flags:{}, entered:{}, current: ep.start };
+  goto(ep.start); window.scrollTo(0,0);
+}
+function goto(id){
+  state.current=id;
+  const node=episode.nodes[id];
+  if(node.onEnter && !state.entered[id]) applyEffects(node.onEnter);
+  state.entered[id]=true; setGlitch();
+  if(state.sanity<=0 && !node.ending) return renderMadness();
+  render(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function pickText(node){
+  let t=node.text||"";
+  if(node.sanityText){
+    Object.keys(node.sanityText).map(Number).sort((a,b)=>b-a)
+      .forEach(k=>{ if(state.sanity<=k) t=node.sanityText[k]; });
+  }
+  return t;
+}
+function sanityColor(){
+  if(state.sanity>60) return "var(--green)";
+  if(state.sanity>30) return "var(--phosphor)";
+  return "var(--red)";
+}
+function hudHTML(node){
+  const inv = state.inventory.length
+    ? state.inventory.map(i=>`<b>${ITEM_NAMES[i]||i}</b>`).join(" \u00b7 ") : "<span>\u2014 nothing \u2014</span>";
+  const med = state.inventory.includes("medgel")
+    ? `<button class="medbtn" onclick="useGel()">USE MED-GEL [+25]</button>` : "";
+  return `<div class="hud">
+    <div class="hud-row">
+      <div class="loc">${node.title?`<span class="tag">LOC //</span> ${node.title}`:""}</div>
+      <div class="sanity-wrap">
+        <div class="sanity-label"><span>NEURAL INTEGRITY</span><span>${state.sanity}%</span></div>
+        <div class="bar"><i style="width:${state.sanity}%;background:${sanityColor()}"></i></div>
+      </div>
+    </div>
+    <div class="hud-row" style="margin-top:6px">
+      <div class="inv"><span style="color:var(--phosphor-dim)">INV //</span> ${inv}</div>${med}
+    </div></div>`;
+}
+function render(){
+  const node=episode.nodes[state.current];
+  if(node.ending) return renderEnding(node.ending);
+  const choices = node.choices.map((c,idx)=>{
+    if(meets(c.requires)) return `<button class="choice glitchable" onclick="choose(${idx})">${c.text}</button>`;
+    if(c.locked) return `<div class="choice locked">${c.locked}</div>`;
+    return "";
+  }).join("");
+  root.innerHTML = hudHTML(node)
+    + `${node.title?`<div class="nodetitle glitchable">${node.title}</div>`:""}`
+    + `<div class="prose glitchable">${pickText(node)}</div>` + choices + footer();
+}
+function choose(idx){
+  const c=episode.nodes[state.current].choices[idx];
+  if(!meets(c.requires)) return;
+  applyEffects(c.effects); setGlitch();
+  if(state.sanity<=0) return renderMadness();
+  goto(c.to);
+}
+function useGel(){
+  if(!state.inventory.includes("medgel")) return;
+  applyEffects({sanity:+25, remove:["medgel"]}); setGlitch(); render();
+}
+function renderEnding(end){
+  setGlitch();
+  root.innerHTML = `<div class="ending"><div class="stamp ${end.type}">${end.stamp}</div>
+    <div class="prose glitchable">${end.text}</div>
+    <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderMadness(){
+  document.documentElement.style.setProperty("--glitch","1");
+  root.innerHTML = `<div class="ending"><div class="stamp madness">// COHERENCE LOST</div>
+    <div class="prose glitchable">
+      <p>The ship was always like this. You were always here. The others left because you asked them to, didn't you, didn't you, and the smiling face on the wall is just your face, it's only ever been your face, awake and awake and awake and\u2014</p>
+      <p>You stop looking for the way out. There was never a way out of a place you never left.</p></div>
+    <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function titleScreen(){
+  episode=null; state=null;
+  document.documentElement.style.setProperty("--glitch","0");
+  const words=(MANIFEST.title||"WAKE ALONE").split(" ");
+  const cards = EPISODES.map((ep,i)=>{
+    const n = "EP " + String(i+1).padStart(2,"0");
+    if(ep.locked) return `<div class="epcard locked"><div class="epn">${n} // ENCRYPTED</div>
+      <div class="ept">[ ${ep.title} ]</div><div class="epb">${ep.byline||""}</div></div>`;
+    return `<div class="epcard" onclick="startEpisode(EPISODES[${i}])">
+      <div class="epn">${n}</div><div class="ept">${ep.title}</div>
+      <div class="epb">${ep.byline||""}</div></div>`;
+  }).join("");
+  root.innerHTML = `<div class="title-screen">
+    <div class="bigtitle glitchable">${words.join("<br>")}</div>
+    <div class="sub">${MANIFEST.subtitle||""}<span class="cursor"></span></div>
+    <div class="eplist">${cards}</div></div>` + footer();
+  window.scrollTo(0,0);
+}
+function footer(){ return `<div class="footer">skein v0.1 \u2014 neural integrity at 0% ends the run</div>`; }
+titleScreen();
+</script>
+</body>
+</html>
