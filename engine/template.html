@@ -296,7 +296,7 @@ function setScreen(play){
    *Sec: animation periods in seconds (bigger = slower). center(=fit): size and
    centre the bow on the reading column, so the copy sits in the curved zone on a
    wide desktop too, instead of stranded in the flat centre of a viewport barrel. */
-const WARP = { strength:160, curve:3, pulse:0.12, pulseSec:5.5, termSec:4.2, madSec:9, center:true };
+const WARP = { strength:160, curve:3, pulse:0, pulseSec:5.5, termSec:4.2, madSec:9, center:true };
 
 /* Where to park the bow and how big to make it, in normalized [-1,1] viewport units.
    center off -> a plain viewport barrel (corner radius = sqrt2). */
@@ -334,8 +334,13 @@ function applyScreenFilter(){
       parts.push("url(#tubewarp)"); runWarp();
     } else {
       const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*WARP.strength*sizef;
-      if(scale>0.5){ warpBase=scale; ensureTubeWarp(scale, fit); parts.push("url(#tubewarp)"); runWarp(); }
-      else { warpBase=0; stopWarp(); }
+      if(scale>0.5){
+        warpBase=scale; ensureTubeWarp(scale, fit); parts.push("url(#tubewarp)");
+        // Animate ONLY at terminal (near death). Above that the bow is STATIC -- a live
+        // full-screen displacement filter re-rendered every frame pegs the GPU/fan, and
+        // critical is a wide band you sit in. Breathing at critical is opt-in via pulse.
+        if(tier==="terminal" || WARP.pulse>0) runWarp(); else stopWarp();
+      } else { warpBase=0; stopWarp(); }
     }
   } else { warpBase=0; stopWarp(); }
   crtEl.style.filter=parts.join(" ");
@@ -387,15 +392,20 @@ let warpRAF=0, warpBase=0;
 function stopWarp(){ if(warpRAF){ cancelAnimationFrame(warpRAF); warpRAF=0; } }
 function runWarp(){
   if(warpRAF || REDUCED) return;
-  const t0=performance.now();
+  const t0=performance.now(); let last=-1e9;
   const tick=(t)=>{
     const mad=html.classList.contains("madness");
     if(!mad && !(state && isPlayNode() && warpBase>0.5)){ warpRAF=0; return; }
-    const e=(t-t0)/1000, w=2*Math.PI; let s;
-    if(mad){ s=(WARP.strength*0.95)*(-0.75 + 0.3*Math.sin(w*e/WARP.madSec)); }
-    else if(tierOf(state.sanity)==="terminal"){ s=warpBase*(0.2 + 0.9*Math.sin(w*e/WARP.termSec)); }
-    else { s=warpBase*(1 + WARP.pulse*Math.sin(w*e/WARP.pulseSec)); }
-    if(warpDisp) warpDisp.setAttribute("scale", s.toFixed(1));
+    // throttle the filter re-render to ~20fps -- the breaths/wobble are seconds long, so
+    // rewriting the displacement scale every vsync frame just burns the GPU for no gain.
+    if(t-last>=50){
+      last=t;
+      const e=(t-t0)/1000, w=2*Math.PI; let s;
+      if(mad){ s=(WARP.strength*0.95)*(-0.75 + 0.3*Math.sin(w*e/WARP.madSec)); }
+      else if(tierOf(state.sanity)==="terminal"){ s=warpBase*(0.2 + 0.9*Math.sin(w*e/WARP.termSec)); }
+      else { s=warpBase*(1 + WARP.pulse*Math.sin(w*e/WARP.pulseSec)); }
+      if(warpDisp) warpDisp.setAttribute("scale", s.toFixed(1));
+    }
     warpRAF=requestAnimationFrame(tick);
   };
   warpRAF=requestAnimationFrame(tick);
@@ -732,6 +742,7 @@ function labSanity(v){
   if(!state) return;
   v=clamp(v|0,0,100);
   if(v<=0){ state.sanity=0; renderMadness(); const s=document.getElementById("lab-sval"); if(s)s.textContent=0; return; }
+  html.classList.remove("madness","crush"); // lab can climb back out of madness; gameplay can't
   state.sanity=v; labRefresh();
   if(labAuto) startWatch();
 }
