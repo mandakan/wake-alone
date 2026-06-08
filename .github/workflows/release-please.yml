@@ -1,0 +1,40 @@
+name: Release
+
+# release-please keeps a Release PR open on main, bumping package.json and
+# CHANGELOG.md from conventional commits. When that PR is merged and a release
+# is cut, the same job builds and deploys to the production Worker (wake-alone).
+# Running the deploy in the same job means the default GITHUB_TOKEN is enough --
+# no PAT needed to chain a separate workflow off the release tag.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # The steps below run only when a release was just created.
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/setup-node@v4
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: ${{ steps.release.outputs.release_created }}
+      - run: npm run build
+        if: ${{ steps.release.outputs.release_created }}
+      - run: npx wrangler deploy
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

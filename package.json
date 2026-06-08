@@ -6,7 +6,12 @@
   "scripts": {
     "validate": "node tools/validate.mjs",
     "build": "node tools/build.mjs",
-    "new": "node tools/new.mjs"
+    "new": "node tools/new.mjs",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.94.0"
+  }
 }

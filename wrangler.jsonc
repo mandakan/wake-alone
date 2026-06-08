@@ -1,0 +1,21 @@
+{
+  // Cloudflare Workers config for WAKE ALONE.
+  // Assets-only Worker: no server script, just serves the built dist/index.html.
+  // Prod:    wrangler deploy
+  // Staging: wrangler deploy --env staging
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wake-alone",
+  "account_id": "e1854db8e2a989281305b1b229319c31",
+  "compatibility_date": "2025-06-01",
+  "assets": {
+    "directory": "./dist"
+  },
+  "env": {
+    "staging": {
+      "name": "wake-alone-staging",
+      "assets": {
+        "directory": "./dist"
+      }
+    }
+  }
+}
