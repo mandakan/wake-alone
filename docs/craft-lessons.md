@@ -121,3 +121,27 @@ variant cold, asking "does this parse?"). Subjective - not mechanically checkabl
 cutting a cliche, fixing cadence) can quietly trade legibility for the fix. GRAFT's gauge line went
 obscure precisely when it was reworded to break a WARD echo. After any such edit, re-read the new
 sentence cold for sense - do not assume a reword is safe because it cleared the original warning.
+
+## L7 - `sanityText` REPLACES the base text, so every variant must stand on its own
+
+**Feedback:** on GRAFT's bay - "Is the gauge introduced previously in the story since it being
+referenced?" The low-sanity bay variants said "the gauge" and "since you last looked", but the
+gauge is introduced only in the bay's *base* text.
+**Mechanic (the trap):** the engine's `pickText` sets `t = node.sanityText[k]` for the lowest
+matching threshold - the variant is shown **instead of** the base text, not appended. And a node can
+be entered for the *first time* already below a threshold (in GRAFT, reading the consent screen on
+the way down drops you to ~22, so the first time you ever see the bay you get the `20` variant). So
+the base text - and anything introduced only there - may never have been shown.
+**Rule:** Treat each `sanityText` variant as a complete, standalone description of the node, just
+degraded. Re-introduce any object or place it names (do not lean on the base text to have
+established it), and never imply prior presence ("again", "still", "since you last looked", "it has
+branched") unless the node is provably only reachable after a prior visit. The base text is for the
+calm first read; the variant must also work as a cold first read.
+**Latent instances:** other episodes likely have this - e.g. WARD's `viewport` `40` variant opens
+"It is not branching now. It has branched", which assumes the base text's branching was seen, yet
+the viewport can be first-entered below 40. Worth an audit.
+**Enforced by:** this rule + final-read for now. **Intended mechanical check** (not yet built): the
+solver already tracks `entered` and `nodeMinSanity`; extend it to record each node's *first-arrival*
+sanity, and warn when a node's highest `sanityText` threshold >= that first-arrival sanity (i.e. a
+variant can be the first text a player ever sees for that node) so the author confirms it stands
+alone. Pair with a fixture self-test, like the other solver checks.
