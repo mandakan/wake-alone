@@ -282,16 +282,23 @@ function setScreen(play){
    sanity, the bow eases in below ~60 and peaks at terminal. Cleared off-play. */
 function applyScreenFilter(){
   if(!crtEl) return;
-  const parts=[], play=isPlayNode(), tier=(play&&state)?tierOf(state.sanity):"stable";
+  const parts=[], mad=html.classList.contains("madness");
+  const play=isPlayNode(), tier=(play&&state)?tierOf(state.sanity):"stable";
   if(play && FEAT.tiers){
     if(tier==="strained") parts.push("brightness(.93)","saturate(.96)");
     else if(tier==="critical") parts.push("brightness(.84)","saturate(.9)");
     else if(tier==="terminal") parts.push("brightness(.74)","saturate(.85)");
   }
-  if(play && FEAT.warp && state && !REDUCED){
-    const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*42;
-    if(scale>0.5){ ensureTubeWarp(scale); parts.push("url(#tubewarp)"); }
-  }
+  if(mad && FEAT.warp && !REDUCED){
+    // madness: reality settled into the wrong shape -- a held, breathing pincushion
+    warpBase=80; ensureTubeWarp(-80); parts.push("url(#tubewarp)"); startWarpWobble();
+  } else if(play && FEAT.warp && state && !REDUCED){
+    const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*85;
+    if(scale>0.5){
+      warpBase=scale; ensureTubeWarp(scale); parts.push("url(#tubewarp)");
+      if(tier==="terminal") startWarpWobble(); else stopWarpWobble();
+    } else stopWarpWobble();
+  } else stopWarpWobble();
   crtEl.style.filter=parts.join(" ");
 }
 
@@ -305,20 +312,50 @@ function barrelMap(){
   const S=128, cv=document.createElement("canvas"); cv.width=cv.height=S;
   const ctx=cv.getContext("2d"), img=ctx.createImageData(S,S), d=img.data;
   for(let y=0;y<S;y++) for(let x=0;x<S;x++){
-    const nx=(x/(S-1))*2-1, ny=(y/(S-1))*2-1, r2=(nx*nx+ny*ny)/2;
-    const dx=-nx*r2, dy=-ny*r2, i=(y*S+x)*4;
+    const nx=(x/(S-1))*2-1, ny=(y/(S-1))*2-1, r=Math.sqrt((nx*nx+ny*ny)/2);
+    // barrel bow; linear radius lifts the mid-field so a centered column curves too,
+    // not just the screen edges. A NEGATIVE feDisplacementMap scale flips it to pincushion.
+    const dx=-nx*r, dy=-ny*r, i=(y*S+x)*4;
     d[i]=clamp(128+dx*127,0,255); d[i+1]=clamp(128+dy*127,0,255); d[i+2]=128; d[i+3]=255;
   }
   ctx.putImageData(img,0,0); BARREL_MAP=cv.toDataURL(); return BARREL_MAP;
 }
+/* Build the SVG filter once per viewport size, then set displacement via a cheap
+   attribute write so the terminal/madness wobble can animate it every frame without
+   re-decoding the map. scale>0 bows barrel; scale<0 bows pincushion. */
+let warpDisp=null, warpDim="";
 function ensureTubeWarp(scale){
   const defs=document.querySelector("#warpdefs defs");
-  const w=window.innerWidth||1, h=window.innerHeight||1; // #crt is viewport-sized
-  defs.innerHTML =
-    '<filter id="tubewarp" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
-    '<feImage href="'+barrelMap()+'" preserveAspectRatio="none" x="0" y="0" width="'+w+'" height="'+h+'" result="m"></feImage>'+
-    '<feDisplacementMap in="SourceGraphic" in2="m" scale="'+scale.toFixed(1)+'" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>'+
-    '</filter>';
+  const w=window.innerWidth||1, h=window.innerHeight||1, dim=w+"x"+h; // #crt is viewport-sized
+  if(!warpDisp || warpDim!==dim){
+    defs.innerHTML =
+      '<filter id="tubewarp" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
+      '<feImage href="'+barrelMap()+'" preserveAspectRatio="none" x="0" y="0" width="'+w+'" height="'+h+'" result="m"></feImage>'+
+      '<feDisplacementMap in="SourceGraphic" in2="m" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>'+
+      '</filter>';
+    warpDisp=defs.querySelector("feDisplacementMap"); warpDim=dim;
+  }
+  warpDisp.setAttribute("scale", scale.toFixed(1));
+}
+/* The wobble: at terminal the bow breathes from barrel through flat into pincushion
+   and back -- the glass can't hold a shape. Self-stops when we leave terminal/madness. */
+let warpRAF=0, warpBase=0;
+function stopWarpWobble(){ if(warpRAF){ cancelAnimationFrame(warpRAF); warpRAF=0; } }
+function startWarpWobble(){
+  if(warpRAF || REDUCED) return;
+  const t0=performance.now();
+  const tick=(t)=>{
+    const mad=html.classList.contains("madness");
+    const term=!mad && state && isPlayNode() && tierOf(state.sanity)==="terminal";
+    if(!mad && !term){ warpRAF=0; return; }
+    // terminal: crosses zero, barrel <-> pincushion (can't hold shape).
+    // madness: stays negative, a slow breathing pincushion (settled into the wrong shape).
+    const e=(t-t0)/1000, period=mad?2.8:3.4, amp=mad?0.35:0.9, bias=mad?-0.75:0.2;
+    const s=warpBase*(bias + amp*Math.sin(e*2*Math.PI/period));
+    if(warpDisp) warpDisp.setAttribute("scale", s.toFixed(1));
+    warpRAF=requestAnimationFrame(tick);
+  };
+  warpRAF=requestAnimationFrame(tick);
 }
 
 function applyEffects(e){
