@@ -284,19 +284,26 @@ function setScreen(play){
    never reflow content out of the box (the v1 soft-lock). Sanity-gated: flat at high
    sanity, the bow eases in below ~60 and peaks at terminal. Cleared off-play. */
 /* 06 — TUBE WARP. Tunable so the look can be dialled in live from the lab (#lab).
-   strength: peak displacement px. curve: radial exponent (<1 bows the mid-field
-   harder, 2 = only the edges). pulse: breathing depth at strained/critical.
-   *Sec: animation periods in seconds (bigger = slower). center: park the bow's
-   neutral point on the reading column instead of viewport-centre, so the copy
-   bulges symmetrically instead of shearing toward screen-centre. */
-const WARP = { strength:90, curve:2.2, pulse:0.12, pulseSec:5.5, termSec:4.2, madSec:9, center:true };
+   strength: peak displacement px. curve: radial exponent; MUST be >=~2 to bow
+   (a linear field is a flat zoom). pulse: breathing depth at strained/critical.
+   *Sec: animation periods in seconds (bigger = slower). center(=fit): size and
+   centre the bow on the reading column, so the copy sits in the curved zone on a
+   wide desktop too, instead of stranded in the flat centre of a viewport barrel. */
+const WARP = { strength:60, curve:2.2, pulse:0.12, pulseSec:5.5, termSec:4.2, madSec:9, center:true };
 
-function contentCenterY(){
-  if(!WARP.center) return 0;
-  const el=(root.querySelector(".sc")||root), r=el.getBoundingClientRect(), vh=window.innerHeight||1;
-  if(!r.height) return 0;
-  const cy=(clamp(r.top,0,vh)+clamp(r.bottom,0,vh))/2; // middle of the visible copy
-  return clamp((cy/vh)*2-1, -0.7, 0.7);                // -> normalized [-1,1]
+/* Where to park the bow and how big to make it, in normalized [-1,1] viewport units.
+   center off -> a plain viewport barrel (corner radius = sqrt2). */
+function contentFit(){
+  if(!WARP.center) return {cx:0, cy:0, rad:Math.SQRT2};
+  const el=(root.querySelector(".sc")||root), r=el.getBoundingClientRect();
+  const vw=window.innerWidth||1, vh=window.innerHeight||1;
+  if(!r.width || !r.height) return {cx:0, cy:0, rad:Math.SQRT2};
+  const top=clamp(r.top,0,vh), bot=clamp(r.bottom,0,vh);
+  const cx=clamp(((r.left+r.right)/2/vw)*2-1, -0.6, 0.6);
+  const cy=clamp((((top+bot)/2)/vh)*2-1, -0.7, 0.7);
+  const hw=r.width/vw, hh=(bot-top)/vh;              // copy half-extents (normalized)
+  const rad=clamp(Math.max(hw,hh)*1.2, 0.4, Math.SQRT2); // barrel radius hugs the copy
+  return {cx, cy, rad};
 }
 function applyScreenFilter(){
   if(!crtEl) return;
@@ -308,13 +315,13 @@ function applyScreenFilter(){
     else if(tier==="terminal") parts.push("brightness(.74)","saturate(.85)");
   }
   if((mad || (play&&state)) && FEAT.warp && !REDUCED){
-    const cy=contentCenterY();
+    const fit=contentFit();
     if(mad){
-      warpBase=WARP.strength*0.95; ensureTubeWarp(-warpBase*0.75, cy);
+      warpBase=WARP.strength*0.95; ensureTubeWarp(-warpBase*0.75, fit);
       parts.push("url(#tubewarp)"); runWarp();
     } else {
       const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*WARP.strength;
-      if(scale>0.5){ warpBase=scale; ensureTubeWarp(scale, cy); parts.push("url(#tubewarp)"); runWarp(); }
+      if(scale>0.5){ warpBase=scale; ensureTubeWarp(scale, fit); parts.push("url(#tubewarp)"); runWarp(); }
       else { warpBase=0; stopWarp(); }
     }
   } else { warpBase=0; stopWarp(); }
@@ -325,18 +332,19 @@ function applyScreenFilter(){
    Magnitude = radius^curve along the radial direction; neutral point shifted to cy so
    the bow can centre on the copy. A NEGATIVE feDisplacementMap scale flips it pincushion. */
 let BARREL_MAP=null, BARREL_KEY="";
-function barrelMap(centerY){
-  const cy=Math.round((centerY||0)*40)/40, key=WARP.curve.toFixed(2)+"|"+cy;
+function barrelMap(fit){
+  const cx=Math.round(fit.cx*30)/30, cy=Math.round(fit.cy*30)/30, rd=Math.round(fit.rad*30)/30;
+  const key=WARP.curve.toFixed(2)+"|"+cx+"|"+cy+"|"+rd;
   if(BARREL_MAP && BARREL_KEY===key) return BARREL_MAP;
   const S=128, cv=document.createElement("canvas"); cv.width=cv.height=S;
   const ctx=cv.getContext("2d"), img=ctx.createImageData(S,S), d=img.data;
   for(let y=0;y<S;y++) for(let x=0;x<S;x++){
-    const nx=(x/(S-1))*2-1, ny=((y/(S-1))*2-1)-cy;
-    const rr=Math.min(Math.sqrt((nx*nx+ny*ny)/2),1), rad=Math.pow(rr, WARP.curve);
-    const len=Math.sqrt(nx*nx+ny*ny)||1, ux=nx/len, uy=ny/len;
-    // OUTWARD displacement along the radius, magnitude radius^curve. With +scale this
-    // bows BARREL (center magnified, edges convex); -scale flips it pincushion. curve
-    // MUST be >=~2 to bow -- a linear (curve 1) radial field is just a flat zoom.
+    const nx=((x/(S-1))*2-1)-cx, ny=((y/(S-1))*2-1)-cy;
+    const rr=Math.min(Math.hypot(nx,ny)/rd, 1), rad=Math.pow(rr, WARP.curve);
+    const len=Math.hypot(nx,ny)||1, ux=nx/len, uy=ny/len;
+    // OUTWARD displacement along the radius, magnitude (radius/rd)^curve, so the bow
+    // fills the fitted region. +scale bows BARREL (centre magnified, convex edges);
+    // -scale flips it pincushion. curve MUST be >=~2 to bow -- linear is a flat zoom.
     const dx=ux*rad, dy=uy*rad, i=(y*S+x)*4;
     d[i]=clamp(128+dx*127,0,255); d[i+1]=clamp(128+dy*127,0,255); d[i+2]=128; d[i+3]=255;
   }
@@ -345,10 +353,10 @@ function barrelMap(centerY){
 /* Build the SVG filter once per (viewport size + map), then drive displacement via a
    cheap scale attribute write so the breathing/wobble animates without re-decoding. */
 let warpDisp=null, warpKey="";
-function ensureTubeWarp(scale, centerY){
+function ensureTubeWarp(scale, fit){
   const defs=document.querySelector("#warpdefs defs");
   const w=window.innerWidth||1, h=window.innerHeight||1;
-  const href=barrelMap(centerY), key=w+"x"+h+"|"+BARREL_KEY; // BARREL_KEY set by barrelMap()
+  const href=barrelMap(fit), key=w+"x"+h+"|"+BARREL_KEY; // BARREL_KEY set by barrelMap()
   if(!warpDisp || warpKey!==key){
     defs.innerHTML =
       '<filter id="tubewarp" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
@@ -752,8 +760,8 @@ function lab(){
       <div class="wsl"><span>BREATH sec (critical) <b id="v-pulseSec"></b></span><input type="range" data-warp="pulseSec" min="2" max="14" step="0.5"></div>
       <div class="wsl"><span>WOBBLE sec (terminal) <b id="v-termSec"></b></span><input type="range" data-warp="termSec" min="2" max="12" step="0.5"></div>
       <div class="wsl"><span>BREATH sec (madness) <b id="v-madSec"></b></span><input type="range" data-warp="madSec" min="3" max="22" step="0.5"></div>
-      <div class="row"><button id="lab-center">CENTER ON COPY</button></div>
-      <div class="hint">Drop sanity to CRITICAL/TERMINAL first to see the bow. Tell me the value set you like and I'll bake it in as the default.</div>
+      <div class="row"><button id="lab-center">FIT BOW TO COPY</button></div>
+      <div class="hint">The warp is sanity-gated -- it PEAKS at TERMINAL and is near-zero at STRAINED, so judge STRENGTH from the TERMINAL button, not high sanity. FIT sizes the bow to the reading column (off = plain viewport barrel). Tell me the set you like and I'll bake it in.</div>
     </div>
     <div class="grp" style="border:0;padding-bottom:0">
       <div class="row"><button id="lab-reset">RESET ROOM</button></div>
