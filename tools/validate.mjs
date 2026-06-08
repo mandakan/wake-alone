@@ -31,6 +31,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
+import { resolveSpec, estimateMinutes } from "./spec.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const EPISODES_DIR = join(ROOT, "episodes");
@@ -43,6 +44,19 @@ const MAX_STATES = 2_000_000;   // solver safety cap (episodes are tiny; this ne
 
 const C = { red:"\x1b[31m", yellow:"\x1b[33m", green:"\x1b[32m", dim:"\x1b[2m", bold:"\x1b[1m", reset:"\x1b[0m" };
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+// crude word count: strip tags, collapse whitespace, count tokens.
+const words = (s) => (typeof s === "string" ? (s.replace(/<[^>]*>/g, " ").trim().match(/\S+/g) || []).length : 0);
+function episodeWordCount(ep) {
+  let n = 0;
+  for (const node of Object.values(ep.nodes)) {
+    n += words(node.text);
+    if (node.sanityText) for (const v of Object.values(node.sanityText)) n += words(v);
+    (node.choices || []).forEach((c) => { n += words(c.text); n += words(c.locked); });
+    if (node.ending) n += words(node.ending.text);
+  }
+  return n;
+}
 
 export function validateEpisode(ep, name = ep && ep.id) {
   const errors = [];
@@ -163,6 +177,10 @@ export function validateEpisode(ep, name = ep && ep.id) {
   if (reachableEndings.length === 0) E(`no ending is reachable from start (the story can never finish)`);
   const structuralEscapes = reachableEndings.filter((id) => ep.nodes[id].ending.type === "escape");
 
+  // ---- optional generation spec (size / punishment dials) ----
+  const resolved = resolveSpec(ep.spec);
+  if (resolved && resolved.error) E(`spec: ${resolved.error}`);
+
   // ---- sanity-aware solver (only when the graph is sound enough to walk) ----
   let solver = null;
   const danglingRefs = errors.some((m) => m.includes("non-existent node"));
@@ -185,8 +203,11 @@ export function validateEpisode(ep, name = ep && ep.id) {
       }
     }
 
-    // nasty-ending coverage (advisory)
-    if (!solver.truncated && solver.deadEndings.size < MIN_DEAD_ENDINGS) {
+    // nasty-ending coverage. When a punishment spec declares a deadMin, that
+    // becomes a hard floor (handled in the spec block below); otherwise this is
+    // the universal advisory.
+    const specDeadMin = resolved && !resolved.error ? resolved.deadMin : undefined;
+    if (specDeadMin === undefined && !solver.truncated && solver.deadEndings.size < MIN_DEAD_ENDINGS) {
       W(`only ${solver.deadEndings.size} reachable "dead" ending(s); a horror episode should offer ` +
         `a few nasty ways to die (>= ${MIN_DEAD_ENDINGS} recommended)`);
     }
@@ -201,6 +222,41 @@ export function validateEpisode(ep, name = ep && ep.id) {
           }
         });
       }
+    }
+  }
+
+  // ---- metrics + spec thresholds ----
+  const wordCount = episodeWordCount(ep);
+  const optimalSteps = solver && solver.bestEscape ? solver.bestEscape.path.length : null;
+  const estMinutes = solver ? estimateMinutes(wordCount, optimalSteps || 0) : null;
+  let deathRatio = null, escapeCount = null, deadCount = null;
+  if (solver && !solver.truncated) {
+    escapeCount = solver.escapeEndings.size;
+    deadCount = solver.deadEndings.size;
+    const total = escapeCount + deadCount;
+    deathRatio = total ? deadCount / total : 0;
+  }
+
+  if (solver && !solver.truncated && resolved && !resolved.error) {
+    const tag = [resolved.size && `size=${resolved.size}`, resolved.punishment && `punishment=${resolved.punishment}`].filter(Boolean).join(",");
+    // size -> node-count budget (hard)
+    if (resolved.minNodes != null && (nodeIds.length < resolved.minNodes || nodeIds.length > resolved.maxNodes)) {
+      E(`spec(${tag}): ${nodeIds.length} nodes outside the ${resolved.minNodes}-${resolved.maxNodes} range for size "${resolved.size}"`);
+    }
+    // punishment -> dead-ending floor + death ratio (hard)
+    if (resolved.deadMin != null && deadCount < resolved.deadMin) {
+      E(`spec(${tag}): ${deadCount} reachable "dead" ending(s); punishment "${resolved.punishment}" wants >= ${resolved.deadMin}`);
+    }
+    if (resolved.deathRatioFloor != null && deathRatio < resolved.deathRatioFloor) {
+      E(`spec(${tag}): death ratio ${Math.round(deathRatio * 100)}% below the ${Math.round(resolved.deathRatioFloor * 100)}% floor for punishment "${resolved.punishment}"`);
+    }
+    // punishment -> losable to madness (advisory)
+    if (resolved.expectMadness && !solver.madnessReachable) {
+      W(`spec(${tag}): punishment "${resolved.punishment}" expects the run to be losable to madness, but sanity 0 is never reachable`);
+    }
+    // size -> play-time (advisory, derived)
+    if (resolved.minMinutes != null && (estMinutes < resolved.minMinutes || estMinutes > resolved.maxMinutes)) {
+      W(`spec(${tag}): est. play-time ~${estMinutes} min outside the ${resolved.minMinutes}-${resolved.maxMinutes} min range for size "${resolved.size}" (advisory)`);
     }
   }
 
@@ -227,6 +283,11 @@ export function validateEpisode(ep, name = ep && ep.id) {
     madnessReachable: solver ? solver.madnessReachable : null,
     statesExplored: solver ? solver.statesExplored : null,
     truncated: solver ? solver.truncated : null,
+    spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment } : null,
+    words: wordCount,
+    estMinutes,
+    optimalSteps,
+    deathRatio: deathRatio == null ? null : Math.round(deathRatio * 100) / 100,
   };
   return finish(name, errors, warnings, report);
 }
@@ -377,6 +438,8 @@ function printResult(r) {
         ? `${C.green}solvable${C.reset} (best escape: ${rp.bestEscapeSanity}% sanity, ${rp.bestEscapePath ? rp.bestEscapePath.length : "?"} steps)`
         : `${C.red}UNWINNABLE${C.reset}`;
       console.log(`${C.dim}  solver: ${solv}${C.dim} · dead endings: ${rp.deadEndings} · madness reachable: ${rp.madnessReachable ? "yes" : "no"} · states: ${rp.statesExplored}${rp.truncated ? " (truncated)" : ""}${C.reset}`);
+      const ratio = rp.deathRatio == null ? "?" : `${Math.round(rp.deathRatio * 100)}%`;
+      console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`].filter(Boolean).join(", ")}` : ""}${C.reset}`);
     }
   }
   r.errors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));

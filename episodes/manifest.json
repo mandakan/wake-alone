@@ -2,7 +2,15 @@
   "title": "WAKE ALONE",
   "subtitle": "an anthology of small dark rooms in deep space",
   "episodes": [
-    { "file": "derelict.json", "locked": false },
-    { "id": "tycho", "title": "SIGNAL LOST", "byline": "Relay station Tycho-4. The distress call is in your own voice.", "locked": true }
+    {
+      "file": "derelict.json",
+      "locked": false
+    },
+    {
+      "id": "tycho",
+      "title": "SIGNAL LOST",
+      "byline": "Relay station Tycho-4. The distress call is in your own voice.",
+      "locked": true
+    }
   ]
 }

@@ -31,7 +31,8 @@ dist/index.html     build output: standalone, open directly in a browser
 ## Workflow to add an episode
 
 1. `npm run new -- --id <slug> --title "<TITLE>" --byline "<one line>"`
-   (or copy `episodes/derelict.json` as a reference — it's the canonical example).
+   (optionally `--size short|standard|long --punishment gentle|standard|cruel` to scaffold against
+   a generation spec — see Generation dials below; or copy `episodes/derelict.json` as a reference).
 2. Author the nodes (schema below).
 3. For every new inventory item id, add a label to `engine/item-names.json`.
 4. `npm run validate` — fix all ERRORs.
@@ -44,6 +45,7 @@ dist/index.html     build output: standalone, open directly in a browser
 ```jsonc
 {
   "id": "slug", "title": "TITLE", "byline": "one line shown on the menu",
+  "spec": { "size": "standard", "punishment": "standard" }, // optional; see Generation dials. Stripped at build.
   "start": "nodeId", "startSanity": 100, "startInventory": [],
   "nodes": {
     "nodeId": {
@@ -98,6 +100,20 @@ it to pass an episode; fix the episode.
   leave the player above 0 at the escape ending, or the episode is unwinnable.
 - **Gating:** the escape ending should require at least two things assembled from different branches
   (an item + a flag is the standard pattern, as in `derelict`: `keycard` + `power`).
+
+## Generation dials (optional `spec`)
+
+An episode may declare `"spec": { "size", "punishment" }` to commit to a generation contract that
+the validator then enforces. The dials and their thresholds live in `tools/spec.mjs`:
+
+- **size** — `short` (6–9 nodes), `standard` (10–16), `long` (16–24). Node count is a hard floor;
+  play-time (derived from word count + the solver's optimal path) is advisory per size.
+- **punishment** — `gentle` / `standard` / `cruel`. Sets the death-ratio floor (reachable `dead`
+  endings ÷ all reachable endings) and the minimum count of nasty endings; `cruel` also expects
+  madness to be reachable. Death ratio and dead-ending count are hard floors.
+
+With a `spec`, missing a hard floor is an `ERROR`. Without one, only the universal rules apply
+(solvable, ≥2 nasty endings advised). The `author-episode` skill drives these dials end to end.
 
 ## Don't
 

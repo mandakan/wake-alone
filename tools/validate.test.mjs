@@ -4,6 +4,8 @@
 // reaches it. Run: node tools/validate.test.mjs  (npm test). Exit 1 on failure.
 
 import { validateEpisode } from "./validate.mjs";
+import { resolveSpec } from "./spec.mjs";
+import { buildSkeleton } from "./new.mjs";
 
 let passed = 0, failed = 0;
 const C = { red:"\x1b[31m", green:"\x1b[32m", dim:"\x1b[2m", reset:"\x1b[0m" };
@@ -172,6 +174,43 @@ const dead   = (stamp = "// DEAD") => ({ ending: { type: "dead", stamp, text: "<
   check("deadrefs: ok", r.ok, r.errors.join("; "));
   check("deadrefs: dead item warn", hasWarn(r, 'item "trinket"'));
   check("deadrefs: dead flag warn", hasWarn(r, 'flag "seen"'));
+}
+
+// --- spec: scaffold for a spec validates clean against that spec ---
+for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"], ["long", "cruel"]]) {
+  const resolved = resolveSpec({ size, punishment });
+  const ep = { id: `scaf-${size}-${punishment}`, title: "S", spec: { size, punishment },
+    start: "wake", startSanity: 100, startInventory: [], nodes: buildSkeleton(resolved) };
+  const r = validateEpisode(ep);
+  check(`scaffold ${size}/${punishment}: no errors`, r.errors.length === 0, r.errors.join("; "));
+  check(`scaffold ${size}/${punishment}: node count in range`,
+    r.report.nodes >= resolved.minNodes && r.report.nodes <= resolved.maxNodes, `got ${r.report.nodes}`);
+  check(`scaffold ${size}/${punishment}: meets death floor`, r.report.deadEndings >= resolved.deadMin);
+}
+
+// --- spec: unknown dial is an error ---
+{
+  const ep = { id: "badspec", title: "B", spec: { size: "epic" }, start: "a",
+    nodes: { a: { text: "<p>a</p>", choices: [{ text: "go", to: "x" }, { text: "die", to: "d" }] }, x: escape(), d: dead() } };
+  const r = validateEpisode(ep);
+  check("badspec: unknown dial error", hasErr(r, "spec: unknown size"), r.errors.join("; "));
+}
+
+// --- spec: node count below the size floor is an ERROR ---
+{
+  const ep = { id: "toosmall", title: "T", spec: { size: "standard" }, start: "a", startSanity: 100,
+    nodes: { a: { text: "<p>a</p>", choices: [{ text: "go", to: "x" }, { text: "die", to: "d" }] }, x: escape(), d: dead() } };
+  const r = validateEpisode(ep);
+  check("toosmall: node-count error", hasErr(r, "nodes outside"), r.errors.join("; "));
+}
+
+// --- spec: death ratio / dead floor below punishment is an ERROR ---
+{
+  // cruel wants >= 3 dead endings; give it one.
+  const ep = { id: "toosoft", title: "T", spec: { punishment: "cruel" }, start: "a", startSanity: 100,
+    nodes: { a: { text: "<p>a</p>", choices: [{ text: "out", to: "x" }, { text: "die", to: "d" }] }, x: escape(), d: dead() } };
+  const r = validateEpisode(ep);
+  check("toosoft: punishment floor error", hasErr(r, 'punishment "cruel"'), r.errors.join("; "));
 }
 
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);

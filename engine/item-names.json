@@ -2,5 +2,6 @@
   "flashlight": "hand torch",
   "medgel": "med-gel ampoule",
   "keycard": "captain's keycard",
-  "wrench": "hydrospanner"
+  "wrench": "hydrospanner",
+  "key": "key"
 }
