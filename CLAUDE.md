@@ -47,6 +47,7 @@ dist/index.html     build output: standalone, open directly in a browser
   "id": "slug", "title": "TITLE", "byline": "one line shown on the menu",
   "spec": { "size": "standard", "punishment": "standard", "escape": "required" }, // optional; see Generation dials. Stripped at build.
   "character": { "role": "...", "expertise": ["..."], "backstory": "..." }, // optional; drives hint calibration (see below). Stripped at build.
+  "watching": ["UPPERCASE MACHINE LINE.", "..."], // optional; intrusive lines the engine flashes at CRITICAL/TERMINAL sanity. Shipped (not stripped). In-voice, ASCII only.
   "start": "nodeId", "startSanity": 100, "startInventory": [],
   "nodes": {
     "nodeId": {

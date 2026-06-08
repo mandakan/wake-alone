@@ -7,6 +7,18 @@
     "expertise": ["power systems", "ship mechanics", "hand tools", "reactor", "hull"],
     "backstory": "Twelve years crewing deep-belt ore haulers. You went under in cryo with ten others and woke alone. You know this ship's reactor and hull better than your own hands - which is why the things you cannot explain frighten you so much."
   },
+  "watching": [
+    "YOU ARE STILL AWAKE.",
+    "IT IS LOOKING BACK.",
+    "DON'T LOOK AT THE WALL.",
+    "WE LET YOU SEE US.",
+    "STILL HERE. STILL SMILING.",
+    "AWAKE AND AWAKE AND AWAKE.",
+    "THE TENTH POD WAS YOURS.",
+    "IT WANTS YOU AWAKE WHEN IT-",
+    "YOU NEVER LEFT CRYO.",
+    "TURN AROUND."
+  ],
   "start": "cryobay",
   "startSanity": 100,
   "startInventory": [],

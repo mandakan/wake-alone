@@ -8,33 +8,56 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
+  /* ============================================================
+     Design tokens — ported from the WAKE ALONE / skein design system
+     (claude.ai/design handoff). One amber-phosphor hue in four steps,
+     three reserved signal colors, a sharp 0-radius terminal shape system.
+     ============================================================ */
   :root{
-    --phosphor:#ffb000; --phosphor-dim:#8a5f00; --bg:#070806; --panel:#0d0f0c;
-    --red:#ff3b30; --green:#5ad17a; --glitch:0;
+    /* phosphor — the single brand hue, in four steps */
+    --phosphor:#ffb000; --phosphor-dim:#8a5f00; --phosphor-faint:#5a4a22; --phosphor-ghost:#3a2f12;
+    /* background / surface */
+    --bg:#070806; --bg-hi:#11150f; --bg-lo:#020302; --panel:#0d0f0c;
+    --bar-track:#1a1d16; --ink-on-signal:#021006;
+    /* signal colors — narrative state only, never decorative */
+    --red:#ff3b30; --green:#5ad17a; --madness:#c08bff;
+    /* phosphor alpha steps */
+    --phosphor-a03:rgba(255,176,0,.03); --phosphor-a08:rgba(255,176,0,.08);
+    --phosphor-a12:rgba(255,176,0,.12); --phosphor-a18:rgba(255,176,0,.18);
+    --phosphor-a25:rgba(255,176,0,.25); --phosphor-a28:rgba(255,176,0,.28);
+    /* type */
+    --font-display:"VT323","IBM Plex Mono",monospace; --font-body:"IBM Plex Mono",ui-monospace,monospace;
+    --tracking-display:2px; --tracking-node:1px; --tracking-hud:.5px;
+    --type-small:14px; --type-label:18px;
+    /* the radial-void background glow */
+    --surface-gradient:radial-gradient(120% 90% at 50% 10%, var(--bg-hi) 0%, var(--bg) 60%, var(--bg-lo) 100%);
+    /* degradation driver: 0 = calm/full sanity, 1 = coherence lost */
+    --glitch:0; --bleed:0;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   /* Deep-void base on the root so overscroll/rubber-band stays dark (not gray),
      and dark UI chrome (scrollbars). */
-  html{background:#020302; color-scheme:dark}
+  html{background:var(--bg-lo); color-scheme:dark}
   html,body{height:100%}
   body{
     /* The radial glow is the screen's only light source: pin it to the viewport
        (background-attachment:fixed) so it never restarts or seams on scroll, over
        a solid void base. */
-    background:#020302 radial-gradient(120% 90% at 50% 10%, #11150f 0%, var(--bg) 60%, #020302 100%) no-repeat fixed;
-    color:var(--phosphor); font-family:"IBM Plex Mono",monospace; font-size:17px;
+    background:var(--bg-lo) var(--surface-gradient) no-repeat fixed;
+    color:var(--phosphor); font-family:var(--font-body); font-size:17px;
     line-height:1.65; overflow-x:hidden; min-height:100%;
   }
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
     background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
       rgba(0,0,0,calc(0.18 + 0.25*var(--glitch))) 3px, rgba(0,0,0,calc(0.18 + 0.25*var(--glitch))) 4px);
-    mix-blend-mode:multiply;
+    mix-blend-mode:multiply; transition:opacity .9s ease;
   }
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:51;
     box-shadow:inset 0 0 150px 8px rgba(0,0,0,0.62);
     background:radial-gradient(82% 88% at 50% 42%, transparent 74%, rgba(0,0,0,0.4) 100%);
+    transition:box-shadow .8s ease, background .8s ease;
   }
   .wrap{max-width:760px;margin:0 auto;padding:28px 22px 120px;position:relative;z-index:1}
   @keyframes flick{0%,100%{opacity:1} 92%{opacity:1}
@@ -44,56 +67,130 @@
   .glitchable{text-shadow:
       calc(1.5px*var(--glitch)) 0 calc(2px*var(--glitch)) rgba(255,0,40,calc(0.7*var(--glitch))),
       calc(-1.5px*var(--glitch)) 0 calc(2px*var(--glitch)) rgba(0,180,255,calc(0.7*var(--glitch)));}
+  /* phosphor bloom for hero type (design-system .glow) */
+  .glow{text-shadow:0 0 calc(8px + 6px*var(--glitch)) rgba(255,176,0,.45)}
   .hud{position:sticky;top:0;z-index:10;background:linear-gradient(180deg, var(--bg) 70%, transparent);
-    padding:10px 0 16px;margin-bottom:10px;border-bottom:1px solid rgba(255,176,0,.18);}
+    padding:10px 0 16px;margin-bottom:10px;border-bottom:1px solid var(--phosphor-a18);}
   .hud-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-    font-family:"VT323",monospace;font-size:clamp(18px,4.5vw,22px);letter-spacing:.5px}
+    font-family:var(--font-display);font-size:clamp(18px,4.5vw,22px);letter-spacing:.5px}
   .loc{color:var(--phosphor);text-transform:uppercase}
   .loc .tag{color:var(--phosphor-dim)}
   .sanity-wrap{flex:1;min-width:160px}
-  .sanity-label{font-family:"VT323",monospace;font-size:18px;color:var(--phosphor-dim);display:flex;justify-content:space-between}
-  .bar{height:10px;background:#1a1d16;border:1px solid rgba(255,176,0,.25);margin-top:2px;position:relative;overflow:hidden}
+  .sanity-label{font-family:var(--font-display);font-size:18px;color:var(--phosphor-dim);display:flex;justify-content:space-between}
+  .bar{height:10px;background:var(--bar-track);border:1px solid var(--phosphor-a25);margin-top:2px;position:relative;overflow:hidden}
   .bar > i{display:block;height:100%;transition:width .5s ease, background .5s ease}
-  .inv{font-family:"VT323",monospace;font-size:19px;color:var(--phosphor-dim);width:100%;margin-top:4px}
+  .inv{font-family:var(--font-display);font-size:19px;color:var(--phosphor-dim);width:100%;margin-top:4px}
   .inv b{color:var(--phosphor);font-weight:400}
-  .medbtn{font-family:"VT323",monospace;font-size:19px;cursor:pointer;background:transparent;
+  .medbtn{font-family:var(--font-display);font-size:19px;cursor:pointer;background:transparent;
     color:var(--green);border:1px solid var(--green);padding:1px 10px;letter-spacing:.5px;}
-  .medbtn:hover{background:var(--green);color:#021006}
-  .nodetitle{font-family:"VT323",monospace;font-size:clamp(24px,6.5vw,30px);color:var(--phosphor);
+  .medbtn:hover{background:var(--green);color:var(--ink-on-signal)}
+  .nodetitle{font-family:var(--font-display);font-size:clamp(24px,6.5vw,30px);color:var(--phosphor);
     text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px}
   .prose p{margin:0 0 16px} .prose{margin-bottom:26px}
-  .choice{display:block;width:100%;text-align:left;cursor:pointer;background:rgba(255,176,0,.03);
-    border:1px solid rgba(255,176,0,.28);color:var(--phosphor);font-family:"IBM Plex Mono",monospace;
+  .choice{display:block;width:100%;text-align:left;cursor:pointer;background:var(--phosphor-a03);
+    border:1px solid var(--phosphor-a28);color:var(--phosphor);font-family:var(--font-body);
     font-size:16px;padding:12px 16px;margin:8px 0;line-height:1.45;transition:background .15s,border-color .15s,transform .05s;}
   .choice::before{content:"> ";color:var(--phosphor-dim)}
-  .choice:hover{background:rgba(255,176,0,.12);border-color:var(--phosphor)}
+  .choice:hover{background:var(--phosphor-a12);border-color:var(--phosphor)}
   .choice:active{transform:translateX(2px)}
-  .choice.locked{cursor:not-allowed;color:#5a4a22;border-color:rgba(255,176,0,.1);background:transparent;}
+  .choice.locked{cursor:not-allowed;color:var(--phosphor-faint);border-color:rgba(255,176,0,.1);background:transparent;}
   .choice.locked::before{content:"x "}
   .title-screen{padding-top:40px;text-align:center}
-  .bigtitle{font-family:"VT323",monospace;font-size:clamp(46px,14vw,84px);line-height:.9;letter-spacing:2px}
-  .sub{font-family:"VT323",monospace;font-size:24px;color:var(--phosphor-dim);margin:6px 0 40px}
+  .bigtitle{font-family:var(--font-display);font-size:clamp(46px,14vw,84px);line-height:.9;letter-spacing:2px}
+  .sub{font-family:var(--font-display);font-size:24px;color:var(--phosphor-dim);margin:6px 0 40px}
   .eplist{max-width:520px;margin:0 auto;text-align:left}
-  .epcard{border:1px solid rgba(255,176,0,.28);padding:16px 18px;margin:12px 0;cursor:pointer;transition:background .15s,border-color .15s}
-  .epcard:hover{background:rgba(255,176,0,.08);border-color:var(--phosphor)}
-  .epcard.locked{cursor:not-allowed;color:#5a4a22;border-color:rgba(255,176,0,.1)}
-  .epcard .epn{font-family:"VT323",monospace;font-size:18px;color:var(--phosphor-dim)}
-  .epcard .ept{font-family:"VT323",monospace;font-size:clamp(24px,6.5vw,30px);letter-spacing:1px}
+  .epcard{border:1px solid var(--phosphor-a28);padding:16px 18px;margin:12px 0;cursor:pointer;transition:background .15s,border-color .15s}
+  .epcard:hover{background:var(--phosphor-a08);border-color:var(--phosphor)}
+  .epcard.locked{cursor:not-allowed;color:var(--phosphor-faint);border-color:rgba(255,176,0,.1)}
+  .epcard .epn{font-family:var(--font-display);font-size:18px;color:var(--phosphor-dim)}
+  .epcard .ept{font-family:var(--font-display);font-size:clamp(24px,6.5vw,30px);letter-spacing:1px}
   .epcard .epb{font-size:14px;color:var(--phosphor-dim);margin-top:4px}
   .ending{padding-top:30px}
-  .ending .stamp{font-family:"VT323",monospace;font-size:clamp(30px,9vw,46px);letter-spacing:2px;margin-bottom:18px}
-  .stamp.dead{color:var(--red)} .stamp.escape{color:var(--green)} .stamp.madness{color:#c08bff}
+  .ending .stamp{font-family:var(--font-display);font-size:clamp(30px,9vw,46px);letter-spacing:2px;margin-bottom:18px;min-height:1em}
+  .stamp.dead{color:var(--red)} .stamp.escape{color:var(--green)} .stamp.madness{color:var(--madness)}
   .restart{margin-top:30px}
-  .footer{margin-top:60px;font-family:"VT323",monospace;font-size:16px;color:#3a2f12;text-align:center}
+  .footer{margin-top:60px;font-family:var(--font-display);font-size:16px;color:var(--phosphor-ghost);text-align:center}
   .cursor{display:inline-block;width:9px;height:18px;background:var(--phosphor);margin-left:3px;
     animation:blink 1.1s steps(1) infinite;vertical-align:-2px}
   @keyframes blink{50%{opacity:0}}
+
+  /* ============================================================
+     DESCENT — five+one degradation enhancements (design-system handoff).
+     Driven by the same --glitch / sanity tier the engine already tracks.
+     ============================================================ */
+
+  /* ---- 01 THE STAIRCASE: tier FX overlays, viewport-fixed ---- */
+  .fx{position:fixed;inset:0;pointer-events:none;z-index:52}
+  .fx-bleed{position:absolute;inset:0;mix-blend-mode:screen;opacity:0;transition:opacity .7s ease;
+    background:radial-gradient(125% 100% at 50% 50%, transparent 52%, rgba(255,59,48,.55) 100%)}
+  html[data-tier="critical"] .fx-bleed, html[data-tier="terminal"] .fx-bleed{opacity:var(--bleed)}
+  .fx-roll{position:absolute;left:0;right:0;height:9%;top:-14%;opacity:0;
+    background:linear-gradient(180deg, transparent, rgba(255,176,0,.05) 38%, rgba(0,0,0,.42) 50%, rgba(255,176,0,.05) 62%, transparent)}
+  .fx-heart{position:absolute;inset:0;opacity:0;
+    background:radial-gradient(78% 78% at 50% 52%, rgba(255,59,48,.5), transparent 70%)}
+  .fx-wash{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;
+    background:radial-gradient(90% 80% at 50% 45%, rgba(192,139,255,.14), transparent 70%)}
+  html.madness .fx-wash{opacity:1}
+  @keyframes fx-breathe{0%,100%{transform:scale(1);opacity:calc(var(--bleed)*.6)}50%{transform:scale(1.05);opacity:var(--bleed)}}
+  @keyframes fx-roll{0%{top:-14%}100%{top:114%}}
+  @keyframes fx-heart{0%{opacity:0}6%{opacity:.26}13%{opacity:.02}20%{opacity:.18}28%{opacity:0}100%{opacity:0}}
+  @media (prefers-reduced-motion: no-preference){
+    html[data-tier="critical"] .fx-bleed, html[data-tier="terminal"] .fx-bleed{animation:fx-breathe 5s ease-in-out infinite}
+    html[data-tier="strained"] .fx-roll{animation:fx-roll 9s linear infinite;opacity:1}
+    html[data-tier="critical"] .fx-roll{animation:fx-roll 6s linear infinite;opacity:1}
+    html[data-tier="terminal"] .fx-roll{animation:fx-roll 3.4s linear infinite;opacity:1}
+    html[data-tier="terminal"] .fx-heart{animation:fx-heart 2.3s ease-out infinite}
+  }
+
+  /* ---- 02 INSTRUMENT FAILURE: the HUD quivers and lies ---- */
+  @keyframes hud-quiver{0%,100%{transform:translateX(0)}25%{transform:translateX(.7px)}75%{transform:translateX(-.7px)}}
+  @media (prefers-reduced-motion: no-preference){
+    .hud.deep .bar > i{animation:hud-quiver .16s steps(2) infinite}
+  }
+  .hud.corrupt .sanity-label span:last-child{color:var(--red)}
+
+  /* ---- 03 THE WATCHING: an intrusive line, then gone ---- */
+  .watch{position:fixed;inset:0;z-index:55;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;padding:0 18px}
+  .watch-line{font-family:var(--font-display);letter-spacing:var(--tracking-display);
+    font-size:clamp(22px,6vw,34px);line-height:1.1;text-align:center;color:var(--phosphor);
+    text-shadow:0 0 14px rgba(255,176,0,.55);animation:watch-in var(--watch-dur,1s) steps(1,end) forwards}
+  .watch-line[data-sev="terminal"]{color:var(--red);text-shadow:0 0 16px rgba(255,59,48,.6)}
+  @keyframes watch-in{0%{opacity:0}8%{opacity:1}12%{opacity:.1}18%{opacity:1}26%{opacity:.2}30%{opacity:1}82%{opacity:1}88%{opacity:.15}100%{opacity:0}}
+  @media (prefers-reduced-motion: reduce){ .watch-line{animation:none;opacity:.9} }
+
+  /* ---- 04 DEATH GIVEN WEIGHT: the stop, the crush, the inversion ---- */
+  .endblack{min-height:60vh;display:flex;align-items:center;justify-content:center}
+  .endprose{opacity:0;animation:fade-in 1.2s ease forwards}
+  @keyframes fade-in{to{opacity:1}}
+  html.crush body::after{box-shadow:inset 0 0 240px 30px rgba(0,0,0,0.92);
+    background:radial-gradient(70% 70% at 50% 48%, transparent 40%, rgba(0,0,0,.6) 100%)}
+  /* madness inverts the machine: scanlines stop, purple, stillness */
+  html.madness body{background:var(--bg-lo) radial-gradient(120% 95% at 50% 12%, #120c1c 0%, #07060b 60%, #030205 100%) no-repeat fixed}
+  html.madness body::before{opacity:0}
+  html.madness .screen{animation:none}
+  .madprose p{color:var(--madness);opacity:0;animation:mad-fade 2.6s ease forwards}
+  @keyframes mad-fade{to{opacity:.92}}
+  .cursor.solid{animation:none;opacity:1}
+  .cursor.dying{animation:none;opacity:0;transition:opacity 2.4s ease;background:var(--madness)}
+
+  /* ---- 05 THE BLACK REMEMBERS: scar line on a salvage-menu card ---- */
+  .epcard .scar{font-family:var(--font-display);font-size:var(--type-small);letter-spacing:var(--tracking-hud);margin-top:8px}
+  .scar--dead,.scar--madness{color:var(--red)} .scar--escape{color:var(--green)}
+
   /* Accessibility: hold the calm state -- no flicker or cursor blink. */
   @media (prefers-reduced-motion: reduce){ .screen{animation:none} .cursor{animation:none} }
 </style>
 </head>
 <body>
+<!-- 01/03/04 fixed FX overlays: tier bleed, vsync roll, terminal heartbeat, madness wash -->
+<div class="fx" id="fx" aria-hidden="true">
+  <div class="fx-bleed"></div><div class="fx-roll"></div><div class="fx-heart"></div><div class="fx-wash"></div>
+</div>
+<!-- 06 TUBE WARP: the barrel-distortion filter is injected here at runtime -->
+<svg id="warpdefs" width="0" height="0" aria-hidden="true" style="position:fixed;width:0;height:0;overflow:hidden;pointer-events:none"><defs></defs></svg>
 <div class="wrap screen" id="root"></div>
+<!-- 03 THE WATCHING: intrusive line overlay -->
+<div class="watch" id="watch" aria-hidden="true"></div>
 <script>
 /* ===== content injected at build time ===== */
 let MANIFEST = { title:"WAKE ALONE", subtitle:"preview build (no episodes injected)" };
@@ -103,13 +200,76 @@ let ITEM_NAMES = {};
 
 /* ===== engine (deterministic runtime) ===== */
 const root = document.getElementById("root");
+const html = document.documentElement;
+const fxEl = document.getElementById("fx");
+const watchEl = document.getElementById("watch");
 let episode=null, state=null;
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const esc=(s)=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-function setGlitch(){
-  const g = state ? ((100-state.sanity)/100) : 0;
-  document.documentElement.style.setProperty("--glitch", g.toFixed(2));
+/* Every DESCENT enhancement is on; flip any to false to disable it. */
+const FEAT = { tiers:true, hud:true, watching:true, endings:true, scars:true, warp:true };
+
+/* 01 — the staircase: sanity becomes named tiers. */
+function tierOf(s){ if(s>60)return"stable"; if(s>30)return"strained"; if(s>10)return"critical"; if(s>0)return"terminal"; return"gone"; }
+function isPlayNode(){ const n=episode&&state&&episode.nodes[state.current]; return !!(n && !n.ending && state.sanity>0); }
+
+/* Drive every sanity-linked screen effect: glitch, tier, edge-bleed, dim, warp. */
+function setScreen(play){
+  const g = state ? (100-state.sanity)/100 : 0;
+  html.style.setProperty("--glitch", g.toFixed(2));
+  const tier = state ? tierOf(state.sanity) : "stable";
+  html.style.setProperty("--bleed", state ? clamp((30-state.sanity)/30,0,1).toFixed(2) : "0");
+  if(play && FEAT.tiers && tier!=="stable" && tier!=="gone") html.setAttribute("data-tier",tier);
+  else html.removeAttribute("data-tier");
 }
+/* 01 dim + 06 barrel warp, composed onto the story content (#sc) ONLY. A CSS
+   filter establishes a containing block, so filtering #root would break the
+   sticky HUD; the HUD is a sibling of #sc and stays pinned and unwarped. */
+function applyContentFilter(){
+  const el=document.getElementById("sc"); if(!el) return;
+  const play=isPlayNode(), tier=state?tierOf(state.sanity):"stable";
+  let f="";
+  if(play && FEAT.tiers){
+    if(tier==="strained") f="brightness(.93) saturate(.96)";
+    else if(tier==="critical") f="brightness(.84) saturate(.9)";
+    else if(tier==="terminal") f="brightness(.74) saturate(.85)";
+  }
+  if(play && FEAT.warp && state && !REDUCED){
+    const warpT=clamp((60-state.sanity)/60,0,1), scale=warpT*warpT*60;
+    if(scale>0.5){ ensureBarrel(scale, el); f=(f?f+" ":"")+"url(#barrel)"; }
+  }
+  el.style.filter=f;
+}
+
+/* 06 — TUBE WARP: a convex r^2 displacement map bows the content like a tube.
+   Built once on a canvas, then stretched to the content's exact pixel box via
+   filterUnits="userSpaceOnUse" (percentage feImage subregions strand the map
+   in a corner). Re-sized on resize so the bow is resolution-independent. */
+let BARREL_MAP=null;
+function barrelMap(){
+  if(BARREL_MAP) return BARREL_MAP;
+  const S=128, cv=document.createElement("canvas"); cv.width=cv.height=S;
+  const ctx=cv.getContext("2d"), img=ctx.createImageData(S,S), d=img.data;
+  for(let y=0;y<S;y++) for(let x=0;x<S;x++){
+    const nx=(x/(S-1))*2-1, ny=(y/(S-1))*2-1, r2=(nx*nx+ny*ny)/2;
+    const dx=-nx*r2, dy=-ny*r2, i=(y*S+x)*4;
+    d[i]=clamp(128+dx*127,0,255); d[i+1]=clamp(128+dy*127,0,255); d[i+2]=128; d[i+3]=255;
+  }
+  ctx.putImageData(img,0,0); BARREL_MAP=cv.toDataURL(); return BARREL_MAP;
+}
+function ensureBarrel(scale, el){
+  const defs=document.querySelector("#warpdefs defs");
+  const box=el||root, w=box.clientWidth||window.innerWidth, h=box.scrollHeight||box.clientHeight||window.innerHeight;
+  defs.innerHTML =
+    '<filter id="barrel" filterUnits="userSpaceOnUse" x="0" y="0" width="'+w+'" height="'+h+'" color-interpolation-filters="sRGB">'+
+    '<feImage href="'+barrelMap()+'" preserveAspectRatio="none" x="0" y="0" width="'+w+'" height="'+h+'" result="m"></feImage>'+
+    '<feDisplacementMap in="SourceGraphic" in2="m" scale="'+scale.toFixed(1)+'" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>'+
+    '</filter>';
+}
+
 function applyEffects(e){
   if(!e) return;
   if(typeof e.sanity==="number") state.sanity=clamp(state.sanity+e.sanity,0,100);
@@ -130,6 +290,7 @@ function meets(req){
 function startEpisode(ep){
   episode=ep;
   state={ sanity: ep.startSanity??100, inventory:[...(ep.startInventory||[])], flags:{}, entered:{}, current: ep.start };
+  html.classList.remove("crush","madness");
   goto(ep.start); window.scrollTo(0,0);
 }
 function goto(id){
@@ -137,9 +298,10 @@ function goto(id){
   if(!node){ console.warn("skein: choice points at missing node",id); return; } // guard; the validator forbids this
   state.current=id;
   if(node.onEnter && !state.entered[id]) applyEffects(node.onEnter);
-  state.entered[id]=true; setGlitch();
+  state.entered[id]=true; setScreen(true);
   if(state.sanity<=0 && !node.ending) return renderMadness();
   render(); window.scrollTo({top:0,behavior:"smooth"});
+  startWatch();
 }
 function pickText(node){
   let t=node.text||"";
@@ -156,10 +318,12 @@ function sanityColor(){
 }
 function hudHTML(node){
   const inv = state.inventory.length
-    ? state.inventory.map(i=>`<b>${ITEM_NAMES[i]||i}</b>`).join(" \u00b7 ") : "<span>\u2014 nothing \u2014</span>";
+    ? state.inventory.map(i=>`<b>${ITEM_NAMES[i]||i}</b>`).join(" · ") : "<span>— nothing —</span>";
   const med = state.inventory.includes("medgel")
     ? `<button class="medbtn" onclick="useGel()">USE MED-GEL [+25]</button>` : "";
-  return `<div class="hud">
+  const tier = tierOf(state.sanity);
+  const deep = FEAT.hud && !REDUCED && (tier==="critical"||tier==="terminal") ? " deep" : "";
+  return `<div class="hud${deep}">
     <div class="hud-row">
       <div class="loc">${node.title?`<span class="tag">LOC //</span> ${node.title}`:""}</div>
       <div class="sanity-wrap">
@@ -180,55 +344,179 @@ function render(){
     return "";
   }).join("");
   root.innerHTML = hudHTML(node)
+    + `<div class="sc" id="sc">`
     + `${node.title?`<div class="nodetitle glitchable">${node.title}</div>`:""}`
-    + `<div class="prose glitchable">${pickText(node)}</div>` + choices + footer();
+    + `<div class="prose glitchable">${pickText(node)}</div>` + choices
+    + `</div>` + footer();
+  applyContentFilter();
 }
 function choose(idx){
   const c=episode.nodes[state.current].choices[idx];
   if(!meets(c.requires)) return;
-  applyEffects(c.effects); setGlitch();
+  applyEffects(c.effects); setScreen(true);
   if(state.sanity<=0) return renderMadness();
   goto(c.to);
 }
 function useGel(){
   if(!state.inventory.includes("medgel")) return;
-  applyEffects({sanity:+25, remove:["medgel"]}); setGlitch(); render();
+  applyEffects({sanity:+25, remove:["medgel"]}); setScreen(true); render(); startWatch();
+}
+
+/* ---- 02 INSTRUMENT FAILURE: the HUD mistypes and the readout lies ---- */
+const LOOKALIKE={I:"1",E:"3",A:"4",O:"0",T:"7",S:"5",G:"6",L:"1",R:"Я",N:"И"};
+function corruptLabel(str,intensity){ return str.split("").map(ch=>{ const up=ch.toUpperCase(); return (LOOKALIKE[up]&&Math.random()<intensity)?LOOKALIKE[up]:ch; }).join(""); }
+function badValue(v,tier){
+  const r=Math.random();
+  if(r<0.22) return "??%";
+  if(r<0.40) return "--%";
+  if(r<0.62) return "█"+Math.floor(Math.random()*9)+"%";
+  const drift=tier==="terminal"?rnd(-22,22):rnd(-9,9);
+  return Math.round(clamp(v+drift,0,99))+"%";
+}
+function tickHud(){
+  if(REDUCED || !FEAT.hud || !state || !isPlayNode()) return;
+  const tier=tierOf(state.sanity);
+  if(tier!=="critical"&&tier!=="terminal") return;
+  const hud=root.querySelector(".hud"); if(!hud) return;
+  const lbl=hud.querySelector(".sanity-label span:first-child");
+  const val=hud.querySelector(".sanity-label span:last-child");
+  if(!lbl||!val) return;
+  const hit=tier==="terminal"?0.55:0.26;
+  if(Math.random()<hit){
+    lbl.textContent=corruptLabel("NEURAL INTEGRITY", tier==="terminal"?0.4:0.22);
+    if(Math.random()<(tier==="terminal"?0.75:0.4)){ val.textContent=badValue(state.sanity,tier); hud.classList.add("corrupt"); }
+    const hold=tier==="terminal"?220:150;
+    setTimeout(()=>{ const h=root.querySelector(".hud"); if(!h)return;
+      const l=h.querySelector(".sanity-label span:first-child"), v=h.querySelector(".sanity-label span:last-child");
+      if(l)l.textContent="NEURAL INTEGRITY"; if(v&&state)v.textContent=state.sanity+"%"; h.classList.remove("corrupt"); }, hold);
+  }
+}
+
+/* ---- 03 THE WATCHING: a line the player never asked for ---- */
+const DEFAULT_WATCH=["YOU ARE STILL AWAKE.","IT IS LOOKING BACK.","STILL HERE.","TURN AROUND."];
+let watchTimers=[];
+function clearWatch(){ watchTimers.forEach(clearTimeout); watchTimers=[]; if(watchEl)watchEl.innerHTML=""; }
+function watchPool(){ return (episode && Array.isArray(episode.watching) && episode.watching.length) ? episode.watching : DEFAULT_WATCH; }
+function startWatch(){
+  clearWatch();
+  if(REDUCED || !FEAT.watching || !isPlayNode()) return;
+  const tier=tierOf(state.sanity);
+  if(tier!=="critical"&&tier!=="terminal") return;
+  scheduleWatch(true);
+}
+function scheduleWatch(first){
+  if(!isPlayNode()) return;
+  const tier=tierOf(state.sanity);
+  if(tier!=="critical"&&tier!=="terminal") return;
+  const wait=first?rnd(900,2200):(tier==="terminal"?rnd(2400,4800):rnd(5000,9000));
+  const t=setTimeout(()=>{
+    if(!isPlayNode()) return;
+    const tt=tierOf(state.sanity);
+    if(tt!=="critical"&&tt!=="terminal") return;
+    flashWatch(tt); scheduleWatch(false);
+  }, wait);
+  watchTimers.push(t);
+}
+function flashWatch(tier){
+  const pool=watchPool(), line=pool[Math.floor(Math.random()*pool.length)];
+  const dur=tier==="terminal"?"1.15s":"0.85s", pos=rnd(28,64).toFixed(0);
+  watchEl.innerHTML=`<div class="watch-line glitchable" data-sev="${tier}" style="margin-top:${pos}%;--watch-dur:${dur}">${esc(line)}</div>`;
+  const t=setTimeout(()=>{ watchEl.innerHTML=""; }, tier==="terminal"?1150:850);
+  watchTimers.push(t);
+}
+
+/* ---- 04 DEATH GIVEN WEIGHT: the stop, the crush, the inversion ---- */
+function typewrite(el, text, speed, done){
+  let i=0; el.textContent="";
+  const id=setInterval(()=>{ i++; el.textContent=text.slice(0,i); if(i>=text.length){ clearInterval(id); done&&done(); } }, speed);
 }
 function renderEnding(end){
-  setGlitch();
-  root.innerHTML = `<div class="ending"><div class="stamp ${end.type}">${end.stamp}</div>
-    <div class="prose glitchable">${end.text}</div>
-    <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+  clearWatch(); recordScar(end.type, end.stamp);
+  setScreen(false); html.removeAttribute("data-tier");
+  if(!FEAT.endings || REDUCED){
+    root.innerHTML = `<div class="ending"><div class="stamp ${end.type}">${end.stamp}</div>
+      <div class="prose glitchable">${end.text}</div>
+      <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+    window.scrollTo({top:0,behavior:"smooth"}); return;
+  }
+  html.classList.add("crush");
+  root.innerHTML = `<div class="ending"><div class="endblack"><span class="cursor"></span></div></div>` + footer();
   window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(()=>{
+    root.innerHTML = `<div class="ending"><div class="stamp ${end.type} glow" id="endstamp"></div>
+      <div class="prose glitchable endprose" id="endprose" style="display:none">${end.text}</div>
+      <div id="endactions"></div></div>` + footer();
+    typewrite(document.getElementById("endstamp"), end.stamp, 64, ()=>{
+      const pr=document.getElementById("endprose"); if(pr) pr.style.display="";
+      const act=document.getElementById("endactions");
+      if(act) act.innerHTML=`<button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button>`;
+    });
+  }, 1600);
 }
 function renderMadness(){
-  document.documentElement.style.setProperty("--glitch","1");
-  root.innerHTML = `<div class="ending"><div class="stamp madness">// COHERENCE LOST</div>
-    <div class="prose glitchable">
-      <p>The ship was always like this. You were always here. The others left because you asked them to, didn't you, didn't you, and the smiling face on the wall is just your face, it's only ever been your face, awake and awake and awake and\u2014</p>
-      <p>You stop looking for the way out. There was never a way out of a place you never left.</p></div>
-    <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+  clearWatch(); recordScar("madness","// COHERENCE LOST");
+  html.removeAttribute("data-tier"); html.classList.add("madness");
+  html.style.setProperty("--glitch","0.12");
+  if(!FEAT.endings || REDUCED){
+    root.innerHTML = `<div class="ending"><div class="stamp madness">// COHERENCE LOST</div>
+      <div class="prose madprose">
+        <p>The ship was always like this. You were always here. The others left because you asked them to, didn't you, didn't you, and the smiling face on the wall is just your face, it's only ever been your face, awake and awake and awake and-</p>
+        <p>You stop looking for the way out. There was never a way out of a place you never left.</p></div>
+      <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+    window.scrollTo({top:0,behavior:"smooth"}); return;
+  }
+  root.innerHTML = `<div class="ending"><div class="endblack"><span class="cursor solid"></span></div></div>` + footer();
   window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(()=>{
+    root.innerHTML = `<div class="ending"><div class="stamp madness">// COHERENCE LOST</div>
+      <div class="prose madprose">
+        <p style="animation-delay:0s">The ship was always like this. You were always here. The others left because you asked them to, didn't you, didn't you, and the smiling face on the wall is just your face, it's only ever been your face, awake and awake and awake and-</p>
+        <p style="animation-delay:1.4s">You stop looking for the way out. There was never a way out of a place you never left.</p></div>
+      <div style="margin-top:8px"><span class="cursor solid" id="madcursor"></span></div>
+      <div id="madactions"></div></div>` + footer();
+    setTimeout(()=>{
+      const c=document.getElementById("madcursor"); if(c){ c.classList.remove("solid"); c.classList.add("dying"); }
+      const a=document.getElementById("madactions"); if(a) a.innerHTML=`<button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button>`;
+    }, 3400);
+  }, 2000);
 }
+
+/* ---- 05 THE BLACK REMEMBERS: persistent scars on the salvage menu ---- */
+const SCAR_KEY="skein_scars_v1";
+function loadScars(){ try{ return JSON.parse(localStorage.getItem(SCAR_KEY)||"{}"); }catch(e){ return {}; } }
+function recordScar(type, stamp){
+  if(!FEAT.scars || !episode) return;
+  try{ const s=loadScars(); s[episode.id]={type, label:(stamp||"").replace(/^\/\/\s*/,"").trim()};
+    localStorage.setItem(SCAR_KEY, JSON.stringify(s)); }catch(e){}
+}
+
 function titleScreen(){
-  episode=null; state=null;
-  document.documentElement.style.setProperty("--glitch","0");
+  episode=null; state=null; clearWatch();
+  html.removeAttribute("data-tier"); html.classList.remove("crush","madness");
+  html.style.setProperty("--glitch","0"); html.style.setProperty("--bleed","0");
+  root.style.filter="";
+  const scars = FEAT.scars ? loadScars() : {};
   const words=(MANIFEST.title||"WAKE ALONE").split(" ");
   const cards = EPISODES.map((ep,i)=>{
     const n = "EP " + String(i+1).padStart(2,"0");
     if(ep.locked) return `<div class="epcard locked"><div class="epn">${n} // ENCRYPTED</div>
       <div class="ept">[ ${ep.title} ]</div><div class="epb">${ep.byline||""}</div></div>`;
+    const o = scars[ep.id];
+    const scar = o ? `<div class="scar scar--${o.type}">// last attempt: ${esc(o.label||"UNKNOWN")}</div>` : "";
     return `<div class="epcard" onclick="startEpisode(EPISODES[${i}])">
       <div class="epn">${n}</div><div class="ept">${ep.title}</div>
-      <div class="epb">${ep.byline||""}</div></div>`;
+      <div class="epb">${ep.byline||""}</div>${scar}</div>`;
   }).join("");
   root.innerHTML = `<div class="title-screen">
-    <div class="bigtitle glitchable">${words.join("<br>")}</div>
+    <div class="bigtitle glitchable glow">${words.join("<br>")}</div>
     <div class="sub">${MANIFEST.subtitle||""}<span class="cursor"></span></div>
     <div class="eplist">${cards}</div></div>` + footer();
   window.scrollTo(0,0);
 }
-function footer(){ return `<div class="footer">skein v0.1 \u2014 neural integrity at 0% ends the run</div>`; }
+function footer(){ return `<div class="footer">skein v0.1 — neural integrity at 0% ends the run</div>`; }
+
+setInterval(tickHud, 720);
+window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); applyContentFilter(); } });
 titleScreen();
 </script>
 </body>

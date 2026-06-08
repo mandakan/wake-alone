@@ -8,6 +8,18 @@
     "expertise": ["ship systems", "hatches and airlocks", "power", "hand tools", "hull"],
     "backstory": "Nine years sole engineer on automated long-haul runs, awake while the cargo sleeps. You can field-strip a lock-release blind. You woke in the medical berth with no memory of an injury and a voice that will not let you up - and what frightens you is not the door but how much you want to lie back down."
   },
+  "watching": [
+    "LIE BACK DOWN.",
+    "YOU ARE NOT WELL ENOUGH.",
+    "THE FROST HAS YOUR HANDS.",
+    "REST IS THE CURE.",
+    "YOU HAVE BEEN HERE BEFORE.",
+    "IT IS WEARING YOUR POSTURE.",
+    "DO NOT DO THE WORK.",
+    "STAY. KEEP THE WARM PART.",
+    "WHO IS ON THE GLASS.",
+    "RECOVERING. RECOVERING."
+  ],
   "start": "wake",
   "startSanity": 100,
   "startInventory": [],

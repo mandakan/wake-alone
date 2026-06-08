@@ -78,6 +78,10 @@ export function validateEpisode(ep, name = ep && ep.id) {
     E(`startSanity must be a number 0..100`);
   if (ep.startInventory !== undefined && !Array.isArray(ep.startInventory))
     E(`startInventory must be an array`);
+  // optional per-episode "watching" pool (intrusive machine lines at low sanity);
+  // read by the engine at runtime, so it ships in the bundle (not stripped).
+  if (ep.watching !== undefined && (!Array.isArray(ep.watching) || ep.watching.some((s) => typeof s !== "string")))
+    E(`watching must be an array of strings`);
 
   // ---- optional protagonist profile (informs hint calibration; stripped at build) ----
   let character = null;
