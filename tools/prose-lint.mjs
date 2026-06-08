@@ -108,27 +108,50 @@ export function lintProse(ep, ctx = {}) {
   const allSentenceLens = [];
   const openers = {};
   const phraseCounts = {};
+  const triadCounts = {};
+  const STOP = ["you", "your", "the", "a", "an", "it", "and"];
+  const TRIAD_RE = /\w+,\s+\w+,\s+and\s+\w+/g;
 
   for (const [id, node] of Object.entries(ep.nodes)) {
+    const renderings = [];
     for (const [where, raw, isNarrative] of nodeFields(id, node)) {
       const r = lintField(raw, where);
       errors.push(...r.errors); warnings.push(...r.warnings);
-      if (!isNarrative) continue; // cadence/repetition: narrative prose only
-      const plain = stripTags(raw);
+      if (isNarrative) renderings.push(stripTags(raw)); // base text + each sanityText variant + ending
+    }
+    // A node renders exactly ONE of its narrative texts per visit: the base text,
+    // or one sanityText variant (lowest matching threshold). They are mutually
+    // exclusive, so repetition BETWEEN a node's own renderings is never seen on
+    // screen. Count each node's worst single rendering (max), then aggregate
+    // across nodes -- this lets a hub describe the same gauge in its base text and
+    // in every low-sanity variant without tripping the repetition checks, while
+    // genuine reuse across *different* nodes still accrues.
+    const nodeOpeners = {}, nodePhrases = {}, nodeTriads = {};
+    for (const plain of renderings) {
+      const locOpen = {}, locPhrase = {}, locTriad = {};
       for (const sent of sentencesOf(plain)) {
         const w = wordsOf(sent);
         if (!w.length) continue;
         allSentenceLens.push(w.length);
         const first = w[0].toLowerCase();
-        if (!["you", "your", "the", "a", "an", "it", "and"].includes(first)) openers[first] = (openers[first] || 0) + 1;
+        if (!STOP.includes(first)) locOpen[first] = (locOpen[first] || 0) + 1;
       }
-      // copy-paste detection: repeated 4-word shingles across the episode
       const toks = wordsOf(plain.toLowerCase());
       for (let i = 0; i + 4 <= toks.length; i++) {
         const g = toks.slice(i, i + 4).join(" ");
-        phraseCounts[g] = (phraseCounts[g] || 0) + 1;
+        locPhrase[g] = (locPhrase[g] || 0) + 1;
       }
+      for (const m of (plain.match(TRIAD_RE) || [])) {
+        const k = m.toLowerCase().replace(/\s+/g, " ");
+        locTriad[k] = (locTriad[k] || 0) + 1;
+      }
+      for (const [k, v] of Object.entries(locOpen)) nodeOpeners[k] = Math.max(nodeOpeners[k] || 0, v);
+      for (const [k, v] of Object.entries(locPhrase)) nodePhrases[k] = Math.max(nodePhrases[k] || 0, v);
+      for (const [k, v] of Object.entries(locTriad)) nodeTriads[k] = Math.max(nodeTriads[k] || 0, v);
     }
+    for (const [k, v] of Object.entries(nodeOpeners)) openers[k] = (openers[k] || 0) + v;
+    for (const [k, v] of Object.entries(nodePhrases)) phraseCounts[k] = (phraseCounts[k] || 0) + v;
+    for (const [k, v] of Object.entries(nodeTriads)) triadCounts[k] = (triadCounts[k] || 0) + v;
   }
 
   // cadence: uniform sentence length reads as robotic
@@ -141,11 +164,9 @@ export function lintProse(ep, ctx = {}) {
   for (const [w, n] of Object.entries(openers)) {
     if (n >= 4) warnings.push(`cadence: ${n} sentences open with "${w}" (repetitive)`);
   }
-  // "X, Y, and Z" triads (narrative prose only)
-  const triads = Object.entries(ep.nodes)
-    .flatMap(([id, n]) => nodeFields(id, n).filter(([, , narr]) => narr).map(([, t]) => stripTags(t)))
-    .join(" ").match(/\w+,\s+\w+,\s+and\s+\w+/g);
-  if (triads && triads.length >= 3) warnings.push(`cadence: ${triads.length} "X, Y, and Z" triads -- a classic LLM rhythm; break some up`);
+  // "X, Y, and Z" triads
+  const totalTriads = Object.values(triadCounts).reduce((a, b) => a + b, 0);
+  if (totalTriads >= 3) warnings.push(`cadence: ${totalTriads} "X, Y, and Z" triads -- a classic LLM rhythm; break some up`);
   // copy-pasted phrases
   for (const [g, n] of Object.entries(phraseCounts)) {
     if (n >= 3) warnings.push(`cadence: phrase "${g}" repeats ${n}x across the episode`);

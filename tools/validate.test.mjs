@@ -6,6 +6,7 @@
 import { validateEpisode } from "./validate.mjs";
 import { resolveSpec } from "./spec.mjs";
 import { buildSkeleton } from "./new.mjs";
+import { lintProse } from "./prose-lint.mjs";
 
 let passed = 0, failed = 0;
 const C = { red:"\x1b[31m", green:"\x1b[32m", dim:"\x1b[2m", reset:"\x1b[0m" };
@@ -380,6 +381,35 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
       x: escape(), d: dead("// A"), d2: dead("// B") } };
   const r = validateEpisode(ep);
   check("possess: state-incoherent possession warn", r.warnings.some((w) => w.includes("your keycard") && w.includes("incoherent")), r.warnings.join("; "));
+}
+
+// --- cadence: a node's base text + sanityText variants are mutually exclusive,
+//     so repetition BETWEEN them must NOT accrue (they never render together) ---
+{
+  const phrase = "the needle on the breaker climbs"; // shared across base + 2 variants of ONE node
+  const ep = { id: "variantrep", title: "V", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: `<p>${phrase} a little.</p>`,
+        sanityText: { "60": `<p>${phrase} higher.</p>`, "30": `<p>${phrase} to the line.</p>` },
+        choices: [{ text: "out", to: "x" }] },
+      x: { ending: { type: "escape", stamp: "// A", text: "<p>out</p>" } } } };
+  const r = lintProse(ep);
+  check("variantrep: intra-node variant repetition is not flagged",
+    !r.warnings.some((w) => w.includes("repeats")), r.warnings.join("; "));
+}
+
+// --- cadence: the SAME phrase across DIFFERENT nodes still accrues and warns ---
+{
+  const phrase = "a hand in the gel turns"; // once in each of three distinct nodes
+  const ep = { id: "crossrep", title: "C", start: "a", startSanity: 100,
+    nodes: {
+      a: { text: `<p>${phrase} slow.</p>`, choices: [{ text: "n", to: "b" }] },
+      b: { text: `<p>${phrase} slow.</p>`, choices: [{ text: "n", to: "c" }] },
+      c: { text: `<p>${phrase} slow.</p>`, choices: [{ text: "n", to: "x" }] },
+      x: { ending: { type: "escape", stamp: "// A", text: "<p>out</p>" } } } };
+  const r = lintProse(ep);
+  check("crossrep: cross-node phrase repetition still warns",
+    r.warnings.some((w) => w.includes("repeats") && w.includes("3x")), r.warnings.join("; "));
 }
 
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
