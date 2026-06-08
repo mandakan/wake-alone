@@ -424,8 +424,48 @@ function tickHud(){
 /* ---- 03 THE WATCHING: a line the player never asked for ---- */
 const DEFAULT_WATCH=["YOU ARE STILL AWAKE.","IT IS LOOKING BACK.","STILL HERE.","TURN AROUND."];
 let watchTimers=[];
-function clearWatch(){ watchTimers.forEach(clearTimeout); watchTimers=[]; if(watchEl)watchEl.innerHTML=""; }
+function clearWatch(){ watchTimers.forEach(clearTimeout); watchTimers=[]; if(watchEl)watchEl.innerHTML=""; restoreProse(); }
 function watchPool(){ return (episode && Array.isArray(episode.watching) && episode.watching.length) ? episode.watching : DEFAULT_WATCH; }
+
+/* The room copy garbles WITH the watch line: same source, two presentations.
+   Tokenize the watch pool into single words (strip filler), so the watcher's
+   vocabulary can bleed into the prose at terminal. */
+const WATCH_STOP=new Set(["THE","ARE","WAS","WERE","AND","YOUR","YOU","NOT","ALL","NOW","ONE","HAS","HAVE","BEEN","THAT","THIS","WITH","FOR","ALMOST","THROUGH","ANYMORE"]);
+function watchWords(){
+  const out=[];
+  watchPool().forEach(line=>line.split(/[^A-Za-z']+/).forEach(w=>{
+    const u=w.replace(/[^A-Za-z]/g,"").toUpperCase();
+    if(u.length>=3 && !WATCH_STOP.has(u)) out.push(u);
+  }));
+  return out.length?out:["AWAKE","STILL","HERE","LOOKING"];
+}
+/* Snapshot the clean prose HTML, mutate text nodes only (never tags), restore on
+   the same beat the watch line clears. Always reverts to authored copy. */
+let proseSnap=null;
+function corruptProse(tier){
+  if(REDUCED || !FEAT.watching) return;
+  const el=root.querySelector(".prose"); if(!el) return;
+  if(proseSnap) restoreProse();
+  proseSnap={el, html:el.innerHTML};
+  const nodes=[], walk=document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for(let n; (n=walk.nextNode()); ) nodes.push(n);
+  if(tier==="terminal"){ // swap a few whole words for the watcher's own
+    const words=watchWords(), pick=()=>words[Math.floor(Math.random()*words.length)];
+    let budget=2+Math.floor(Math.random()*2); // 2-3, scattered across the prose
+    nodes.slice().sort(()=>Math.random()-0.5).forEach(tn=>{
+      if(budget<=0) return;
+      tn.nodeValue=tn.nodeValue.replace(/[A-Za-z]{4,}/g, w=>
+        (budget>0 && Math.random()<0.22) ? (budget--, pick()) : w);
+    });
+  }
+  const intensity=tier==="terminal"?0.12:0.08; // lookalike char-noise, both tiers
+  nodes.forEach(tn=>{ tn.nodeValue=corruptLabel(tn.nodeValue, intensity); });
+}
+function restoreProse(){
+  if(!proseSnap) return;
+  const {el,html}=proseSnap; proseSnap=null;
+  if(el && el.isConnected) el.innerHTML=html;
+}
 function startWatch(){
   clearWatch();
   if(REDUCED || !FEAT.watching || !isPlayNode()) return;
@@ -450,7 +490,8 @@ function flashWatch(tier){
   const pool=watchPool(), line=pool[Math.floor(Math.random()*pool.length)];
   const dur=tier==="terminal"?"1.15s":"0.85s", pos=rnd(28,64).toFixed(0);
   watchEl.innerHTML=`<div class="watch-line glitchable" data-sev="${tier}" style="margin-top:${pos}%;--watch-dur:${dur}">${esc(line)}</div>`;
-  const t=setTimeout(()=>{ watchEl.innerHTML=""; }, tier==="terminal"?1150:850);
+  corruptProse(tier); // the room copy turns with the line, then snaps back
+  const t=setTimeout(()=>{ watchEl.innerHTML=""; restoreProse(); }, tier==="terminal"?1150:850);
   watchTimers.push(t);
 }
 
