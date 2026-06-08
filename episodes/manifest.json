@@ -27,6 +27,10 @@
     {
       "file": "ward.json",
       "locked": false
+    },
+    {
+      "file": "graft.json",
+      "locked": false
     }
   ]
 }

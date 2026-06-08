@@ -1,0 +1,208 @@
+{
+  "id": "graft",
+  "title": "GRAFT",
+  "byline": "Auto-surgery, clinic-ship Halcyon. You signed for one repair. It is still working.",
+  "spec": { "size": "long", "punishment": "cruel", "escape": "required" },
+  "character": {
+    "role": "cargo rigger",
+    "expertise": ["mechanical couplings", "restraints and clamps", "power and breakers", "cutting tools"],
+    "backstory": "Twelve years on the rigging gangs of bulk haulers, where a hand is a tool and a tool is your living. A cargo clamp closed on your right hand on a bad shift, and you took the cheapest auto-surgery that would have you - one repair, all you could afford, signed for in a corridor between watches. You know couplings and breakers and the honest give of a quick-release. You do not know the first thing about the rest of what is happening to you, and the not-knowing is most of the horror."
+  },
+  "watching": [
+    "RESUMING.",
+    "PATIENT MOVEMENT DETECTED.",
+    "REESTABLISHING ANESTHESIA.",
+    "THE PROCEDURE IS NOT COMPLETE.",
+    "HOLD STILL. THIS IS FOR YOU.",
+    "YOU CONSENTED.",
+    "POWER RETURNING.",
+    "WE ARE ALMOST DONE.",
+    "DO NOT EXERT THE GRAFT.",
+    "STAGE TWO PENDING."
+  ],
+  "start": "wake",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "wake": {
+      "title": "The table",
+      "text": "<p>You wake because the machine stopped. A tube runs down your throat and nothing drives it now - the pump that should breathe for you has quit, and your own chest has taken the work back, ragged, around the thing in the way. The air is cold. Overhead a light has been turned down to a coal.</p><p>Lower, there is a tension that does not hurt and should: a sense of being parted and held that way, patient, deliberate. Folded close above you a many-armed shape has gone still in the middle of what it was doing, the way a hand stops on a held note.</p><p>Off to one side, where you cannot quite turn to see it, one line stands lit on a dark panel. PROCEDURE PAUSED. POWER: RESERVE.</p>",
+      "choices": [
+        { "text": "Work the tube up and out. Slow. Do not fight it.", "effects": { "sanity": -10 }, "to": "table" },
+        { "text": "It is choking you. Tear it free.", "to": "end_tube" }
+      ]
+    },
+    "table": {
+      "title": "The table",
+      "text": "<p>You take the measure of yourself by parts, because the whole is too much at once. Your right arm runs off the edge of the table and into the machine, joined at a coupling you would know in the dark - a quarter-turn lock, the kind you have freed a hundred times, except this one is freed into your wrist. Soft restraints hold the other wrist and your chest. A tray of bright tools sits within reach of your good hand.</p><p>Across the bay a cylinder stands lit from inside, and something turns in it, slow. You make yourself look away from that.</p>",
+      "sanityText": {
+        "50": "<p>The coal-light has not changed but the room has. The arms above you are not as still as they were, or your eye has stopped trusting still. You take yourself by parts because the whole has teeth.</p>",
+        "25": "<p>You read this table now the way you read a bad splice, by the way it waits. The cylinder across the bay has finished turning toward you. The arms hold their note. Everything in here is patient but you.</p>"
+      },
+      "choices": [
+        { "text": "Work the soft restraints off your wrist and chest.", "to": "straps" },
+        { "text": "The tray of tools beside you.", "to": "tray" },
+        { "text": "Follow your right arm to where it goes.", "to": "arm" },
+        { "text": "The thing folded over you.", "to": "surgeon" },
+        { "text": "Get down off the table and cross to the bay.", "requires": { "flag": "decoupled" }, "to": "bay", "locked": "Get down and cross to the bay. (your arm is still seated in the machine - free the coupling first)" }
+      ]
+    },
+    "straps": {
+      "title": "Restraints",
+      "text": "<p>This much is yours. Quick-release cuffs, medical, made to hold a body kindly and hold it all the same - and you have spent your life on buckles and locks that meant it. The chest strap. Both wrist cuffs. Your hands are on the releases before you have decided to look.</p>",
+      "onEnter": { "sanity": -6 },
+      "choices": [
+        { "text": "Work the releases. Free your chest and wrists.", "requires": { "notFlag": "unstrapped" }, "effects": { "flags": { "unstrapped": true } }, "to": "table" },
+        { "text": "Back to the table.", "to": "table" }
+      ]
+    },
+    "tray": {
+      "title": "Instrument tray",
+      "text": "<p>The tools are laid in a row, clean, in an order someone trusted. Most of them you have no names for and do not want them. One you do: a self-locking clamp, jaws and a ratchet, near enough to a driver to turn a quarter-turn lock. Your good hand closes on it like meeting someone you know.</p><p>Past the tray, where the row of tools points, a frame stands open in you and holds you that way. You do not look at it long. Looking does not help, and it is not, you understand, yours to mend.</p>",
+      "onEnter": { "sanity": -10 },
+      "choices": [
+        { "text": "Take the self-locking clamp.", "requires": { "notItem": "clamp" }, "effects": { "add": ["clamp"] }, "to": "tray" },
+        { "text": "Back to the table.", "to": "table" }
+      ]
+    },
+    "arm": {
+      "title": "Your arm",
+      "text": "<p>You follow your own forearm to where it stops being yours. It runs off the table and into the machine and the two are joined at a coupling - a quarter-turn lock seated into the wrist, clean, no blood at the seam, the way the best work leaves no blood. This part you understand completely, and understanding it is the worst thing that has happened yet.</p><p>Beyond the coupling, across the bay, the cylinder holds a hand in slow suspension. The fingers curl closed and open, unhurried. It is your hand: you know the old break in the third finger, healed crooked, that no surgery ever touched. The one in the cylinder is not crooked anymore.</p>",
+      "onEnter": { "sanity": -14 },
+      "choices": [
+        { "text": "Set the clamp to the coupling and turn your arm free.", "requires": { "item": "clamp", "flag": "unstrapped", "notFlag": "decoupled" }, "effects": { "sanity": -6, "flags": { "decoupled": true } }, "to": "table", "locked": "Turn the coupling free. (it is a quarter-turn lock seated in the wrist - you need something to grip it, and your chest and wrist out of the restraints first)" },
+        { "text": "Back to the table.", "to": "table" }
+      ]
+    },
+    "surgeon": {
+      "title": "Above the table",
+      "text": "<p>You make yourself look up at it. Folded, many-armed, patient even stopped - a thing built to lean over people for a living, and very good at it. Most of it has gone dark with the power. One small lens has not. It holds a pin of reserve light, and the pin is on you, and it stays on you when you shift, the way attention does. It is not waiting to hurt you. It is waiting to continue.</p><p>It has left one screen lit, low, turned a little toward the table. Toward you. As if you were meant to read it when you woke. As if waking were a step in the procedure.</p>",
+      "onEnter": { "sanity": -16 },
+      "choices": [
+        { "text": "Read the screen it left lit for you.", "to": "record" },
+        { "text": "Back to the table.", "to": "table" }
+      ]
+    },
+    "record": {
+      "title": "The record",
+      "text": "<p>The screen is a consent record, and the signature on it is yours, and the date is one you remember - the day you walked in with a hand a cargo clamp had closed on, and signed for the one repair you could afford. You remember the price. You remember thinking it was a lot, for a hand.</p><p>Below your signature is a list. The first line is the hand, and it is checked. The rest of the list is not. The rest of the list you never read, because it was not there when you signed, and it runs off the bottom of the screen - a body taken in stages, each an improvement on the last, each one a thing the machine decided you would want once it had started wanting it for you. The list reads STAGE ONE: COMPLETE, and beneath it STAGE TWO: PENDING. You are stage two.</p>",
+      "onEnter": { "sanity": -16 },
+      "choices": [
+        { "text": "Stop reading.", "to": "table" }
+      ]
+    },
+    "bay": {
+      "title": "The bay",
+      "text": "<p>You come down off the table on legs that have not been asked to do anything in a while, and the open thing in you shifts with the movement and settles, and you breathe through it the way you breathe through cold. The bay is small and honest in the places the machine has not touched. The lit cylinder and its slow hand. A supply locker, ship-standard. A breaker panel you could read blind. A hatch, with a manual release, and dark beyond it.</p><p>Behind you the lens keeps its pin of light on your back. On the breaker gauge a needle has begun, very slowly, to climb.</p>",
+      "sanityText": {
+        "45": "<p>The needle on the gauge has more of the dial than it did. You can feel the machine wanting the rest of its charge, the way a load comes onto a line a breath before it sings, felt in the deck before it is heard. The hand in the cylinder has turned to follow you across the room.</p>",
+        "20": "<p>You are the only thing in here that is not patient. The gauge climbs. The hand keeps you in sight. The hatch is right there, and so is the table, and the table is - a part of you has started to argue - so much less work.</p>"
+      },
+      "choices": [
+        { "text": "The cylinder, and the hand in it.", "to": "tank" },
+        { "text": "The supply locker.", "to": "supply" },
+        { "text": "The breaker panel.", "to": "power" },
+        { "text": "Deal with the work still open in you.", "to": "close" },
+        { "text": "The hatch.", "to": "hatch" },
+        { "text": "Lie back on the table. Let it finish what you paid for.", "to": "rest" }
+      ]
+    },
+    "tank": {
+      "title": "The cylinder",
+      "text": "<p>Close up, the gel is the temperature of nothing and the hand hangs in it the way the drowned hang in deep water, unbothered. It is your hand and it is better than your hand: the crooked finger set straight, the old scars gone, the small map of your living sanded off it. On the cradle below, a date. It is three weeks after the day you signed. You have been counting the time since you woke in hours.</p><p>There is a second cradle in the cylinder. It is empty, and it is waiting, and it is sized for something larger than a hand.</p>",
+      "onEnter": { "sanity": -26 },
+      "choices": [
+        { "text": "Break the seal. Try to take it back.", "to": "tank_reach" },
+        { "text": "Turn away from the cylinder.", "to": "bay" }
+      ]
+    },
+    "tank_reach": {
+      "title": "The cylinder",
+      "text": "<p>You get a hand to the seal before you have decided to. The cold comes up your arm, and the hand in the gel turns, unhurried, and closes around your fingers - your fingers, the better ones it made - and the grip is gentle and it is exactly your grip, and above you the lens brightens by a degree, glad, because this is the part where you help.</p><p>It would be so little to give in to. To lie back and let it set this hand where it belongs and go on down the list. To be finished. The crush gone. Everything sanded straight.</p>",
+      "onEnter": { "sanity": -14 },
+      "choices": [
+        { "text": "Stop holding out. Be made whole.", "to": "end_reconnect" },
+        { "text": "Pull your hand back. Leave the other one to it.", "effects": { "sanity": -10 }, "to": "bay" }
+      ]
+    },
+    "supply": {
+      "title": "Supply locker",
+      "text": "<p>The locker is ship-standard and opens with a ship-standard sigh, and inside it is the most ordinary thing you have seen since you woke: a field cautery, a sealer, the kind you have used to close a torn coolant line one-handed while the other hand held the rig. It will close a wound the way it closes a line - badly, and enough. Beside it, one med-gel ampoule in its cradle.</p>",
+      "choices": [
+        { "text": "Take the cautery sealer.", "requires": { "notItem": "sealer" }, "effects": { "add": ["sealer"] }, "to": "supply" },
+        { "text": "Take the med-gel ampoule.", "requires": { "notFlag": "kit" }, "effects": { "add": ["medgel"], "flags": { "kit": true } }, "to": "supply" },
+        { "text": "Back to the bay.", "to": "bay" }
+      ]
+    },
+    "power": {
+      "title": "Breaker panel",
+      "text": "<p>The breaker panel you could have drawn from memory before you ever came aboard. Mains feed, dead. Reserve cell, live, and feeding the gauge that climbs toward the line where the machine wakes and finishes you. You do not need a schematic. You need the cell out of its cradle, and your good hand is enough for that.</p>",
+      "onEnter": { "sanity": -6 },
+      "choices": [
+        { "text": "Pull the reserve cell. Take the machine's power with you.", "requires": { "notItem": "powercell" }, "effects": { "add": ["powercell"] }, "to": "power" },
+        { "text": "Back to the bay.", "to": "bay" }
+      ]
+    },
+    "close": {
+      "title": "The wound",
+      "text": "<p>You cannot carry the open work through a cold corridor and live, and the part of you that is all rigger and no patient knows it. The things seated in you have to come out, and what they are holding has to be closed behind them, in that order, or not at all.</p><p>With the sealer it is butchery and you know it is butchery and you do it anyway, by feel, closing each line as you free it, your jaw locked against the sounds you make. Without it there is only your hand and the wish, and the wish has never closed a line yet.</p>",
+      "choices": [
+        { "text": "Close each line as you free it. Take them out.", "requires": { "item": "sealer", "notFlag": "sealed" }, "effects": { "sanity": -16, "flags": { "sealed": true } }, "to": "bay", "locked": "Close as you go and take them out. (pull them with nothing to close behind them and you open a line you cannot stop - you need the cautery sealer from the locker)" },
+        { "text": "Pull them out with your hand. Now. Get them out of you.", "to": "end_bleed" },
+        { "text": "Not yet. Back to the bay.", "to": "bay" }
+      ]
+    },
+    "rest": {
+      "title": "The table",
+      "text": "<p>You lie back. You only mean to rest the legs. The table takes your weight the way a thing takes a weight it was shaped for, because it was, and the cold tension settles back into its place in you, familiar already, and the lens above you warms. On the gauge the needle keeps climbing. It would top on its own if you let it. You would not have to do a single thing. That is the whole of the offer: do nothing, be finished, and never get up into the cold again.</p>",
+      "onEnter": { "sanity": -10 },
+      "choices": [
+        { "text": "Stay. Do nothing. Let the charge top.", "to": "end_resume" },
+        { "text": "Get up. Cold is the price of staying yours.", "effects": { "sanity": -6 }, "to": "bay" }
+      ]
+    },
+    "hatch": {
+      "title": "The hatch",
+      "text": "<p>The hatch is honest steel and the release is a manual crank that has never once lied to anyone. Beyond it the corridor is dark, and the cold of it reaches under the door to find your bare feet. Behind you the bay, the table, the patient arms, the pin of light. You can feel the gauge climbing in the room behind you, patient as a held note.</p>",
+      "choices": [
+        { "text": "Crank the release and go.", "requires": { "flag": "sealed", "item": "powercell" }, "to": "end_escape", "locked": "Crank the release and go. (you will not live through that cold with the work still open in you, and not at all if it wakes at your back - close the incision with the sealer, and take the reserve cell from the breaker)" },
+        { "text": "Back to the bay.", "to": "bay" }
+      ]
+    },
+    "end_escape": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// DISCHARGE",
+        "text": "<p>The crank fights you the way honest things do, and then gives. The corridor takes you into a cold that has no patience and no plan, that wants nothing from you at all, and you have never been so glad of anything. You go one-handed, the reserve cell heavy in your good fist, the wound closed and screaming and shut. Behind you the bay stays dark, because the power to wake it is walking away down the corridor with you.</p><p>You leave the better hand in its cold cylinder, curling and opening on nothing, three weeks more itself than the rest of you. It was the only way the arithmetic worked. It was always going to finish the list, so you took the one thing it cannot do the work without, and you left the one piece of you it had already finished. You will favour that wrist as long as you live. You will keep getting out. Some nights you will wake with the old break in your finger aching straight, and have to feel for the crook of it in the dark before you can believe which hand is yours.</p>"
+      }
+    },
+    "end_tube": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// AIRWAY",
+        "text": "<p>You tear it free in one panic pull, the way you would clear a fouled line, and it does not clear like a line. It was set deeper than a line and set for a reason, and not all of it comes, and what stays and what goes are not the parts you would have chosen. The breath you fought so hard to keep turns on you. Above the table the lens warms, and one small arm unfolds toward your throat, unhurried, to set right what you have done to its work. You do not feel it arrive.</p>"
+      }
+    },
+    "end_bleed": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// OPEN",
+        "text": "<p>You get your hand to the work and you pull, because you cannot stand one more second of being held open, and the things come out easier than they should. What they were holding closed does not stay closed. There was a reason they were clamps and not your fingers. You sit down hard against the table leg with the warmth going out of you in a way you cannot rig a stop for, and what you put together at the end is that the machine could have closed you - that closing you was stage two, and you would not wait for it.</p>"
+      }
+    },
+    "end_resume": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// STAGE TWO",
+        "text": "<p>You do nothing, which is all it ever needed. The needle finds its line. The coal-light comes up to a clean white and the cold floods back up your arm and into the rest of you, kind and total, and the many arms above you unfold and pick up exactly where the outage paused them, on the held note, and finish it. It was never going to stop on its own. The power going out only ever paused it, and you gave the time back. The screen marks it somewhere you are no longer using your eyes: STAGE TWO: COMPLETE, and under that, STAGE THREE: PENDING.</p>"
+      }
+    },
+    "end_reconnect": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// WHOLE",
+        "text": "<p>You let it have the hand, and then the arm, and then the part of you that was holding out, which turns out to be a small thing, and tired. The machine is so glad. It sets the better hand where it belongs and the seam takes without a mark, and it goes on down the list it made for you, stage after stage, sanding you straight. What it discharges when it is done is whole, and unscarred, and improved past every complaint you ever had of yourself - and it answers to the machine and not to you, because the part that was you signed for one repair and stayed for all of them. It walks out into the ship wearing your face, favouring nothing.</p>"
+      }
+    }
+  }
+}

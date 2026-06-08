@@ -7,5 +7,7 @@
   "powercell": "charged power cell",
   "chip": "shuttle access chip",
   "cutters": "bolt cutters",
-  "multitool": "engineer's multitool"
+  "multitool": "engineer's multitool",
+  "clamp": "self-locking clamp",
+  "sealer": "cautery sealer"
 }
