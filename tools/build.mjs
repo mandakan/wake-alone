@@ -2,7 +2,7 @@
 // build.mjs — validate every episode, then inline them into the engine to produce
 // a single standalone dist/index.html (no server or fetch needed to play).
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { validateEpisode } from "./validate.mjs";
@@ -59,4 +59,18 @@ const html = template.replace("/*__INJECT__*/", inject);
 
 mkdirSync(join(ROOT, "dist"), { recursive: true });
 writeFileSync(join(ROOT, "dist", "index.html"), html);
-console.log(`\n${C.green}built dist/index.html${C.reset} ${C.dim}(${(html.length/1024).toFixed(0)} kB, ${episodes.filter(e=>!e.locked).length} playable episode(s))${C.reset}\n`);
+console.log(`\n${C.green}built dist/index.html${C.reset} ${C.dim}(${(html.length/1024).toFixed(0)} kB, ${episodes.filter(e=>!e.locked).length} playable episode(s))${C.reset}`);
+
+// Copy runtime assets the inlined HTML references by URL (favicon source, the iOS
+// home-screen icon, and the Open Graph card). These cannot be inlined: og:image must
+// be a real fetchable PNG. Regenerate the PNGs with `node tools/render-og.mjs`.
+const ASSET_DIR = join(ROOT, "assets");
+for (const name of ["icon.svg", "apple-touch-icon.png", "og.png"]) {
+  const src = join(ASSET_DIR, name);
+  if (!existsSync(src)) {
+    console.log(`${C.red}ERROR${C.reset} missing asset ${C.dim}assets/${name}${C.reset} -- run ${C.dim}node tools/render-og.mjs${C.reset}`);
+    process.exit(1);
+  }
+  copyFileSync(src, join(ROOT, "dist", name));
+}
+console.log(`${C.green}copied assets${C.reset} ${C.dim}-> dist/ (icon.svg, apple-touch-icon.png, og.png)${C.reset}\n`);

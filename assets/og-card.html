@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<!-- WAKE ALONE Open Graph card, 1200x630. Source for assets/og.png.
+     Regenerate after editing:  node tools/render-og.mjs
+     Matches the live engine CRT look (radial void, scanlines, vignette, phosphor bloom).
+     The glyph carries NO baked scanlines on purpose -- the card's .tube overlay stripes
+     everything (glyph + wordmark) at one matching period; baking them in double-stripes it. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --phosphor:#ffb000;--phosphor-dim:#8a5f00;--phosphor-faint:#5a4a22;--phosphor-ghost:#3a2f12;
+    --bg:#070806;--bg-hi:#11150f;--bg-lo:#020302;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:630px;overflow:hidden}
+  .card{position:relative;width:1200px;height:630px;
+    background:var(--bg-lo) radial-gradient(120% 90% at 50% 8%, var(--bg-hi) 0%, var(--bg) 58%, var(--bg-lo) 100%) no-repeat;
+    font-family:"IBM Plex Mono",monospace;color:var(--phosphor);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  /* top + bottom HUD rules */
+  .hud{position:absolute;left:54px;right:54px;display:flex;justify-content:space-between;
+    font-size:19px;letter-spacing:3px;color:var(--phosphor-faint);text-transform:uppercase}
+  .hud.top{top:42px;border-bottom:1px solid var(--phosphor-ghost);padding-bottom:14px}
+  .hud.bot{bottom:42px;border-top:1px solid var(--phosphor-ghost);padding-top:14px;color:var(--phosphor-dim)}
+  .glyph{width:118px;height:118px;margin-bottom:14px;
+    filter:drop-shadow(0 0 16px rgba(255,176,0,.5))}
+  .bigtitle{font-family:"VT323",monospace;font-size:176px;line-height:.82;letter-spacing:5px;
+    text-align:center;text-shadow:0 0 26px rgba(255,176,0,.45),0 0 6px rgba(255,176,0,.6)}
+  .cursor{display:inline-block;width:.4em;height:.78em;background:var(--phosphor);margin-left:.16em;transform:translateY(.02em);box-shadow:0 0 16px rgba(255,176,0,.55)}
+  .sub{font-family:"VT323",monospace;font-size:38px;color:var(--phosphor-dim);
+    letter-spacing:2px;margin-top:30px}
+  /* scanlines */
+  .tube{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,
+      rgba(0,0,0,.30) 3px,rgba(0,0,0,.30) 4px)}
+  /* vignette */
+  .vig{position:absolute;inset:0;pointer-events:none;
+    box-shadow:inset 0 0 200px 18px rgba(0,0,0,.66);
+    background:radial-gradient(82% 90% at 50% 42%,transparent 70%,rgba(0,0,0,.5) 100%)}
+</style></head><body>
+<div class="card">
+  <div class="hud top"><span>SKEIN // SALVAGE LOG</span><span>SIGNAL: WEAK</span></div>
+  <svg class="glyph" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" fill="#070806"/>
+    <path d="M6 10 L12 16 L6 22" fill="none" stroke="#ffb000" stroke-width="2.6"/>
+    <rect x="16" y="9.5" width="9" height="13" fill="#ffb000"/>
+  </svg>
+  <div class="bigtitle">WAKE ALONE<span class="cursor"></span></div>
+  <div class="sub">an anthology of small dark rooms in deep space</div>
+  <div class="hud bot"><span>wake.urdr.dev</span><span>NEURAL INTEGRITY // 0% = END</span></div>
+  <div class="tube"></div>
+  <div class="vig"></div>
+</div>
+</body></html>
