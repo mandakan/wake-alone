@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0](https://github.com/mandakan/wake-alone/compare/v0.4.0...v0.5.0) (2026-06-09)
+
+
+### Features
+
+* **episodes:** add FATHOM, a no-way-out study-specimen episode ([b2d969e](https://github.com/mandakan/wake-alone/commit/b2d969e0c79d525d3094ce31855809bc27429ca4))
+
+
+### Bug Fixes
+
+* **fathom:** ground the descent and opening (craft lesson L8) ([795413d](https://github.com/mandakan/wake-alone/commit/795413d0d85f704362c26aa1207e364bb19dfa8c))
+* **fathom:** land each ending's facet of the prison (craft lesson L9) ([a59027d](https://github.com/mandakan/wake-alone/commit/a59027d171430660678fbf32bb7ac85bf53c7c21))
+* **fathom:** re-cut endings to corpus restraint (recut craft lesson L9) ([4f39f22](https://github.com/mandakan/wake-alone/commit/4f39f22f13d48003df719f86e64aaee4ffd68f6f))
+* **graft:** correct one-hand body-state continuity in restraint node ([d9fc51f](https://github.com/mandakan/wake-alone/commit/d9fc51fcc034f538a8e5951f85892404e8757705))
+
 ## [0.4.0](https://github.com/mandakan/wake-alone/compare/v0.3.0...v0.4.0) (2026-06-09)
 
 
