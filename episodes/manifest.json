@@ -31,6 +31,10 @@
     {
       "file": "graft.json",
       "locked": false
+    },
+    {
+      "file": "fathom.json",
+      "locked": false
     }
   ]
 }
