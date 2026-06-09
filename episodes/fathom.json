@@ -29,7 +29,7 @@
   "nodes": {
     "corridor": {
       "title": "Survey line",
-      "text": "<p>You are counting paces down a corridor when you notice you have lost the count. Not forgotten - lost. It was a number a moment ago and now there is only the smooth place where the number was, the way a tooth goes and the tongue keeps finding the gap.</p><p>You set out from a benchmark. You always set out from a benchmark; it is the first thing the trade teaches. So you should know to the pace how far down this hull you have come. You do not. Twenty years says a corridor is a corridor, a fixed run of plate between two bulkheads, and twenty years has never once been wrong about a corridor.</p>",
+      "text": "<p>You survey dead structures for a living - wrecks, drifted hulls, the things that stop answering, and they send you in to chart what is left: measure the passages, draw the map, bring it home. That is the job, and you are good at it. You were partway through this one, counting paces down a corridor, when you noticed you had lost the count. Not forgotten. Lost. It was a number a moment ago, and now there is only the smooth place where it was, the way a tooth goes and the tongue keeps finding the gap.</p><p>You measure from a benchmark, always. So you should know to the pace how far down this hull you have come. You do not. Twenty years of this work says a corridor is a corridor: a fixed run of plate between two bulkheads. Twenty years has never once been wrong about a corridor.</p>",
       "choices": [
         { "text": "Pace it again, heel to toe, and trust the number.", "requires": { "notFlag": "paced" }, "effects": { "sanity": -12, "flags": { "paced": true } }, "to": "repace" },
         { "text": "Don't. Carry your gear on to the datum.", "to": "datum" }
@@ -37,7 +37,7 @@
     },
     "repace": {
       "title": "Survey line",
-      "text": "<p>You walk it heel to toe, counting aloud so the count cannot leave you again. Forty-one paces to the bulkhead. You put your hand flat on the cold plate to be sure of it, then turn and walk the same line back, the same wall under the same hand. Thirty-six, and the bulkhead arrives early to meet you.</p><p>A corridor has one length. This is not a fine point of the discipline; it is the floor the discipline stands on. You count it a third time and get a third number, and you stop counting, because the thought the trade forbids has started to surface on its own: that the error is not in your counting.</p>",
+      "text": "<p>You walk it heel to toe, counting aloud so the count cannot leave you again. Forty-one paces to the bulkhead. You put your hand flat on the cold plate to be sure of it, then turn and walk the same line back, the same wall under the same hand. Thirty-six, and the bulkhead arrives early to meet you.</p><p>A corridor has one length. This is not a fine point of the work; it is the floor the work stands on. You count it a third time and get a third number, and you stop, because the one thought a surveyor is never allowed to think has started to surface on its own: that the error is not in your counting.</p>",
       "choices": [
         { "text": "Carry your gear on to the datum.", "to": "datum" }
       ]
@@ -105,10 +105,10 @@
     },
     "center": {
       "title": "The centre",
-      "text": "<p>You reach the middle of it and find no keel. No spine, no load path, no machine humming the place into being. The centre of the structure is not a thing that holds the rest up. It is a place from which the rest is looked at, and you have climbed all the way down into the seat of it, where the regard is densest, where you are nearest to whatever has been doing the regarding.</p><p>It does not move toward you. It does not need to. You came down to find what the place is, and the place is attention, and there is nothing between you and it now but the last of your believing you are the one who measures.</p>",
+      "text": "<p>The shaft bottoms out, and there is no keel. No spine, no load path, no machine. It opens into a small round room, warm and damp, lit by nothing you can find - and up close the walls are not walls but something soft, that gives under the light and holds still while you look and shifts the instant you do not.</p><p>In the middle, where the keel should run, there is a cradle, and something is kept in it. Tended. Wired. Held warm. You have surveyed enough wrecks to know the shape of a thing kept alive on purpose, and everything in you says do not cross to it. You cross to it.</p>",
       "onEnter": { "sanity": -40 },
       "choices": [
-        { "text": "Look up at what is looking.", "to": "end_center" }
+        { "text": "See what they have kept in the cradle.", "to": "end_center" }
       ]
     },
     "end_bearing": {
@@ -136,14 +136,14 @@
       "ending": {
         "type": "dead",
         "stamp": "// CENTRE REACHED",
-        "text": "<p>You look up at what is looking, because the centre of a structure is where its truth is kept and you have always gone to the centre - that is the discipline, the last good habit you have left.</p><p>No spine here to read. You look up, and the looking has no other side to meet - no face behind it, no edge where its regard stops and you start. You came down to find what the place is, and the place is the attention itself, and you are the one held point inside it: close, still, kept awake, the way a specimen is kept that is not yet finished being learned. It does not look back, because there is no back to it - only the looking, and you, and all the patience there is.</p>"
+        "text": "<p>You cross to the cradle, because the truth of a structure sits at its centre, and finding the truth is the work - the last of the work left to you.</p><p>What is in the cradle is small, and kept, and breathing. Wired on every side, fed and warmed and held right at the edge of alive. You know its shape the way you know your own hands, because it is what is left of you - the part they kept when the rest stopped being useful. There were no corridors. No hull to pace, no star, no hatch, no ship waiting home. There was this room, and the thing in the cradle, and twenty years of a charted life run behind its eyes to keep it walking somewhere while they watched what it did. You came all the way down to find what the place is built around. It is built around you. The dark leans in to see whether the thing in the cradle has understood - and it has, and that is the measurement, and they take it.</p>"
       }
     },
     "end_abandon": {
       "ending": {
         "type": "dead",
         "stamp": "// SURVEY ABANDONED",
-        "text": "<p>You set the scope down on the benchmark and stop. A map that will not close means the surveyor made an error - that is the first rule, the one you have leaned on for twenty years - and you have hunted the error down every line and found none, which leaves only the second thing, the thing the trade does not permit you to believe: that the place is wrong, and you are inside it.</p><p>So you stop looking for where the count goes astray. You sit at the datum, the one fixed point, and you keep still, and you let the place be as wrong as it likes. Something that has been waiting through every line you ran moves a little nearer, unhurried, now that you have finally stopped moving - and you do not lift the scope to measure how near. You were the only thing here still pretending to take its measure. You have stopped. They have what they were waiting to see.</p>"
+        "text": "<p>You set the scope down on the benchmark and stop. A map that will not close means the surveyor made an error - the first rule of the work, the one you have leaned on for twenty years - and you have hunted that error down every line and found none. Which leaves the other answer, the one the work does not allow: that the place is wrong, and you are inside it.</p><p>So you stop looking for where the count goes astray. You sit at the datum, the one fixed point, and you keep still, and let the place be as wrong as it likes. Something that has waited through every line you ran moves a little nearer, unhurried, now that you have finally stopped - and you do not lift the scope to measure how near. You were the only thing here still pretending to take a measurement. You have stopped. They have what they were waiting to see.</p>"
       }
     }
   }

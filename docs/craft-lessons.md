@@ -145,3 +145,34 @@ solver already tracks `entered` and `nodeMinSanity`; extend it to record each no
 sanity, and warn when a node's highest `sanityText` threshold >= that first-arrival sanity (i.e. a
 variant can be the first text a player ever sees for that node) so the author confirms it stands
 alone. Pair with a fixture self-test, like the other solver checks.
+
+## L8 - Ground before atmosphere: give the reader footing before the mood
+
+**Feedback:** on FATHOM - "I think it's too vague and poetic ... it tries to be mysterious and
+chilling but too much," and separately "it might be hard understanding what the character is doing
+or trying to accomplish ... 'the trade' is a bit confusing." We worked the two complaints back to a
+single confirmed root: **the prose reached for mood and mystery before giving the reader solid
+footing.** Without footing, mystery reads as vagueness and the chill reads as noise.
+**Rule:** Atmosphere sits *on top of* grounding, never instead of it. Two kinds of footing must be
+on the page before the mood is allowed to do its work:
+- **Image footing - what the reader can SEE.** Every dread beat, and every ending above all, needs
+  one concrete, picturable thing (a telling object, a bodily sensation, an event) under the
+  abstraction. Abstraction (regard, attention, "the looking") is seasoning on a concrete image, not
+  the dish. FATHOM's endings that landed each had an anchor - stars that will not shift (parallax),
+  a hand that is not there, a blank page above your name; the descent ending failed because it had
+  only concepts and nothing to picture. If you cannot name the one thing the reader sees in a beat,
+  it is fog, not fear. This is the image-legibility twin of L2's causal-legibility, and the
+  concrete-fragments-not-a-blur core of `docs/gestalt.md`.
+- **Orientation footing - who/what/why.** Within the first node or two, plainly establish who the
+  protagonist is and what they are trying to do *here* - their immediate objective - in words a
+  reader who never saw the `character` block can follow. The objective is orientation, not
+  backstory: backstory stays indirect (L4), but what the character wants right now belongs on the
+  page. In-world jargon for the profession ("the trade", "the discipline") is allowed only after it
+  has been grounded in plain language first; never let an unglossed insider term carry meaning the
+  reader needs to follow the story.
+**Enforced by:** this rule + the skill's final-read, which now runs two checks - "name the one
+concrete thing the reader sees in this beat; if there is none, rewrite," and "would a reader who
+never saw the `character` block know, by the end of the opening, what this person is and what they
+want?" - plus the reviewer's gestalt and legibility lenses. Judgment, not mechanically checkable for
+now (a possible future heuristic: flag ending nodes with high abstract-noun density and no concrete
+nouns).
