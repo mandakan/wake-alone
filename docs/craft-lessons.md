@@ -176,3 +176,29 @@ never saw the `character` block know, by the end of the opening, what this perso
 want?" - plus the reviewer's gestalt and legibility lenses. Judgment, not mechanically checkable for
 now (a possible future heuristic: flag ending nodes with high abstract-noun density and no concrete
 nouns).
+
+## L9 - Gestalt the image, deliver the payoff: bring the realization all the way home
+
+**Feedback:** on FATHOM's endings, after L8 fixed the descent - "I find the position fixed ending
+equally feeling like word salad in trying to be mysterious and using gestalt, but it fails and never
+really brings the realization home all the way about being locked in the mind as a head in a vat ...
+other endings and storylines share this problem." Each ending revealed a clever facet (the stars do
+not shift; no hand; a blank page) and stopped there, treating the oblique inversion *as* the payoff.
+**Rule:** Gestalt governs the **image**, never the **payoff**. This is the sharp edge of L2 and of
+`docs/gestalt.md`'s "gestalt the image, not the logic": the suggestive, fragmentary mode is for what
+the horror looks and feels like - the central realization an ending exists to deliver must be brought
+all the way home, stated plainly and landed in the protagonist's own knowing, not encoded in a clever
+reversal for the reader to decode. A reveal that only gestures - "you pointed yourself out to them,"
+"the thing they kept you to see" - names the trick and withholds the gut-punch; it reads as
+mysterious-but-empty, the "word salad" failure. Say the actual condition in words the reader cannot
+miss (for FATHOM: you are a kept mind - no body, no world, no past, alone, studied, and they will run
+you again). Where an anthology's endings share one truth, give each a **different complete facet** of
+it, each fully delivered, so the set assembles the whole without five identical reveals (FATHOM: the
+descent finds the literal cradle; egress lands no-body; records lands no-past; bearing lands
+no-outside; abandon lands the kept mind that stops performing). Distinct from L8: L8 is *have* a
+concrete anchor and orient the reader; L9 is *commit* the anchor to delivering the horror, all the
+way, rather than stopping at the clever turn.
+**Enforced by:** this rule + the skill's final-read ("for each ending, write the one plain sentence
+naming what the protagonist now knows about their condition; if the ending does not land that
+sentence, it is not done") and the reviewer's ending-legibility lens (L2), extended from causal
+legibility to payoff delivery. Judgment, not mechanically checkable.
