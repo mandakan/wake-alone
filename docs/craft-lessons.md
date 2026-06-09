@@ -209,3 +209,31 @@ rather than an itemized explanation? If it reads as a list of what-is-no-longer-
 one stroke." Plus the reviewer's gestalt and ending-legibility lenses. Judgment, not mechanically
 checkable (a future heuristic could flag ending paragraphs over N sentences, or with a run of
 "no X, no Y, no Z" clauses).
+
+## L10 - Keep the protagonist's body state coherent: never reference a limb the character can't use
+
+**Feedback:** on GRAFT's `straps` node - "This part is hard to understand and does not make sense
+since one hand is not even available to the protagonist." The episode's premise is that the right
+arm runs into the machine at a wrist coupling and the right hand is severed in a cylinder, so there
+is exactly **one** usable hand (the "good hand") and **one** cuffed wrist. The restraint node still
+said "Both wrist cuffs" and "Your hands are on the releases" / "Free your chest and wrists" - asking
+the reader to picture two working hands the character provably does not have. The contradiction
+breaks immersion the moment the reader tries to stage the action.
+**Rule:** When an episode alters or constrains the protagonist's body (a missing/severed/coupled
+limb, a bound hand, an injury that costs a faculty, a body "taken in stages"), that state is a
+running fact the prose must honour at **every** node, not just where it is introduced. Track what the
+character actually has: how many hands are free, which wrist is cuffed, what they can reach. Never
+write "hands"/"both"/"wrists" by reflex when the established state is singular. The constraint is
+usually the horror's whole point - referencing the lost part as if it were present throws away the
+dread and reads as a generation slip. House examples done right: GRAFT consistently routes every
+physical action through "your good hand" and frees the coupled arm as a separate gated step; the
+restraint node now reads "The cuff on your free wrist. The other arm the machine holds its own way,
+and no buckle will answer for that."
+**Enforced by:** this rule + the skill's final-read, which now runs a body-state pass: "name the
+protagonist's physical constraints established anywhere in this episode (lost/bound/altered limbs or
+faculties); then scan every node's prose and choice text for any reference - 'hands', 'both', a
+specific limb, an action requiring two hands - that the constraint forbids, and rewrite it." Plus the
+reviewer's continuity lens. Judgment, not mechanically checkable in general (the prose-lint's
+"your <item> you can't hold" check is the closest existing mechanical cousin; a future heuristic
+could flag plural 'hands'/'both wrists' in an episode whose `character`/opening establishes a
+single-hand state).

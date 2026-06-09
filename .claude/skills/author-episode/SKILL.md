@@ -96,7 +96,11 @@ state your assumption.
 5. **Final read against the ledger.** Re-read the episode against `docs/craft-lessons.md` - every
    lesson must hold (especially: legible endings whose cause and mechanic are explicit; single-hyphen
    dashes; gated choices written as one positive-gate choice with a `to` and a `locked` hint). Fix
-   anything that does not.
+   anything that does not. Run the **body-state pass (L10)**: name every physical constraint the
+   episode places on the protagonist (lost/severed/coupled/bound limb, an injury that costs a
+   faculty, a body "taken in stages"), then scan every node's prose and choice text for any reference
+   - "hands", "both", a named limb, an action needing two hands - that the constraint forbids, and
+   rewrite it.
 
 6. **Build:** run `npm run build`. Note the report metrics - node count, reachable endings, death
    ratio, estimated play-time, and the best escape's surviving sanity.

@@ -90,7 +90,11 @@ your lens judges."
 > unwinnable)? Do the explorable branches agree with each other and with the hub - no
 > branch contradicting a fact another branch or the hub establishes, no item/flag picked
 > up in one branch that the prose elsewhere forgets the player could have? Cite node ids
-> for any contradiction. Use lesson ref null unless a numbered lesson applies.
+> for any contradiction. Run a **body-state check (L10)**: if the episode constrains the
+> protagonist's body (a severed/coupled/bound limb, a lost faculty, a body altered "in
+> stages"), does every node's prose and choice text honour it - no "hands"/"both"/named
+> limb or two-handed action the established state forbids? Use lesson ref null unless a
+> numbered lesson applies.
 
 ## Findings schema
 

@@ -49,10 +49,10 @@
     },
     "straps": {
       "title": "Restraints",
-      "text": "<p>This much is yours. Quick-release cuffs, medical, made to hold a body kindly and hold it all the same - and you have spent your life on buckles and locks that meant it. The chest strap. Both wrist cuffs. Your hands are on the releases before you have decided to look.</p>",
+      "text": "<p>This much is yours. Quick-release cuffs, medical, made to hold a body kindly and hold it all the same - and you have spent your life on buckles and locks that meant it. The chest strap. The cuff on your free wrist. The other arm the machine holds its own way, and no buckle will answer for that. Your good hand is on the releases before you have decided to look.</p>",
       "onEnter": { "sanity": -6 },
       "choices": [
-        { "text": "Work the releases. Free your chest and wrists.", "requires": { "notFlag": "unstrapped" }, "effects": { "flags": { "unstrapped": true } }, "to": "table" },
+        { "text": "Work the releases. Free your chest and wrist.", "requires": { "notFlag": "unstrapped" }, "effects": { "flags": { "unstrapped": true } }, "to": "table" },
         { "text": "Back to the table.", "to": "table" }
       ]
     },
