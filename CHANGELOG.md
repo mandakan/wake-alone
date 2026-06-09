@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/mandakan/wake-alone/compare/v0.3.0...v0.4.0) (2026-06-09)
+
+
+### Features
+
+* add review-episode craft-review skill, wire into author-episode ([9e03ca4](https://github.com/mandakan/wake-alone/commit/9e03ca49e71ca76824690850757fdbca3314765b))
+
+
+### Bug Fixes
+
+* **derelict:** make end_airlock death legible (L2) ([494a53b](https://github.com/mandakan/wake-alone/commit/494a53bcfdc44d73435e942ae1725a5f1994e415))
+
 ## [0.3.0](https://github.com/mandakan/wake-alone/compare/v0.2.0...v0.3.0) (2026-06-08)
 
 
