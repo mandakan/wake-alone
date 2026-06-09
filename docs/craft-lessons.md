@@ -177,28 +177,35 @@ want?" - plus the reviewer's gestalt and legibility lenses. Judgment, not mechan
 now (a possible future heuristic: flag ending nodes with high abstract-noun density and no concrete
 nouns).
 
-## L9 - Gestalt the image, deliver the payoff: bring the realization all the way home
+## L9 - Land the dread by restraint: one concrete stroke, then trust the reader
 
-**Feedback:** on FATHOM's endings, after L8 fixed the descent - "I find the position fixed ending
-equally feeling like word salad in trying to be mysterious and using gestalt, but it fails and never
-really brings the realization home all the way about being locked in the mind as a head in a vat ...
-other endings and storylines share this problem." Each ending revealed a clever facet (the stars do
-not shift; no hand; a blank page) and stopped there, treating the oblique inversion *as* the payoff.
-**Rule:** Gestalt governs the **image**, never the **payoff**. This is the sharp edge of L2 and of
-`docs/gestalt.md`'s "gestalt the image, not the logic": the suggestive, fragmentary mode is for what
-the horror looks and feels like - the central realization an ending exists to deliver must be brought
-all the way home, stated plainly and landed in the protagonist's own knowing, not encoded in a clever
-reversal for the reader to decode. A reveal that only gestures - "you pointed yourself out to them,"
-"the thing they kept you to see" - names the trick and withholds the gut-punch; it reads as
-mysterious-but-empty, the "word salad" failure. Say the actual condition in words the reader cannot
-miss (for FATHOM: you are a kept mind - no body, no world, no past, alone, studied, and they will run
-you again). Where an anthology's endings share one truth, give each a **different complete facet** of
-it, each fully delivered, so the set assembles the whole without five identical reveals (FATHOM: the
-descent finds the literal cradle; egress lands no-body; records lands no-past; bearing lands
-no-outside; abandon lands the kept mind that stops performing). Distinct from L8: L8 is *have* a
-concrete anchor and orient the reader; L9 is *commit* the anchor to delivering the horror, all the
-way, rather than stopping at the clever turn.
-**Enforced by:** this rule + the skill's final-read ("for each ending, write the one plain sentence
-naming what the protagonist now knows about their condition; if the ending does not land that
-sentence, it is not done") and the reviewer's ending-legibility lens (L2), extended from causal
-legibility to payoff delivery. Judgment, not mechanically checkable.
+**Feedback:** two rounds on FATHOM's endings. First they "[felt] like word salad ... mysterious ...
+but it fails and never really brings the realization home" - each revealed a clever facet (the stars
+do not shift; no hand; a blank page) and stopped at the oblique trick, the gut-punch withheld. So
+they were rewritten to deliver the realization outright - and that over-corrected: "now I think they
+might be too wordy and on the nose ... not really evoking the dread ... Are we staying true to the
+corpus?" They were not. The plain-delivery version *itemized* the horror (no sky, no ship, no body,
+no past, alone, not getting out) and *narrated* the realization - exactly the "bald catalogue" the
+corpus forbids.
+**Rule:** A reveal has two failure modes and one narrow target between them. **Fog** (too oblique):
+no concrete anchor, only concept ("the looking has no other side") - the reader cannot furnish the
+horror because nothing was given. **Lecture** (too plain): the anchor is there but every implication
+is spelled out - the dread dies on contact, against Blackwood's "keep it inferred," Lovecraft's
+"imply; don't itemize," and Mary Celeste's "let the player furnish the horror" (`docs/style-cards.md`).
+The target, and the house default (derelict's one-word "Attention."): **give one concrete, picturable
+anchor; accrete the dread in a sentence or two; end on one short flat stroke - then stop, leaving the
+seven-eighths unsaid for the reader to assemble.** Deliver the *turn*, not the *consequences*: name
+the thing that just happened (the measurement leaned back; there is nothing to reach with; the page
+above your name is blank) and let "kept mind / no body / forever" detonate in the reader, unstated.
+This is L2's legible causal turn held in tension with gestalt/iceberg restraint - the horror's full
+weight stays below the surface. Where an anthology's endings share one truth, give each a different
+concrete anchor onto the same prison (FATHOM: a false star that will not recede; a hand that was
+never there; a blank page; a kept thing in a cradle; the scope set down) - never the same image,
+never the spelled-out list. Distinct from L8: L8 is *have* an anchor and orient the reader; L9 is
+*land the anchor and then stop* - one flat stroke, not a paragraph of what it means.
+**Enforced by:** this rule + the skill's final-read, now a two-sided check per ending: "is there one
+concrete thing the reader can picture, AND is the realization delivered by a single flat stroke
+rather than an itemized explanation? If it reads as a list of what-is-no-longer-true, cut back to the
+one stroke." Plus the reviewer's gestalt and ending-legibility lenses. Judgment, not mechanically
+checkable (a future heuristic could flag ending paragraphs over N sentences, or with a run of
+"no X, no Y, no Z" clauses).
