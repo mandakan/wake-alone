@@ -98,9 +98,18 @@ state your assumption.
    dashes; gated choices written as one positive-gate choice with a `to` and a `locked` hint). Fix
    anything that does not.
 
-6. **Build and report:** run `npm run build`, then tell the user the report metrics - node count,
-   reachable endings, death ratio, estimated play-time, and the best escape's surviving sanity - so
-   they can judge difficulty against the dials they asked for.
+6. **Build:** run `npm run build`. Note the report metrics - node count, reachable endings, death
+   ratio, estimated play-time, and the best escape's surviving sanity.
+
+7. **Craft review (auto), then report.** Run the **`review-episode`** skill in auto mode on the
+   freshly built episode - it is the single source of truth for the lenses (ending legibility,
+   gestalt + hint calibration, slop beyond the linter, tension + coherence), the findings format,
+   and the triage rules; do not restate them here. It reports only; it never edits the episode.
+   Read the merged findings and re-enter the step-4 validate-fix loop until every `block` and
+   `craft-warn` finding is resolved or you can explicitly justify why it stands (the same posture
+   you take toward validator `warn`s). Then give the user the final report: the step-6 metrics plus
+   a short summary of what the review raised and how each item was resolved. If a finding carries a
+   `proposedLesson`, surface it for the user to approve - never auto-append it to the ledger.
 
 ## When the user gives feedback on a story
 
