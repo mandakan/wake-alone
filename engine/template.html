@@ -130,11 +130,10 @@
   .title-screen{padding-top:40px;text-align:center}
   .bigtitle{font-family:var(--font-display);font-size:clamp(46px,14vw,84px);line-height:.9;letter-spacing:2px}
   .sub{font-family:var(--font-display);font-size:24px;color:var(--phosphor-dim);margin:6px 0 40px}
-  .eplist{max-width:520px;margin:0 auto;text-align:left}
+  .eplist{max-width:520px;margin:0 auto;text-align:left;transition:opacity .9s ease}
   .boot{max-width:520px;margin:0 auto;padding-top:18vh;font-family:var(--font-display);font-size:20px;text-align:left}
   .boot-line{color:var(--phosphor-dim);white-space:pre;visibility:hidden}
   .boot-prompt{margin-top:26px;color:var(--phosphor);visibility:hidden}
-  .eplist{transition:opacity .9s ease}
   .eplist.eplist-hidden{opacity:0;pointer-events:none}
   .epcard{border:1px solid var(--phosphor-a28);padding:16px 18px;margin:12px 0;cursor:pointer;transition:background .15s,border-color .15s}
   .epcard:hover{background:var(--phosphor-a08);border-color:var(--phosphor)}
@@ -311,10 +310,9 @@ const FEAT = { tiers:true, hud:true, watching:true, endings:true, scars:true, wa
 
 /* 07 ATMOSPHERE: procedural sanity-coupled ambience (skein-audio + vendored Tone).
    Null when the build hasn't inlined the scripts, and every call site guards on it,
-   so the raw template and any Tone failure degrade to silence. The graph is built on
-   the first gesture (autoplay policy) but is audible only between wake()/sleep(). */
+   so the raw template and any Tone failure degrade to silence. The graph is built by
+   the boot screen's wake press (autoplay policy) and audible only per scene (menu/wake/sleep). */
 const AUDIO = (typeof SkeinAudio!=="undefined") ? new SkeinAudio() : null;
-if(AUDIO) document.addEventListener("pointerdown", ()=>{ AUDIO.init(); }, {capture:true, once:true});
 function sndToggle(){
   if(!AUDIO) return;
   AUDIO.init(); // gesture context; idempotent
@@ -932,6 +930,7 @@ window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); appl
    dismisses it is the autoplay gesture that unlocks audio (the first beep you
    ever hear is the audio bus coming up). It gates routing, so deep links
    (#episode-id) pass through the boot too, then land in the episode. ---- */
+const BOOT_WAKE_MS = 450; // beat between the wake press and routing, sized for the boot beep
 const BOOT_LINES = [
   "SKEIN RUNTIME v" + VERSION,
   "MEM CHECK ............ OK",
@@ -964,7 +963,7 @@ function bootScreen(){
       document.removeEventListener("pointerdown",press);
       document.removeEventListener("keydown",press);
       booted=true; route();
-    }, 450);
+    }, BOOT_WAKE_MS);
   };
   document.addEventListener("pointerdown", press);
   document.addEventListener("keydown", press);
