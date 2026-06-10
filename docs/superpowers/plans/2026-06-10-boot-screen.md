@@ -21,7 +21,7 @@
 **Files:**
 - Modify: `engine/skein-audio.js`
 
-- [ ] **Step 1: Add tuning constants**
+- [x] **Step 1: Add tuning constants**
 
 After the `MASTER_CEIL` line (~line 35), add:
 
@@ -30,7 +30,7 @@ const MENU_LEVEL = 0.33;       // menu-scene master scale: same ship, heard from
 const BLIP = { charHz: 780, punctHz: 520, driftCents: 30, volDb: -18 }; // typed-tagline telemetry voice
 ```
 
-- [ ] **Step 2: Replace the `_awake` boolean with a `_scene` string**
+- [x] **Step 2: Replace the `_awake` boolean with a `_scene` string**
 
 In the constructor, replace:
 
@@ -44,7 +44,7 @@ with:
       this._scene = 'off';        // 'off' (boot screen) | 'menu' (distant calm drone) | 'play' (full ambience)
 ```
 
-- [ ] **Step 3: Name the limiter so blips can route around the scene-gated master**
+- [x] **Step 3: Name the limiter so blips can route around the scene-gated master**
 
 In `init()`, replace:
 
@@ -59,7 +59,7 @@ with:
       n.master = new Tone.Gain(0).connect(n.limiter);
 ```
 
-- [ ] **Step 4: Replace wake()/sleep() with the three-scene gate**
+- [x] **Step 4: Replace wake()/sleep() with the three-scene gate**
 
 Replace:
 
@@ -85,7 +85,7 @@ with:
     }
 ```
 
-- [ ] **Step 5: Scene-aware master and dread**
+- [x] **Step 5: Scene-aware master and dread**
 
 Replace `_applyMaster`:
 
@@ -110,7 +110,7 @@ with:
       const d = this._scene === 'menu' ? 0 : this._dread, n = this._nodes;
 ```
 
-- [ ] **Step 6: Add the blip voice**
+- [x] **Step 6: Add the blip voice**
 
 After the `stinger()` method, add:
 
@@ -143,7 +143,7 @@ After the `stinger()` method, add:
     }
 ```
 
-- [ ] **Step 7: Update the wiring comment**
+- [x] **Step 7: Update the wiring comment**
 
 In the header comment block (top of file), replace:
 
@@ -160,12 +160,12 @@ with:
  *   audio.blip('char'|'punct'|'boot'); // UI telemetry blips (typed tagline, boot beep)
 ```
 
-- [ ] **Step 8: Syntax check**
+- [x] **Step 8: Syntax check**
 
 Run: `node --check engine/skein-audio.js`
 Expected: no output, exit 0.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add engine/skein-audio.js
@@ -179,7 +179,7 @@ git commit -m "feat(audio): menu scene level + blip UI voice"
 **Files:**
 - Modify: `tools/audio-bench.html`
 
-- [ ] **Step 1: Add the buttons**
+- [x] **Step 1: Add the buttons**
 
 After the existing stinger/mute `<div class="buttons">` block (the one containing `stinger: dead` and `mute`), add:
 
@@ -193,7 +193,7 @@ After the existing stinger/mute `<div class="buttons">` block (the one containin
   </div>
 ```
 
-- [ ] **Step 2: Wire them**
+- [x] **Step 2: Wire them**
 
 After the existing `.st` stinger wiring line (`document.querySelectorAll('.st').forEach(...)`), add:
 
@@ -205,7 +205,7 @@ After the existing `.st` stinger wiring line (`document.querySelectorAll('.st').
 
 (The `$` helper and the `enableAll` that flips `disabled` off already exist and cover the new buttons.)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tools/audio-bench.html
@@ -219,7 +219,7 @@ git commit -m "feat(bench): blip + scene trigger rows"
 **Files:**
 - Modify: `engine/template.html`
 
-- [ ] **Step 1: Add boot CSS**
+- [x] **Step 1: Add boot CSS**
 
 After the `.eplist{...}` rule (line ~133):
 
@@ -229,7 +229,7 @@ After the `.eplist{...}` rule (line ~133):
   .boot-prompt{margin-top:26px;color:var(--phosphor);visibility:hidden}
 ```
 
-- [ ] **Step 2: Add bootScreen() just above the ROUTING comment block**
+- [x] **Step 2: Add bootScreen() just above the ROUTING comment block**
 
 Insert before the `/* ---- ROUTING: ... ---- */` comment (near the end of the script):
 
@@ -277,7 +277,7 @@ function bootScreen(){
 }
 ```
 
-- [ ] **Step 3: Gate route() and boot on load**
+- [x] **Step 3: Gate route() and boot on load**
 
 At the top of `function route(){`, add as the first line:
 
@@ -291,7 +291,7 @@ And replace the final `route();` call (last line of the script, after the `hashc
 bootScreen();
 ```
 
-- [ ] **Step 4: Syntax check**
+- [x] **Step 4: Syntax check**
 
 Extract and check the inline script:
 
@@ -301,7 +301,7 @@ node -e "const m=require('fs').readFileSync('engine/template.html','utf8').match
 
 Expected: `OK` (constructing the Function compiles without executing; DOM access stays untouched).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add engine/template.html
@@ -315,7 +315,7 @@ git commit -m "feat(engine): POST boot screen gates routing + audio unlock"
 **Files:**
 - Modify: `engine/template.html` (depends on Task 3 being committed; same file)
 
-- [ ] **Step 1: Add type-out CSS**
+- [x] **Step 1: Add type-out CSS**
 
 Next to the boot CSS added in Task 3:
 
@@ -330,7 +330,7 @@ And inside the existing reduced-motion media block (line ~220, `@media (prefers-
   @media (prefers-reduced-motion: reduce){ .screen{animation:none} .cursor{animation:none} .eplist{transition:none} }
 ```
 
-- [ ] **Step 2: Switch the menu to the distant drone**
+- [x] **Step 2: Switch the menu to the distant drone**
 
 In `titleScreen()`, replace:
 
@@ -344,7 +344,7 @@ with:
   if(AUDIO) AUDIO.menu(); // distant calm drone: the ship is out there, even from the menu
 ```
 
-- [ ] **Step 3: First-render type-out in titleScreen()**
+- [x] **Step 3: First-render type-out in titleScreen()**
 
 Replace the `root.innerHTML = ...` block at the end of `titleScreen()`:
 
@@ -371,7 +371,7 @@ with:
 }
 ```
 
-- [ ] **Step 4: Add typeSubtitle() after titleScreen()**
+- [x] **Step 4: Add typeSubtitle() after titleScreen()**
 
 ```js
 /* One-time tagline type-out on the first menu after boot: char-by-char with
@@ -398,11 +398,11 @@ function typeSubtitle(text){
 }
 ```
 
-- [ ] **Step 5: Syntax check**
+- [x] **Step 5: Syntax check**
 
 Same command as Task 3 Step 4. Expected: `OK`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add engine/template.html
@@ -416,7 +416,7 @@ git commit -m "feat(engine): typed tagline with blips + distant menu drone"
 **Files:**
 - Read-only verification; no source changes expected (fixes loop back into Tasks 1-4 files).
 
-- [ ] **Step 1: Regression + build**
+- [x] **Step 1: Regression + build**
 
 ```bash
 npm test && npm run build
@@ -424,7 +424,7 @@ npm test && npm run build
 
 Expected: validator/diversity tests pass; build writes `dist/index.html` with audio inlined.
 
-- [ ] **Step 2: Playwright -- boot flow**
+- [x] **Step 2: Playwright -- boot flow**
 
 Open `file://<repo>/dist/index.html`. Verify in order:
 1. Boot screen visible; within ~1.5s all five POST lines shown; prompt `> PRESS ANY KEY TO WAKE` with blinking cursor; `AUDIO BUS ............ WAITING` present. No menu content.
@@ -433,15 +433,15 @@ Open `file://<repo>/dist/index.html`. Verify in order:
 4. After typing completes (~3s) the full subtitle is shown and cards are visible/clickable.
 5. Console: no errors (Tone.js autoplay warnings before the click are acceptable).
 
-- [ ] **Step 3: Playwright -- skip paths**
+- [x] **Step 3: Playwright -- skip paths**
 
 Reload. Click during the POST scroll: all lines + prompt appear immediately (first press = fast-forward). Click again: menu. Click during the type-out: subtitle completes instantly, cards appear.
 
-- [ ] **Step 4: Playwright -- deep link + return**
+- [x] **Step 4: Playwright -- deep link + return**
 
 Navigate to `file://<repo>/dist/index.html#<first-unlocked-episode-id>` (check `episodes/manifest.json` for an unlocked id, e.g. `derelict`). Verify: boot screen first; after wake press the EPISODE renders (not the menu). Then click "abort to salvage menu": menu renders fully formed, subtitle already complete, no re-boot, no re-type.
 
-- [ ] **Step 5: Final commit if any fixes were made, then report**
+- [x] **Step 5: Final commit if any fixes were made, then report**
 
 ```bash
 git status
