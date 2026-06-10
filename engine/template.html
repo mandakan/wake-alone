@@ -734,7 +734,7 @@ function titleScreen(){
       <div class="ept">[ ${ep.title} ]</div><div class="epb">${ep.byline||""}</div></div>`;
     const o = scars[ep.id];
     const scar = o ? `<div class="scar scar--${o.type}">// last attempt: ${esc(o.label||"UNKNOWN")}</div>` : "";
-    return `<div class="epcard" onclick="location.hash='${ep.id}'">
+    return `<div class="epcard" data-ep="${esc(ep.id)}" onclick="location.hash=this.dataset.ep">
       <div class="epn">${n}</div><div class="ept">${ep.title}</div>
       <div class="epb">${ep.byline||""}</div>${scar}</div>`;
   }).join("");
@@ -746,9 +746,9 @@ function titleScreen(){
 }
 function footer(showExit){
   const exit = showExit
-    ? `<div class="footer"><button class="abort" onclick="returnToMenu()">> abort to salvage menu</button></div>`
+    ? `<button class="abort" onclick="returnToMenu()">> abort to salvage menu</button><br>`
     : "";
-  return exit + `<div class="footer">skein v${VERSION} // neural integrity at 0% ends the run // <a class="src" href="https://github.com/mandakan/wake-alone" target="_blank" rel="noopener">source</a></div>`;
+  return `<div class="footer">${exit}skein v${VERSION} // neural integrity at 0% ends the run // <a class="src" href="https://github.com/mandakan/wake-alone" target="_blank" rel="noopener">source</a></div>`;
 }
 
 /* ---- LAB MODE: staging-only FX showcase, opened with #lab on a non-prod host.
@@ -883,7 +883,6 @@ function route(){
   if(episode || !root.querySelector(".title-screen")) titleScreen();
 }
 function returnToMenu(){ if(location.hash) location.hash=""; else route(); }
-const labHash=()=> location.hash.toLowerCase()==="#lab";
 window.addEventListener("hashchange", route);
 route();
 </script>
