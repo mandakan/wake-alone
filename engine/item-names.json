@@ -14,5 +14,6 @@
   "clamp": "self-locking clamp",
   "sealer": "cautery sealer",
   "scope": "transit scope",
-  "seal": "EVA seal"
+  "seal": "EVA seal",
+  "isolation-key": "master isolation key"
 }

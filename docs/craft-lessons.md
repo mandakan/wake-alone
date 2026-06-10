@@ -345,3 +345,43 @@ Negation-run itemizing is allowed where an inventory of absences IS the point, o
 **Enforced by:** `prose-lint` warns (advisory) when "the way " exceeds 5 uses across an episode
 (self-tested). The closing-formula side-by-side and inversion-budget checks are judgment - the
 skill's final-read and the reviewer's slop lens.
+
+## L16 - In an ending, the hint stops being deniable: state the causal fact, keep the nature gestalt
+
+**Feedback:** on FAULT's relief ending - "perhaps a bit too vague for someone not in on the plot
+twist? I don't want to break gestalt but can we make the hint a bit more clean." The ending's one
+reveal carrier ("The entries are in your syntax") was written to the same deniability standard as
+the episode's mid-run clues - and a chief systems officer's syntax in a duty roster has a perfectly
+innocent reading, so for a player not already in on the twist the ending carried no turn at all.
+**Rule:** Deniability is a virtue in clues and a defect in endings. Mid-episode, a twist clue should
+survive an innocent reading - that is what makes it a clue. At an ending, above all one reachable
+before any evidence has been seen, the *causal fact* must be stated undeniably (you wrote the
+schedule that killed them, and you are writing a new one), while the *nature* of the wrongness (what
+you are) may stay gestalt. This is L2's explicit-cause rule plus L9's fog/lecture line, specialized
+for twist episodes: the reader must leave the ending knowing what happened, even if not yet what
+they are. Test: read each twist-gated ending as the player who took the shortest route there - if
+every reveal-bearing line still has an innocent reading, it is fog; sharpen the fact, not the
+ontology.
+**Enforced by:** this rule + the skill's final-read (per ending: "does the cause survive an innocent
+reading? it must not") + the reviewer's ending-legibility lens. Judgment, not mechanically checkable.
+
+## L17 - The deaths must be findable when dread needs them: traces as effects, spent sparingly
+
+**Feedback:** on FAULT (2026-06) - "I'm sort of missing the dread creeping up. I don't want a lot of
+gore but the traces of the crew and how they were killed are almost completely absent... None of the
+episodes is supposed to be child friendly, rather the opposite." Calibration from the same feedback:
+do not force traces into every episode, and do not discourage them - use them sparingly, where they
+matter to the dread and the story.
+**Rule:** "Dread over gore" forbids splatter, not evidence. An episode whose horror includes dead or
+taken crew should usually let the player *find how it happened* in physical traces - staged as
+effects, never wounds: the scratches that stop at the seam where a door held, a pump counter at
+fourteen bags, lights that dimmed as a courtesy while the air went. Absence-of-people is a house
+mode (Mary Celeste); absence-of-evidence is usually just thinness. Calibration: traces are a spice,
+not a quota - a few charged ones beat coverage (gestalt, L9); place them where they pay the
+episode's mechanic (in FAULT every trace is a system doing exactly as it was told); and a zero-trace
+episode is allowed as a deliberate choice, never as a default. The cruelty ceiling: procedural and
+implied beats anatomical and shown - the nastiest line should be one a child could read aloud
+without understanding.
+**Enforced by:** this rule + the skill's final-read ("can the player find how the crew died, and does
+each trace name an effect, not a wound? if the episode has none, was that chosen on purpose?") + the
+reviewer's gestalt and tension lenses. Judgment, not mechanically checkable.

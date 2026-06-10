@@ -35,6 +35,10 @@
     {
       "file": "fathom.json",
       "locked": false
+    },
+    {
+      "file": "fault.json",
+      "locked": false
     }
   ]
 }
