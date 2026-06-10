@@ -665,7 +665,7 @@ function renderEnding(end){
   if(!FEAT.endings || REDUCED){
     root.innerHTML = `<div class="ending"><div class="stamp ${end.type}">${end.stamp}</div>
       <div class="prose glitchable">${end.text}</div>
-      <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+      <button class="choice restart" onclick="returnToMenu()">> Return to salvage menu</button></div>` + footer();
     scrollTop(true); return;
   }
   html.classList.add("crush");
@@ -678,7 +678,7 @@ function renderEnding(end){
     typewrite(document.getElementById("endstamp"), end.stamp, 64, ()=>{
       const pr=document.getElementById("endprose"); if(pr) pr.style.display="";
       const act=document.getElementById("endactions");
-      if(act) act.innerHTML=`<button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button>`;
+      if(act) act.innerHTML=`<button class="choice restart" onclick="returnToMenu()">> Return to salvage menu</button>`;
     });
   }, 1600);
 }
@@ -691,7 +691,7 @@ function renderMadness(){
       <div class="prose madprose">
         <p>The ship was always like this. You were always here. The others left because you asked them to, didn't you, didn't you, and the smiling face on the wall is just your face, it's only ever been your face, awake and awake and awake and-</p>
         <p>You stop looking for the way out. There was never a way out of a place you never left.</p></div>
-      <button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button></div>` + footer();
+      <button class="choice restart" onclick="returnToMenu()">> Return to salvage menu</button></div>` + footer();
     scrollTop(true); return;
   }
   root.innerHTML = `<div class="ending"><div class="endblack"><span class="cursor solid"></span></div></div>` + footer();
@@ -705,7 +705,7 @@ function renderMadness(){
       <div id="madactions"></div></div>` + footer();
     setTimeout(()=>{
       const c=document.getElementById("madcursor"); if(c){ c.classList.remove("solid"); c.classList.add("dying"); }
-      const a=document.getElementById("madactions"); if(a) a.innerHTML=`<button class="choice restart" onclick="titleScreen()">> Return to salvage menu</button>`;
+      const a=document.getElementById("madactions"); if(a) a.innerHTML=`<button class="choice restart" onclick="returnToMenu()">> Return to salvage menu</button>`;
     }, 3400);
   }, 2000);
 }
