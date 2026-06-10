@@ -100,6 +100,12 @@ n-gram phrases across episodes (stopword/common phrasing filtered, intentional m
 threshold. All dials and a master `enabled` switch live in `tools/diversity-config.mjs`; self-tested in
 `tools/diversity.test.mjs`. It surfaces reuse for a human to judge (reword vs. allowlist) - it does not
 block.
+**Addendum (2026-06, corpus review):** distinctiveness covers *images and signature lines*, not just
+n-grams. WARD's ending reproduced derelict's signature stroke ("Not pain, not fear. Attention.")
+nearly verbatim, and VIGIL reused TENANT's palm-up glove with different wording - both below the
+n-gram radar. A signature image or closing line belongs to one episode; reusing it elsewhere needs a
+deliberate allowlist decision, never a drift. Checked by reading (the reviewer's slop lens compares
+against `docs/gestalt.md`'s cited specimens).
 
 ## L6 - Atmospheric/degraded prose must still parse on first read: no overcompressed metaphor
 
@@ -237,3 +243,105 @@ reviewer's continuity lens. Judgment, not mechanically checkable in general (the
 "your <item> you can't hold" check is the closest existing mechanical cousin; a future heuristic
 could flag plural 'hands'/'both wrists' in an episode whose `character`/opening establishes a
 single-hand state).
+**Addendum (2026-06, corpus review):** the rule generalizes from the protagonist's body to **scene
+state**. Any established physical fact of a scene - a body occupying a chair, a sealed hatch, a
+restraint that was never released on the page - binds every later prose and choice reference to that
+scene. BECALMED offered "Sit in the captain's seat" while the captain's nine-days-dead body was
+established as sitting in it; WARD cuffed the protagonist's wrist in `wake` and never spent a clause
+releasing it. Never offer an action the established scene state makes impossible to stage without
+acknowledging the obstacle.
+
+## L11 - A sanity-costing choice must buy prose: no stat-tax self-loops
+
+**Feedback:** corpus review (2026-06). BECALMED's three biggest dread beats (-30 sit in the captain's
+seat, -22 look at your own chair, -30 watch where the boat went), FATHOM's port scrape (-10) and
+look-for-your-ship (-15), and TENANT's glove pickup (-8) all looped back to the same node whose text
+never changed. The player pays the episode's heaviest costs and is shown nothing - the choices read
+as mechanical self-harm buttons, not scares, and the unchanged base text then contradicts what the
+player just did (FATHOM's lock still promised "the way back to your ship" after the look established
+there is no ship).
+**Rule:** A choice that costs sanity must land on new prose. Never loop a sanity-costing action back
+to its own node: route it through a one-shot payoff node (the watchroom_log / hold_glove /
+register_read pattern) that shows what the cost bought, then return to the parent. Big optional hits
+(~-20 or worse) above all: a major cost with no payoff is a bug, not a scare.
+**Enforced by:** `validate` errors on any choice with a negative `effects.sanity` whose `to` is its
+own node (self-tested). The judgment half - whether the payoff prose is *worth* the cost - stays with
+the skill's final read and the reviewer's tension lens.
+
+## L12 - A payoff may only lean on what its route guarantees
+
+**Feedback:** corpus review (2026-06), the most repeated finding class. BECALMED's endings invoke
+"the four words" that exist only in the optional watchroom_log; DERELICT's darkgap body has "that
+same terrible attention" pointing at a sheet-lift on another optional branch; DERELICT's airlock
+ending pays off hearing the stars call when no node ever planted a call; WARD's central reveal cites
+"every time you bent to the grille" on routes that never visit the panel; VIGIL's warning node recaps
+a recording from a sibling branch the player may not have seen.
+**Rule:** This is L7 generalized beyond `sanityText`. Before shipping any payoff - an ending's anchor
+image, a reveal's "you have been doing X all along", a comparative ("that same X", "again"), a recap
+of evidence - list what it presupposes, and check each item against every route that can reach the
+node, not the intended one. Three legal moves: (a) restate the referent inline so the beat works as a
+cold read, (b) gate the payoff on the flag that proves the player saw the source, (c) cut the
+presupposition ("a terrible attention" instead of "that same terrible attention"). An ending may only
+pay off motifs some reachable prior node actually planted - a retro-declared motif is a non sequitur
+at the worst possible moment.
+**Enforced by:** this rule + the skill's final-read (per ending/reveal: "what does this line assume
+the player has seen, and does every route guarantee it?") + the reviewer's legibility and coherence
+lenses. Judgment; the solver's reachability data makes spot-checks cheap.
+
+## L13 - Static prose must hold in every state it can display
+
+**Feedback:** corpus review (2026-06). DERELICT's engineering `30` variant asserts "The reactor hums
+even though it's dead" and "The panel is bolted shut" - false after the player restores power and
+opens the panel, then returns below 30. GRAFT's hatch says "you can feel the gauge climbing" at the
+one moment every escaping player is holding the cell that drives the climb, and its surrender endings
+run on power the player may be carrying away. FATHOM's locked hint diagnoses "you do not have the
+release code yet" - false for the player who has the code but lacks the seal. FATHOM's datum keeps
+the scope on its tripod after the player pockets it.
+**Rule:** Node base text, `sanityText` variants, and `locked` hints are static: they render in every
+game state that reaches them. Never assert a mutable world fact (power on/off, a panel open/shut, an
+item still on its shelf, a mechanism the player can disable) unless every state that can display the
+text agrees with it. Three legal moves: (a) word it state-neutral (name only what cannot change),
+(b) gate the path so contradicting states cannot reach it (requires/notItem with a locked line),
+(c) put the mutable fact in a one-shot node instead. `locked` hints specifically: phrase the FULL
+requirement list ("the console will not arm without command authorisation and a live reactor"), never
+a diagnosis of which piece is missing - and never let a locked hint leak gated *knowledge* (VIGIL's
+"you need to know how to cross unseen" handed the player the survival technique the flag was
+guarding). L7 is this rule's first-arrival special case; this is the every-arrival rule.
+**Enforced by:** this rule + the skill's final-read + the reviewer's coherence lens. Intended
+mechanical check (not yet built): the solver tracks per-node flag/item states; flag any `sanityText`
+variant or base text naming a flag-gated fact that is reachable in both states.
+
+## L14 - The escape must cost something: a forced-loss floor on the optimal route
+
+**Feedback:** corpus review (2026-06). DERELICT (forced loss 15), VIGIL (16), and TENANT (10) all let
+an informed player escape near full sanity while the prose claims an ordeal ("forty meters of the
+hardest stillness of your life" - costing 0). The climax has no teeth on replay, the "watching" lines
+never fire, and the ending's relief is unearned.
+**Rule:** The cheapest escape route must charge a real price. Reason about forced loss (costs the
+route cannot avoid, ignoring med-gel restores), not final sanity: free pickups and avoidable scares
+do not count. House floor: at least ~20 forced loss on the optimal escape path; the climactic action
+itself should usually carry a cost. Restores exist so the player can afford the horror, not so the
+horror is optional.
+**Enforced by:** `validate` re-runs the solver with med-gel disabled and warns (advisory) when the
+best escape's forced loss is under 20 (self-tested). Tuning the *feel* stays judgment - the reviewer's
+tension lens asks "does the good path read hard-won?"
+
+## L15 - No construction may become a tic: scaffolds, closing formulas, negation runs
+
+**Feedback:** corpus review (2026-06). The "the way X" simile scaffold carried 12 comparisons in
+GRAFT, 9 in WARD, 8 in FATHOM ("patient the way only it is patient", "dressed the way you are
+dressed") - mid-sentence, so the opener heuristics missed it, and by mid-episode the frame is
+audible and the simile that needs it most (WARD's central reveal) lands as one more flourish. FATHOM
+closed three of five endings on the identical move (the watcher leaning close "to see whether X");
+BECALMED closed two endings on the same dying green cell; negation runs ("no X, no Y, no Z") recurred
+five times in FATHOM, three of them in endings.
+**Rule:** Rhetorical constructions are spent by use. Per episode: one simile scaffold ("the way X",
+"like X", "as if X") carries at most ~4-5 comparisons - keep the strongest, recast the rest as direct
+statement or different syntax. Per episode: no two endings share a closing syntactic formula or
+closing image - put the last sentence of every ending side by side before finishing (this is L9's
+different-anchors rule extended from images to syntax). Reserve an inversion/chiasmus ("not A but B")
+for the beat that needs it - if it ran four times before the reveal, the reveal inherits a worn tool.
+Negation-run itemizing is allowed where an inventory of absences IS the point, once.
+**Enforced by:** `prose-lint` warns (advisory) when "the way " exceeds 5 uses across an episode
+(self-tested). The closing-formula side-by-side and inversion-budget checks are judgment - the
+skill's final-read and the reviewer's slop lens.

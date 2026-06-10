@@ -31,7 +31,7 @@
       "title": "Survey line",
       "text": "<p>You survey dead structures for a living - wrecks, drifted hulls, the things that stop answering, and they send you in to chart what is left: measure the passages, draw the map, bring it home. That is the job, and you are good at it. You were partway through this one, counting paces down a corridor, when you noticed you had lost the count. Not forgotten. Lost. It was a number a moment ago, and now there is only the smooth place where it was, the way a tooth goes and the tongue keeps finding the gap.</p><p>You measure from a benchmark, always. So you should know to the pace how far down this hull you have come. You do not. Twenty years of this work says a corridor is a corridor: a fixed run of plate between two bulkheads. Twenty years has never once been wrong about a corridor.</p>",
       "choices": [
-        { "text": "Pace it again, heel to toe, and trust the number.", "requires": { "notFlag": "paced" }, "effects": { "sanity": -12, "flags": { "paced": true } }, "to": "repace" },
+        { "text": "Pace it again, heel to toe, and trust the number.", "requires": { "notFlag": "paced" }, "effects": { "sanity": -12, "flags": { "paced": true, "wrong": true } }, "to": "repace" },
         { "text": "Don't. Carry your gear on to the datum.", "to": "datum" }
       ]
     },
@@ -44,42 +44,49 @@
     },
     "datum": {
       "title": "The datum",
-      "text": "<p>The chamber where you set your instruments. The transit scope stands on its tripod over a benchmark plate, levelled, true - the one fixed point you measure everything else from. Every line you run is supposed to bring you back here to close it against the mark. Every line has. You are beginning to feel the difference between a procedure you follow and a procedure that is being followed with you inside it.</p><p>Four ways lead off the datum. A viewport, frosted. A hatch you are fairly sure you came in by. A records alcove, its terminal still lit. And a shaft going down, into the body of the thing.</p>",
+      "text": "<p>The chamber where you set your instruments. The tripod stands levelled over a benchmark plate - the one fixed point you measure everything else from. Every line you run is supposed to bring you back here to close it against the mark. Every line has. You are beginning to feel the difference between a procedure you follow and a procedure that is being followed with you inside it.</p><p>Four ways lead off the datum. A viewport. A hatch you are fairly sure you came in by. A records alcove, its terminal still lit. And a shaft going down, into the body of the thing.</p>",
       "sanityText": {
-        "30": "<p>The chamber where you set your instruments, and you have set them many times. The scope stands levelled over the benchmark, true as ever. But the benchmark is only a mark you set to measure a real place from, and you no longer believe the place is real. A fixed point that fixes nothing. Four ways lead off: a frosted viewport, a hatch, a records alcove, a shaft going down.</p>"
+        "30": "<p>The chamber where you set your instruments, and you have set them many times. The benchmark plate sits in the floor, true as ever. But a benchmark is only a mark you set to measure a real place from, and you no longer believe the place is real. A fixed point that fixes nothing. Four ways lead off: a viewport, a hatch, a records alcove, a shaft going down.</p>"
       },
       "choices": [
         { "text": "Take the transit scope from the tripod.", "requires": { "notItem": "scope" }, "effects": { "add": ["scope"] }, "to": "datum" },
         { "text": "Go to the viewport.", "to": "port" },
         { "text": "Go to the hatch you came in by.", "to": "lock" },
         { "text": "Go to the records alcove.", "to": "register" },
-        { "text": "Go down the shaft.", "to": "well" },
+        { "text": "Go down the shaft.", "requires": { "flag": "wrong" }, "locked": "Go down the shaft. (you do not go down into a structure you still believe in)", "to": "well" },
         { "text": "Set the gear down and stop trying to close it.", "requires": { "sanityMax": 25 }, "to": "end_abandon" }
       ]
     },
     "port": {
       "title": "The viewport",
-      "text": "<p>A port the size of your two hands, glazed and furred over with frost on the inside, which is wrong - frost forms where the cold is, and the cold should be outside. Behind the white, dark.</p><p>This is your backyard. Scrape the port clear, sight a known star through the scope, and you have a bearing; a bearing fixes your position; a fixed position is a real place in a real sky you can chart your way out of. It is the soundest instinct you have. On a shelf beneath the port someone has left an EVA seal and a med-gel ampoule, laid square, as if for you.</p>",
+      "text": "<p>A port the size of your two hands, glazed. The frost on it grows from the inside, which is wrong - frost forms where the cold is, and the cold should be outside.</p><p>A clear port, a known star sighted through the scope, and you have a bearing; a bearing fixes your position; a fixed position is a real place in a real sky you can chart your way out of. It is the soundest instinct you have. On the shelf beneath the port someone laid out an EVA seal and a med-gel ampoule, square, as if for you.</p>",
       "choices": [
         { "text": "Take the EVA seal and the med-gel from the shelf.", "requires": { "notFlag": "tookport" }, "effects": { "add": ["seal", "medgel"], "flags": { "tookport": true } }, "to": "port" },
-        { "text": "Scrape the port clear and look out.", "requires": { "notFlag": "portclear" }, "effects": { "sanity": -10, "flags": { "portclear": true } }, "to": "port" },
+        { "text": "Scrape the port clear and look out.", "requires": { "notFlag": "portclear" }, "effects": { "sanity": -10, "flags": { "portclear": true, "wrong": true } }, "to": "port_clear" },
         { "text": "Sight a star-bearing through the scope.", "requires": { "item": "scope", "flag": "portclear" }, "locked": "Sight a bearing. (you need the transit scope, and the port scraped clear)", "to": "end_bearing" },
         { "text": "Back to the datum.", "to": "datum" }
       ]
     },
+    "port_clear": {
+      "title": "The viewport",
+      "text": "<p>The frost comes away in grey curls, and behind the glass: stars. A full field of them, sharp, steady. You have sighted stars all your working life, and every one of them sat at the bottom of a long distance. These sit near - the whole field hung at arm's reach, waiting to be measured.</p>",
+      "choices": [
+        { "text": "Step back from the glass.", "to": "port" }
+      ]
+    },
     "register": {
       "title": "The register",
-      "text": "<p>An alcove of records - a docking register, a manifest, a lit terminal still keeping its log. The exact thing you want. A register holds the name of the ship you arrived on and the time you came aboard, and a name and a time are proof, the cheapest and surest proof there is that a person came from somewhere and is owed a way back to it.</p><p>A field kit hangs open on the wall with a med-gel ampoule in the foam.</p>",
+      "text": "<p>An alcove of records - a docking register, a manifest, a lit terminal still keeping its log. The exact thing you want. A register holds the name of the ship you arrived on and the time you came aboard, and a name and a time are proof, the cheapest and surest proof there is that a person came from somewhere and is owed a way back to it.</p><p>A field kit hangs open on the wall, its foam cut to hold a med-gel ampoule.</p>",
       "choices": [
         { "text": "Take the med-gel from the kit.", "requires": { "notFlag": "tookreg" }, "effects": { "add": ["medgel"], "flags": { "tookreg": true } }, "to": "register" },
-        { "text": "Read the register for the lock code and your own arrival.", "requires": { "notFlag": "readreg" }, "effects": { "sanity": -20, "flags": { "readreg": true, "code": true, "name": true } }, "to": "register_read" },
+        { "text": "Read the register for the lock code and your own arrival.", "requires": { "notFlag": "readreg" }, "effects": { "sanity": -20, "flags": { "readreg": true, "code": true, "name": true, "wrong": true } }, "to": "register_read" },
         { "text": "Close the register, satisfied you came from somewhere.", "requires": { "flag": "name" }, "to": "end_records" },
         { "text": "Back to the datum.", "to": "datum" }
       ]
     },
     "register_read": {
       "title": "The register",
-      "text": "<p>The release code is there, near the top, and you commit it. And there, lower, is your own name against an arrival time, logged in your own hand - the slope of it, the way you cut the one letter short. Proof. You read it twice for the warmth of it.</p><p>The line above your name is blank. Not erased, not aged past reading. Blank, the way a page is before anyone has been. You decide not to read upward any further.</p>",
+      "text": "<p>The release code is there, near the top, and you commit it. And there, lower, is your own name against an arrival time, logged in your own hand - the slope of it, the one letter cut short. Proof. You read it twice for the warmth of it.</p><p>The line above your name is blank, the way a page is blank before anyone has lived a single day in front of it. You decide not to read upward any further.</p>",
       "choices": [
         { "text": "Close the register, satisfied you came from somewhere.", "to": "end_records" },
         { "text": "Back to the datum.", "to": "datum" }
@@ -87,16 +94,23 @@
     },
     "lock": {
       "title": "The hatch",
-      "text": "<p>The hatch you came in by. You are fairly sure. A manual airlock, a wheel a tired hand can turn, the seam of it rimed white. Beyond it is the way back to your ship and the work order and the slow ordinary trip home with a finished chart.</p><p>It asks two things of you, the way locks do: a body sealed against the cold, and the release code that frees the wheel. Fit the seal, key the code, and turn.</p>",
+      "text": "<p>The hatch you came in by. You are fairly sure. A manual airlock, a wheel a tired hand can turn, the seam of it rimed white. Beyond it is the berth where your ship should be waiting, and the work order, and the slow ordinary trip home with a finished chart.</p><p>It asks two things of you: a body sealed against the cold, and the release code that frees the wheel. Fit the seal, key the code, and turn.</p>",
       "choices": [
-        { "text": "Fit the seal, key the code, and cycle the lock.", "requires": { "item": "seal", "flag": "code" }, "locked": "Cycle the lock and step out. (the seal must be fitted, and you do not have the release code yet)", "to": "end_egress" },
-        { "text": "Press your face to the inner port and find your ship.", "requires": { "notFlag": "lookship" }, "effects": { "sanity": -15, "flags": { "lookship": true } }, "to": "lock" },
+        { "text": "Fit the seal, key the code, and cycle the lock.", "requires": { "item": "seal", "flag": "code" }, "locked": "Cycle the lock and step out. (the wheel will not free without the EVA seal fitted and the release code)", "to": "end_egress" },
+        { "text": "Press your face to the inner port and find your ship.", "requires": { "notFlag": "lookship" }, "effects": { "sanity": -15, "flags": { "lookship": true, "wrong": true } }, "to": "lock_look" },
         { "text": "Back to the datum.", "to": "datum" }
+      ]
+    },
+    "lock_look": {
+      "title": "The hatch",
+      "text": "<p>You press your face to the inner port. The lock's own light picks out the berth - collar, clamps, the lit ring a hull rides against. Nothing rides it. The clamps stand open on the dark, and they have the settled look of clamps that have stood open a long time.</p>",
+      "choices": [
+        { "text": "Step back from the hatch.", "to": "lock" }
       ]
     },
     "well": {
       "title": "The shaft",
-      "text": "<p>The shaft drops inward, toward the middle of the thing. Every structure has a truth at its centre - the keel, the spine, the load path that everything else is hung from - and the centre is the one place that cannot lie about what is holding the rest up. If anywhere will close the map, it is down there.</p><p>You climb down. The deeper you go the less the place bothers. At the edges of the light, where you are not looking straight, the walls stop troubling to be walls - they soften to a held breath, a waiting that has not decided on a shape because no one is there to make it decide. Your hand on each rung is the only argument that you are a thing with a hand.</p>",
+      "text": "<p>The shaft drops inward, toward the middle of the thing. Every structure has a truth at its centre - the keel, the spine, the load path that everything else is hung from - and the centre is the one place that cannot lie about what is holding the rest up. If anywhere will close the map, it is down there.</p><p>You climb down. The deeper you go the less the place bothers. At the edges of the light, where you are not looking straight, the walls stop troubling to be walls - they soften to a waiting that has not decided on a shape, because no one is there to make it decide. Your hand on each rung is the only argument that you are a thing with a hand.</p>",
       "onEnter": { "sanity": -18 },
       "choices": [
         { "text": "Go down to the centre.", "to": "center" },
@@ -115,35 +129,35 @@
       "ending": {
         "type": "dead",
         "stamp": "// POSITION FIXED",
-        "text": "<p>You bring a star to the crosshair, and for the first time since the count went smooth, you know where you are.</p><p>It does not shift. You run your eye the length of the scope and the star holds - no parallax, no distance, nothing far about it at all. It is close. It is close, and it is watching, and the dark it hangs in is the same dark that stood behind every port you ever cleared. There is no sky out there; there never was. You leaned all the way in to take the measurement, and the measurement leaned back.</p>"
+        "text": "<p>You bring a star to the crosshair, and for the first time since the count went smooth, you know where you are.</p><p>It does not shift. You run your eye the length of the scope and the star holds: no parallax. Any honest star would drift against the frame as you moved; this one sits. It is close, and it is watching, and the dark it hangs in is the same dark that stood behind the frost. There is no sky out there; there never was.</p>"
       }
     },
     "end_egress": {
       "ending": {
         "type": "dead",
         "stamp": "// AIR AND STARS",
-        "text": "<p>The seal seats, the code frees the wheel, and you turn it. Leaving is the whole of the work - a finished chart, the long ordinary trip home - and a turning wheel is the simplest yes there is. The seam cracks. Air. A step.</p><p>You reach to pull yourself through, and there is nothing to reach with. No hand closing on the frame. No arm. You had hands a moment ago, on the wheel, the way you have always had exactly as much of a body as the moment asked for and no more. There was never a door here, or a far side to reach. Only the reaching, and the warm dark you are reaching in, and the thing that leans close to see whether you will stop.</p>"
+        "text": "<p>The seal seats, the code frees the wheel, and you turn it. Leaving is the whole of the work - a finished chart, the long ordinary trip home - and a turning wheel is the simplest yes there is. The seam cracks. Air. A step.</p><p>You reach to pull yourself through, and there is nothing to reach with - no hand closing on the frame. You had hands a moment ago, on the wheel. You have always had exactly as much of a body as the moment asked for, and no more. There was never a door here, or a far side to reach. Only the reaching, and the warm dark you are reaching in, and the thing that leans close to see whether you will stop.</p>"
       }
     },
     "end_records": {
       "ending": {
         "type": "dead",
         "stamp": "// ON RECORD",
-        "text": "<p>You close the register with your name safe inside it. A name against an arrival time is proof you came from somewhere and are owed the way back - the surest proof there is.</p><p>The page is one deep. Your name sits in your own hand, the slope of it exactly yours - and above it the paper is blank - not aged, not erased, just blank, the way a page is before anyone has lived a single day in front of it. You read your name again, for the warmth of it, in the quiet of a room that has only ever held this much: the page, the warmth, and whatever it is that let you write yourself down just now, to see if the warmth would come.</p>"
+        "text": "<p>You close the register with your name safe inside it. A name against an arrival time is proof you came from somewhere and are owed a way back - the surest proof there is.</p><p>The page is one deep. You wrote that entry yourself, just now. That is why the hand is so exactly yours, and why the line above it is empty: no arrival ever happened. The register is a page, the page was blank, and the first thing ever written on it is you.</p>"
       }
     },
     "end_center": {
       "ending": {
         "type": "dead",
         "stamp": "// CENTRE REACHED",
-        "text": "<p>You cross to the cradle. The truth of a structure sits at its centre, and finding the truth is the work - the last of the work left to you.</p><p>What is in the cradle is small, and kept, and breathing, wired on every side and held at the edge of warm. You know the shape of it the way you know your own hands. You came all the way down to find what the place is built around, and it is this, and it has been this the whole time, with twenty years of corridor poured in to keep it walking somewhere. The dark bends close over the cradle to see whether it has understood. It has.</p>"
+        "text": "<p>You cross to the cradle. The truth of a structure sits at its centre, and finding the truth is the work - the last of the work left to you.</p><p>What is in the cradle is small, and kept, and breathing, wired on every side and held at the edge of warm. You know the shape of it because it is yours. The place is built around this - it has been the whole time, with twenty years of corridor poured in to keep it walking somewhere. The survey closes here.</p>"
       }
     },
     "end_abandon": {
       "ending": {
         "type": "dead",
         "stamp": "// SURVEY ABANDONED",
-        "text": "<p>You set the scope down on the benchmark. A map that will not close means the surveyor made an error - the first rule of the work, leaned on for twenty years - and you have hunted that error down every line and found none.</p><p>So you stop. You sit at the datum, the one fixed point, and you keep still, and you let the place be as wrong as it likes. You do not lift the scope again. And the thing that has waited at the edge of every line you ever ran, patient the way only it is patient, comes the rest of the way in - because the measuring was the last of you that was still pretending, and you have set it down.</p>"
+        "text": "<p>You set your gear down on the benchmark. A map that will not close means the surveyor made an error - the first rule of the work, leaned on for twenty years - and you have hunted that error down every line and found none.</p><p>So you stop. The measuring was the last of you that was still pretending, and you have set it down. You sit at the datum, the one fixed point, and you keep still, and you let the place be as wrong as it likes. And the thing that has waited at the edge of every line you ever ran comes the rest of the way in.</p>"
       }
     }
   }

@@ -33,7 +33,7 @@ const dead   = (stamp = "// DEAD") => ({ ending: { type: "dead", stamp, text: "<
         { text: "jump in pit", to: "pit" },
         { text: "touch the void", to: "void" },
       ]},
-      closet: { text: "<p>c</p>", onEnter: { add: ["key"], sanity: -10 }, choices: [{ text: "back", to: "hub" }] },
+      closet: { text: "<p>c</p>", onEnter: { add: ["key"], sanity: -25 }, choices: [{ text: "back", to: "hub" }] },
       exit: escape(), pit: dead("// PIT"), void: dead("// VOID"),
     },
   };
@@ -396,6 +396,82 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   const r = lintProse(ep);
   check("variantrep: intra-node variant repetition is not flagged",
     !r.warnings.some((w) => w.includes("repeats")), r.warnings.join("; "));
+}
+
+// --- L11: a sanity-costing choice that loops back to its own node is an ERROR (stat tax) ---
+{
+  const ep = { id: "stattax", title: "S", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>the glove lies there.</p>", choices: [
+        { text: "Pick up the glove.", effects: { sanity: -8, flags: { glove: true } }, to: "hub" },
+        { text: "out", to: "x", requires: { flag: "glove" }, locked: "not yet" },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      x: escape(), d1: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("stattax: not ok", !r.ok);
+  check("stattax: flagged as stat tax", hasErr(r, "stat tax"), r.errors.join("; "));
+}
+
+// --- L11: the same cost routed through a result node is fine ---
+{
+  const ep = { id: "payoff", title: "P", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>the glove lies there.</p>", choices: [
+        { text: "Pick up the glove.", effects: { sanity: -25, flags: { glove: true } }, to: "glovebeat", requires: { notFlag: "glove" } },
+        { text: "out", to: "x", requires: { flag: "glove" }, locked: "not yet" },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      glovebeat: { text: "<p>it is warm.</p>", choices: [{ text: "back", to: "hub" }] },
+      x: escape(), d1: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("payoff: ok", r.ok, r.errors.join("; "));
+  check("payoff: no stat-tax error", !hasErr(r, "stat tax"));
+}
+
+// --- L14: a near-free optimal escape route warns (advisory) ---
+{
+  const ep = { id: "freebie", title: "F", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "stroll out", to: "x" },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      x: escape(), d1: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("freebie: still ok (advisory)", r.ok, r.errors.join("; "));
+  check("freebie: costless-escape warn", hasWarn(r, "escape reads costless"), r.warnings.join("; "));
+}
+
+// --- L14: med-gel restores don't mask the forced loss (the measure ignores gel) ---
+{
+  const ep = { id: "gelmask", title: "G", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", onEnter: { add: ["medgel"] }, choices: [
+        { text: "the hard way out", to: "x", effects: { sanity: -10 } },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      x: escape(), d1: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("gelmask: forced loss 10 still warns despite held gel", hasWarn(r, "escape reads costless"), r.warnings.join("; "));
+}
+
+// --- L15: one simile scaffold as the episode's default move warns (advisory) ---
+{
+  const mk = (i) => ({ text: `<p>It hangs there the way a thing hangs (${i}).</p>`, choices: [{ text: "n", to: i < 6 ? `n${i + 1}` : "x" }] });
+  const ep = { id: "scaffold", title: "S", start: "n1", startSanity: 100,
+    nodes: { n1: mk(1), n2: mk(2), n3: mk(3), n4: mk(4), n5: mk(5), n6: mk(6),
+      x: { ending: { type: "escape", stamp: "// A", text: "<p>out</p>" } } } };
+  const r = lintProse(ep);
+  check("scaffold: 6x 'the way' warns", r.warnings.some((w) => w.includes("simile scaffold")), r.warnings.join("; "));
+}
+{
+  const mk = (i) => ({ text: `<p>It hangs there the way a thing hangs (${i}).</p>`, choices: [{ text: "n", to: i < 4 ? `n${i + 1}` : "x" }] });
+  const ep = { id: "scaffoldok", title: "S", start: "n1", startSanity: 100,
+    nodes: { n1: mk(1), n2: mk(2), n3: mk(3), n4: mk(4),
+      x: { ending: { type: "escape", stamp: "// A", text: "<p>out</p>" } } } };
+  const r = lintProse(ep);
+  check("scaffoldok: 4x 'the way' is under the advisory max", !r.warnings.some((w) => w.includes("simile scaffold")), r.warnings.join("; "));
 }
 
 // --- cadence: the SAME phrase across DIFFERENT nodes still accrues and warns ---

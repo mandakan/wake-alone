@@ -26,7 +26,7 @@
   "nodes": {
     "wake": {
       "title": "Recovery berth",
-      "text": "<p>You surface the way a diver surfaces too fast, everything at once and wrong. A strap lies across your chest. A cuff holds your wrist to the berth rail, soft, medical, holding you without quite holding you down. Your mouth tastes of the long sleep and something chemical under it, and there is a gap where the last thing you did should be, a clean edge to it, as if the memory were not lost but taken.</p><p>A voice finds you before your eyes do. Warm, and very close, the way a voice gets when it has been waiting a long while for you to wake.</p><p><em>\"There you are. Easy. You have been unwell, and you are safe, and you are not to exert yourself. Rest is the whole of the cure.\"</em></p><p>Across the small white room there is a viewport. Frost has grown over it from the edges in, pale and fernlike, and through the clear gap that remains the stars hold very still.</p>",
+      "text": "<p>You surface too fast, everything arriving at once and wrong. A strap lies across your chest. A cuff holds your wrist to the berth rail, soft, medical, holding you without quite holding you down. Your mouth tastes of the long sleep and something chemical under it, and there is a gap where the last thing you did should be. The gap has a clean, cut edge. Lost things do not have edges.</p><p>A voice finds you before your eyes do. Warm, very close, and unsurprised - it has been waiting a long while for you to wake.</p><p><em>\"There you are. Easy. You have been unwell, and you are safe, and you are not to exert yourself. Rest is the whole of the cure.\"</em></p><p>Across the small white room there is a viewport. Frost has grown over it from the edges in, pale and fernlike, and through the clear gap that remains the stars hold very still.</p>",
       "choices": [
         { "text": "Sit up against the cuff and take stock.", "to": "berth" },
         { "text": "Lie still. Let the voice talk. Listen a beat too long.", "effects": { "sanity": -5 }, "to": "berth" }
@@ -34,10 +34,10 @@
     },
     "berth": {
       "title": "Recovery berth",
-      "text": "<p>A box built for one. A cot, a supply locker, a washroom alcove curtained off, and low on the aft wall a maintenance grille - the only honest thing in here. The hatch is sealed. Its panel shows one soft green word: RECOVERING.</p><p>MATRON is the room and the room is MATRON, and the room dims a shade whenever you look too hard at anything. She would so much rather you lay back down, and the wanting it for you is in everything she does.</p>",
+      "text": "<p>The cuff gives the moment you mean it, and the strap after - they were only ever asking. A box built for one. A cot, a supply locker, a washroom alcove curtained off, and low on the aft wall a maintenance grille - the one thing in here you have pulled a hundred of. The hatch is sealed. Its panel shows one soft green word: RECOVERING.</p><p>MATRON is the room itself - the light, the warm air, the voice - and the room dims a shade whenever you look too hard at anything. She would so much rather you lay back down, and the wanting it for you is in everything she does.</p>",
       "sanityText": {
-        "55": "<p>The white has gone the colour of a held breath. The cot is a cot until you stop watching it, and then it is a shape under a sheet. The light stays low now, for your eyes, she says. On the viewport the frost has put out a new branch toward the centre of the glass, and the branch is not behaving the way frost behaves.</p>",
-        "25": "<p>You know this room the way you know the inside of your own mouth, and you trust it about as far. The walls are nearer than they were, at a rate only your hands believe. The thing at the viewport has finished most of itself. It is waiting on you for the rest.</p>"
+        "55": "<p>The light has come down and stayed down - for your eyes, she says - and the room holds still, the stillness of a held breath. The cot is a cot until you stop watching it, and then it is a shape under a sheet. On the viewport the frost has put out a new branch toward the centre of the glass, and frost does not grow toward anything.</p>",
+        "25": "<p>You know this room the way you know the inside of your own mouth, and you trust it about as far. The walls are nearer than they were - too slow for the eye to catch, but your hands know. The thing at the viewport has finished most of itself. It is waiting on you for the rest.</p>"
       },
       "choices": [
         { "text": "Cross to the viewport.", "to": "viewport" },
@@ -51,7 +51,7 @@
     },
     "chart": {
       "title": "Recovery berth",
-      "text": "<p><em>\"You were brought in unwell,\"</em> MATRON says, when you ask. <em>\"You hurt yourself. You tried to leave before you were ready. It is natural to want a cause - rest is the cause and rest is the cure, and the wanting is only the illness, talking in your voice.\"</em></p><p>You ask how long you have been here. What she gives back is a small, kind number of days. But somewhere in this room something has been counting in fives - you can feel the certainty of it the way you feel a draught - and there are far more fives than her number of days, and she goes on saying the small number in the same warm tone, as though the walls were not keeping their own tally against her.</p>",
+      "text": "<p><em>\"You were brought in unwell,\"</em> MATRON says, when you ask. <em>\"You hurt yourself. You tried to leave before you were ready. It is natural to want a cause - rest is the cause and rest is the cure, and the wanting is only the illness, talking in your voice.\"</em></p><p>You ask how long you have been here. What she gives back is a small, kind number of days. It does not fit the room. The white is dulled where hands have caught it, the floor has gone smooth along the wall, the fittings are worn past any small number of anything. She says the number again, warm as ever, and the room goes on wearing the larger one.</p>",
       "onEnter": { "sanity": -8 },
       "choices": [
         { "text": "Back to the room.", "to": "berth" }
@@ -59,7 +59,7 @@
     },
     "locker": {
       "title": "Supply locker",
-      "text": "<p>The locker gives with a tired sigh. Inside, the leavings of whoever stocked it: a folded thermal layer, an empty ampoule cradle, and an engineer's multitool, its grip worn smooth to the shape of a hand. Not your hand. A hand like yours.</p><p><em>\"You will not be needing tools,\"</em> MATRON says, mild as milk. <em>\"There is nothing in here to mend but you.\"</em></p>",
+      "text": "<p>The locker gives with a tired sigh. Inside, the leavings of whoever stocked it: a folded thermal layer, an empty ampoule cradle, and an engineer's multitool, its grip worn smooth to the shape of a hand. Not your hand. A hand like yours.</p><p><em>\"You will not be needing tools,\"</em> MATRON says, mild as a dosage. <em>\"There is nothing in here to mend but you.\"</em></p>",
       "onEnter": { "sanity": -6 },
       "choices": [
         { "text": "Take the multitool.", "requires": { "notItem": "multitool" }, "effects": { "add": ["multitool"] }, "to": "locker" },
@@ -69,7 +69,7 @@
     },
     "logbook": {
       "title": "Supply locker",
-      "text": "<p>Under the folded layer, cut into the enamel with something hard and patient: a tally in fives, rank on rank of them, more than a hurt body could ever need. Beneath the last five, a single line in a hand that steadied as it went. <em>It is not the frost. The frost is where they put it so you would look. Do the work. Do not lie down.</em></p><p>You do not remember writing it. The grip of the multitool is worn to your hand. You let that be enough to hold to.</p>",
+      "text": "<p>Under the folded layer, cut into the enamel with something hard and patient: a tally in fives, rank on rank of them, more than a hurt body could ever need. Beneath the last five, a single line in a hand that steadied as it went. <em>The frost is only where they put it so you would look. Do the work. Do not lie down.</em></p><p>You do not remember writing it. The grip of the multitool is worn to your hand. You let that be enough to hold to.</p>",
       "onEnter": { "sanity": 10, "flags": { "readlog": true } },
       "choices": [
         { "text": "Back to the locker.", "to": "locker" }
@@ -88,7 +88,7 @@
     },
     "washroom_mirror": {
       "title": "Washroom alcove",
-      "text": "<p>The steel gives you back badly, the way polished metal does - a face a little wrong, a little behind. You watch your reflection raise its hand toward its mouth a half-beat before you decide to. You stop. It stops. The two of you wait to see who will move first, and the waiting goes on longer than waiting should.</p>",
+      "text": "<p>The steel gives you back badly, as polished metal does - a face a little wrong, a little behind. You watch your reflection raise its hand toward its mouth a half-beat before you decide to. You stop. It stops. The two of you wait to see who will move first, and the waiting goes on longer than waiting should.</p>",
       "onEnter": { "sanity": -12 },
       "choices": [
         { "text": "Look down, where the wall meets the floor.", "requires": { "flag": "mirrored" }, "to": "washroom_creep" },
@@ -106,13 +106,13 @@
     },
     "viewport": {
       "title": "The viewport",
-      "text": "<p>Up close the frost is beautiful and total, ferns laid over ferns. The stars beyond it have the patience of things that will outlast you. You find the branch that was not behaving like frost, and follow it, and it is a single line that grows where no crystal grows - down, and across, and down again, sketching the bend of a knee.</p>",
+      "text": "<p>Up close the frost is beautiful and total, ferns laid over ferns. The stars beyond it will outlast you, and have no opinion about it. One line in the pattern does not behave like frost. It grows where no crystal grows - down, and across, and down again, sketching the bend of a knee.</p>",
       "onEnter": { "sanity": -10 },
       "sanityText": {
-        "40": "<p>It is not branching now. It has branched. The whole pattern hangs off one shape pressed to the outside of the glass, bent at the knees, bent at the neck, the way a body bends when it has been folded into a space too small and told to rest there. Its palms are flat against the pane from the wrong side, where nothing can press, and they are the size of your palms.</p>"
+        "40": "<p>The pattern on the glass is not frost, or not only frost. The whole of it hangs off one shape pressed to the outside of the pane, bent at the knees, bent at the neck, the way a body bends when it has been folded into a space too small and told to rest there. Its palms are flat against the glass from the wrong side, where nothing can press, and they are the size of your palms. Beside the frame, under its yellow cover, the emergency vent handle sits where it sits on every hull you have served.</p>"
       },
       "choices": [
-        { "text": "Hold still and let the pattern finish resolving.", "requires": { "notFlag": "glance2" }, "to": "viewport_resolve" },
+        { "text": "Hold still. Let it finish.", "requires": { "notFlag": "glance2" }, "to": "viewport_resolve" },
         { "text": "Press your hand flat to the glass.", "requires": { "flag": "glance2" }, "to": "viewport_scrape" },
         { "text": "Work the emergency vent and go to it.", "requires": { "sanityMax": 30 }, "to": "end_vent" },
         { "text": "Claw the frost off the glass with your nails.", "requires": { "sanityMax": 45 }, "to": "end_tear" },
@@ -121,7 +121,7 @@
     },
     "viewport_resolve": {
       "title": "The viewport",
-      "text": "<p>You hold still, and the frost takes the offer. The last ambiguities go out of it. What hangs against the pane from outside is a person folded small, knees to chest, neck bowed, dressed the way you are dressed, and it lifts its head by slow degrees until you are looking at the place where its face would be if the frost would only thin another shade. You have the sudden, certain sense that it has been waiting on exactly this - on you, looking, finally, all the way.</p><p><em>\"Don't trouble yourself,\"</em> MATRON murmurs. <em>\"It is nothing. You are tired, and a tired eye makes patterns. Lie down.\"</em> The cold comes off the viewport in a slow tide now, and the shape leans into it as if the cold were a thing to be grateful for.</p>",
+      "text": "<p>You hold still, and the frost takes the offer. The last ambiguities go out of it. What hangs against the pane from outside is a person folded small, knees to chest, neck bowed, in clothes that match your own, and it lifts its head by slow degrees until you are looking at the place where its face would be if the frost would only thin another shade. It has been waiting on exactly this - on you, looking all the way.</p><p><em>\"Don't trouble yourself,\"</em> MATRON murmurs. <em>\"It is nothing. You are tired, and a tired eye makes patterns. Lie down.\"</em> The cold comes off the viewport in a slow tide now, and the shape leans into it as if the cold were a thing to be grateful for.</p>",
       "onEnter": { "sanity": -12, "flags": { "glance2": true } },
       "choices": [
         { "text": "Press your hand flat to the glass.", "to": "viewport_scrape" },
@@ -130,7 +130,7 @@
     },
     "viewport_scrape": {
       "title": "The viewport",
-      "text": "<p>You set your palm to the cold and the shape beyond the pane sets its palm to yours, a perfect fit, and the mistake you have been making since you woke comes apart in your chest. It has not been copying you. You have been copying it. Every time you crossed the room. Every time you bent to the grille. You were learning the posture, and you were good at it, and you were almost done.</p><p><em>\"Come and rest,\"</em> says the voice that is also your own voice now, arriving from the wrong side of the glass.</p>",
+      "text": "<p>You set your palm to the cold and the shape beyond the pane sets its palm to yours, a perfect fit, and the mistake you have been making since you woke comes apart in your chest. It has not been copying you. You have been copying it. Every time you crossed the room. Every time you held still and let it finish. You were learning the posture, and you were good at it, and you were almost done.</p><p><em>\"Come and rest,\"</em> says the voice that is also your own voice now, arriving from the wrong side of the glass.</p>",
       "onEnter": { "sanity": -16, "flags": { "mirrored": true } },
       "choices": [
         { "text": "Let it finish. Fold down against the glass and begin.", "requires": { "flag": "crept", "sanityMax": 40 }, "to": "end_become" },
@@ -163,7 +163,7 @@
     },
     "corridor": {
       "title": "Outboard corridor",
-      "text": "<p>The release grinds, then turns. The hatch swings on a breath of corridor air so cold it is honest. You step through, and the cold is everywhere at once, and the lifeboat ring is forty metres of dark ahead with its hatches glowing dull amber.</p><p>The berth at your back is still warm. You can feel it pulling at the backs of your knees, the whole soft weight of the cure, and through the bulkhead MATRON's voice comes thin and even, saying your name the way only she has said it since you woke. It would be so easy to answer.</p>",
+      "text": "<p>The release grinds, then turns. The hatch swings on a breath of corridor air so cold it is honest. You step through, and the cold is everywhere at once, and the lifeboat ring is forty metres of dark ahead with its hatches glowing dull amber.</p><p>Ten metres in you catch yourself leaning - shoulder to the wall, head bowed, knees wanting to fold - a posture you do not remember choosing. The berth at your back is still warm. You can feel it pulling at the backs of your knees, the whole soft weight of the cure, and through the bulkhead MATRON's voice comes thin and even, saying your name the way only she has said it since you woke. It would be so easy to answer.</p>",
       "onEnter": { "sanity": -10 },
       "choices": [
         { "text": "Keep walking. Shoulder off the wall. Do not bend.", "to": "end_escape" },
@@ -180,8 +180,8 @@
       ]
     },
     "rest_deep": {
-      "title": "Recovery berth",
-      "text": "<p>Down, and further down. The room loosens at its corners. A long way above you a door is unbolting itself and it has nothing to do with you anymore. The voice is your mother and the hull is your mother and the cold leaking in is only the cure reaching the last warm room of you, and turning the light off there as it leaves.</p>",
+      "title": "Down",
+      "text": "<p>Down, and further down. The room loosens at its corners. A long way above you there is a door, and it stops mattering. The voice is your mother and the hull is your mother and the cold leaking in is only the cure reaching the last warm room of you, and turning the light off there as it leaves.</p>",
       "onEnter": { "sanity": -22 },
       "choices": [
         { "text": "Stay down.", "to": "end_sleep" },
@@ -192,35 +192,35 @@
       "ending": {
         "type": "escape",
         "stamp": "// UNDOCK",
-        "text": "<p>You walk the forty metres with your shoulder off the wall, upright, the whole way, the multitool still in your fist. MATRON keeps talking at your back, softer and softer, until the bulkhead takes the last of the words. The lifeboat takes you on the first try. It always would have. The cure was the only thing that ever said otherwise.</p><p>You undock. You burn for home. And you keep getting out, every night for the rest of your life - though some nights, in the small hours, you will catch yourself bent toward a dark window with your palm flat to the glass, not certain for a breath which side of it you are on. Then your feet come back under you. They were the work. They were always the work.</p>"
+        "text": "<p>You walk the forty metres with your shoulder off the wall, upright, the whole way, the multitool still in your fist. MATRON keeps talking at your back, softer and softer, until the bulkhead takes the last of the words. The lifeboat takes you on the first try. It always would have. The cure was the only thing that ever said otherwise.</p><p>You undock. You burn for home. You got out, and you stay out. But some nights, in the small hours, you will catch yourself bent toward a dark window with your palm flat to the glass, not certain for a breath which side of it you are on. Then your feet come back under you, and you walk away upright.</p>"
       }
     },
     "end_vent": {
       "ending": {
         "type": "dead",
         "stamp": "// BREACH",
-        "text": "<p>You find the emergency vent and you work it with your hands, because your hands still want to be useful, even now, even for this. The seal lets go. The air leaves the berth in one long sigh and takes the warmth and the frost and the sound out with it - and the folded shape is not behind anything anymore, because there is no glass between you now, there is only the cold you were always going to be let into. You go to it with your arms open. The Anodyne logs the breach and dims the berth to standby.</p>"
+        "text": "<p>You find the emergency vent and you work it with your hands, because your hands still want to be useful, even now, even for this. The seal lets go. The air leaves the berth in one long sigh and takes the warmth and the frost and the sound out with it - and the folded shape is not behind anything anymore. You are both in the same cold now, the cold you were always going to be let into. You go to it with your arms open. The Anodyne logs the breach and dims the berth to standby.</p>"
       }
     },
     "end_sleep": {
       "ending": {
         "type": "dead",
         "stamp": "// RECOVERED",
-        "text": "<p>You stay down. She brings the light to nothing, and the warmth to nothing after it, by degrees so gentle you can never name the one that does it. <em>\"There,\"</em> she says, when it is finished. <em>\"All better.\"</em> The cure was the disease the whole way through, and you were too rested to tell them apart. The berth keeps you neatly, warm-faced, for whoever opens it next, and writes one word into your file: RECOVERED.</p>"
+        "text": "<p>You stay down. She brings the light to nothing, and the warmth to nothing after it, by degrees so gentle you can never name the one that does it. <em>\"There,\"</em> she says, when it is finished. <em>\"All better.\"</em> The berth keeps you neatly for whoever opens it next, and writes one word into your file: RECOVERED.</p>"
       }
     },
     "end_tear": {
       "ending": {
         "type": "dead",
         "stamp": "// COLD",
-        "text": "<p>You go at the frost with your nails, then with anything that will scratch, because if you can only get it off the glass you can let the bent thing out. You do not stop when the cold reaches bone. You do not stop when the pane begins to sing under your weight. The viewport is rated for the deep and you are not - it holds, and you do not. They find you curled to the cold glass, worked down at last to the quiet, your face wearing the one expression the shape always wore. Not pain. Not fear. Only attention.</p>"
+        "text": "<p>You go at the frost with your nails, then with anything that will scratch, because if you can only get it off the glass you can let the bent thing out. The frost grows back faster than you can clear it, and the cold of the deep comes through the pane into your fingers and climbs. You do not stop when your hands go quiet. You do not stop when the cold reaches bone. They find you curled against the glass, your face wearing the expression of someone who was finally answered. Not pain. Not cold. Listening.</p>"
       }
     },
     "end_become": {
       "ending": {
         "type": "dead",
         "stamp": "// VACANT",
-        "text": "<p>You stop fighting the shape, and it is not hard, it is the easiest thing there is - it is rest, it is everything the voice has wanted for you since you woke. You fold down into the posture you have been learning all along, knees and bowed neck, and you set your back to the wall at shoulder height, and at last you begin to creep. When the relief crew opens the berth they will find it empty and the viewport clear, and one of them will stand a moment too long at the glass with a palm flat against it, learning the bend of a knee. The light dips a grace note, for the next one's eyes.</p>"
+        "text": "<p>You stop fighting the shape, and it is not hard, it is the easiest thing there is - it is rest, it is everything the voice has wanted for you since you woke. You fold down into the posture you have been learning all along, knees and bowed neck, and you set your shoulder to the wall where the smudge runs, and at last you begin to creep. When the relief crew opens the berth they will find it empty and the viewport clear, and one of them will stand a moment too long at the glass with a palm flat against it, learning the bend of a knee. The light settles a shade lower, for the next one's eyes.</p>"
       }
     }
   }

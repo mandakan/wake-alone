@@ -46,6 +46,7 @@ const ENDING_TYPES = ["escape", "dead", "madness"];
 const REQUIRE_KEYS = ["item", "notItem", "flag", "notFlag", "sanityMin", "sanityMax"];
 const EFFECT_KEYS = ["sanity", "add", "remove", "flags"];
 const MIN_DEAD_ENDINGS = 2;     // horror wants a few nasty ways to die
+const MIN_FORCED_LOSS = 20;     // L14: forced sanity loss the cheapest escape route should charge (advisory)
 const MAX_STATES = 2_000_000;   // solver safety cap (episodes are tiny; this never trips in practice)
 
 const C = { red:"\x1b[31m", yellow:"\x1b[33m", green:"\x1b[32m", dim:"\x1b[2m", bold:"\x1b[1m", reset:"\x1b[0m" };
@@ -176,6 +177,11 @@ export function validateEpisode(ep, name = ep && ep.id) {
       checkRequires(c.requires, where);
       checkEffects(c.effects, where);
       noteRefs(c.requires, c.effects);
+      // L11: a sanity-costing choice that loops back to its own node buys no new
+      // prose -- the player pays and re-reads the same text (a stat tax).
+      if (c.effects && typeof c.effects.sanity === "number" && c.effects.sanity < 0 && c.to === id) {
+        E(`${where}: costs sanity (${c.effects.sanity}) but loops back to "${id}" -- a stat tax with no payoff prose. Route it through a one-shot result node (L11).`);
+      }
       if (c.to !== undefined) {
         hasRealExit = true;
         if (!ep.nodes[c.to]) E(`${where}: points to non-existent node "${c.to}"`);
@@ -269,6 +275,22 @@ export function validateEpisode(ep, name = ep && ep.id) {
         }
       });
     }
+
+    // L14: the escape must cost something. Re-solve with the med-gel free action
+    // disabled to measure the forced sanity loss on the cheapest escape route; a
+    // near-free optimal path is an ordeal the prose claims but the mechanics
+    // never charge for. Advisory -- the floor is MIN_FORCED_LOSS.
+    if (solver.winnable && escapeMode !== "forbidden" && !solver.truncated) {
+      try {
+        const dry = solve(ep, false);
+        if (dry.winnable && dry.bestEscape) {
+          const forced = clamp(ep.startSanity ?? 100, 0, 100) - dry.bestEscape.sanity;
+          if (forced < MIN_FORCED_LOSS) {
+            W(`optimal escape route forces only ${forced} sanity loss (med-gel ignored); under ${MIN_FORCED_LOSS} the escape reads costless (L14) -- put at least one unavoidable cost on the route`);
+          }
+        }
+      } catch { /* advisory only */ }
+    }
   }
 
   // ---- metrics + spec thresholds ----
@@ -351,7 +373,8 @@ export function validateEpisode(ep, name = ep && ep.id) {
 }
 
 // ---- the solver: mirrors engine/template.html runtime exactly ----
-function solve(ep) {
+// useGel=false disables the med-gel free action (used by the L14 forced-loss measure).
+function solve(ep, useGel = true) {
   const nodeHasOnEnter = (id) => !!(ep.nodes[id] && ep.nodes[id].onEnter);
 
   const meetsReq = (req, st) => {
@@ -453,7 +476,7 @@ function solve(ep) {
     }
 
     // free action: use med-gel (any node, while held)
-    if (st.inv.has("medgel")) {
+    if (useGel && st.inv.has("medgel")) {
       const r = applyEff({ sanity: +25, remove: ["medgel"] }, st);
       enqueue({ cur: st.cur, sanity: r.sanity, inv: r.inv, flags: r.flags, entered: st.entered }, key, "use med-gel [+25]");
     }

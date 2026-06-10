@@ -78,10 +78,13 @@ sanity clamps 0–100, sanity ≤ 0 at a non-ending point is instant madness, me
 - **Solvability:** at least one *survivable* path must actually reach an `escape` ending — not
   just be reachable on the map. An episode that is winnable-on-paper but forces madness on every
   route fails. (`npm run validate` reports the best escape's surviving sanity and step count.)
+- **No stat-tax self-loops (L11):** a choice that costs sanity must not loop back to its own
+  node — route the cost through a one-shot payoff node that shows what it bought.
 
 And as advisory `warn`s: too few reachable `dead` endings (a horror episode should offer a
-few — see Endings below), dead choices (a `requires` that never opens), and dead items/flags
-(obtained or set but never read by any gate).
+few — see Endings below), dead choices (a `requires` that never opens), dead items/flags
+(obtained or set but never read by any gate), and a near-costless escape (L14: the optimal
+escape route should force ~20+ sanity loss, med-gel ignored — the climax must have teeth).
 
 The solver is itself covered by `npm test` (fixture episodes with known verdicts). Don't weaken
 it to pass an episode; fix the episode.
@@ -90,9 +93,10 @@ It also runs a **prose linter** (`tools/prose-lint.mjs`) over every text field t
 from reading like generated slop. Hard `ERROR`s: non-ASCII punctuation (em-dash, curly quotes,
 ellipsis - the top LLM tells) and doubled dashes (stories use a single hyphen `-`; house style is
 ASCII, calibrated to `derelict`), and essay/marketing register (`delve`, `leverage`, `seamless`, ...). Advisory `warn`s: horror cliches, robotic cadence
-(uniform sentence length, repeated openers, "X, Y, and Z" triads, copy-pasted phrases),
-first-person slips outside quoted speech, plus two solver-backed coherence checks -- a `sanityText`
-variant that can never display, and prose that says "your <item>" where the player can't hold it.
+(uniform sentence length, repeated openers, "X, Y, and Z" triads, copy-pasted phrases, an
+over-used "the way X" simile scaffold — L15), first-person slips outside quoted speech, plus two
+solver-backed coherence checks -- a `sanityText` variant that can never display, and prose that
+says "your <item>" where the player can't hold it.
 
 ## Creative bible (keep episodes consistent)
 

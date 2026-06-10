@@ -26,7 +26,7 @@
   "nodes": {
     "bunk": {
       "title": "Crew bunk 3",
-      "text": "<p>You wake too fast, ears ringing, the recycled air gone sour on your tongue. The bunk light is the only thing burning - a thin red bar above your head - and the station holds the hush of a held breath.</p><p>VIGIL is a listening post, an ear pressed to the dark out at the lip of nowhere. The roster says eleven aboard. The clock says you slept four hours past your watch and nobody woke you. The comm is silent. Down the rack every other bunk is made up neat and cold, and the only sound is the station settling, on and off, like it is counting.</p>",
+      "text": "<p>You wake too fast, ears ringing, the recycled air gone sour on your tongue. The bunk light is the only thing burning - a thin red bar above your head - and the hush around you is too complete for a crewed station.</p><p>VIGIL is a listening post, an ear pressed to the dark out at the lip of nowhere. The roster says eleven aboard. The clock says you slept four hours past the listening watch - your watch - and nobody woke you. The comm is silent. Down the rack every other bunk is made up neat and cold, and the only sound is the station settling, on and off, like it is counting.</p>",
       "choices": [
         { "text": "Sit up slowly and put your feet on the deck.", "to": "bunk_up" },
         { "text": "Lie still a moment and just listen to the station.", "to": "bunk_listen" }
@@ -44,13 +44,12 @@
       "title": "Crew bunk 3",
       "text": "<p>The deck is cold through your socks. A personal locker hangs open, a name half-worn off the tape. Inside, a med-gel ampoule - the field kind, for when a watch runs long and a mind starts to fray. Past the bunkroom hatch a short corridor runs to the central ring.</p>",
       "choices": [
-        { "text": "Pocket the med-gel and go to the ring.", "requires": { "notFlag": "tookgel1" }, "effects": { "add": ["medgel"], "flags": { "tookgel1": true } }, "to": "ring" },
-        { "text": "Leave it and go to the ring.", "to": "ring" }
+        { "text": "Pocket the med-gel and go to the ring.", "effects": { "add": ["medgel"] }, "to": "ring" }
       ]
     },
     "ring": {
       "title": "Central ring",
-      "text": "<p>The ring is the heart of VIGIL, the junction where every section meets. A coffee bulb still strapped in its clip. A glove left palm-up on a keyboard. One chair turned to face the corridor mouth, as though its occupant stood and walked toward something. No bodies, no notes - only the shape of people who were here a moment ago.</p><p>Three sections open off the ring. The comms array curves away to port, where the station does its listening. Crew quarters and galley lie aft. Forward, past a heavy pressure hatch, the launch bay holds the evac pod - and the only way out is across its open floor.</p>",
+      "text": "<p>The ring is the junction where every section of VIGIL meets. A coffee bulb still strapped in its clip. A stylus rolled to a stop at the edge of a console, the log entry under it unfinished. One chair turned to face the corridor mouth, as though its occupant stood and walked toward something. No bodies, no notes - only the shape of people who were here a moment ago.</p><p>Three sections open off the ring. The comms array curves away to port, where the station does its listening. Crew quarters and galley lie aft. Forward, past a heavy pressure hatch, the launch bay holds the evac pod - and the only way out is across its open floor.</p>",
       "sanityText": {
         "62": "<p>The ring has stopped pretending to be a room. The coffee bulb sways though nothing moves the air. The turned chair faces you now; you are fairly sure it did not before. Every workstation feels occupied by the suggestion of a person, all of them attending to the same thing, which is you. Three sections open off the ring. You try not to look directly at any of them.</p>"
       },
@@ -79,7 +78,7 @@
     },
     "quarters": {
       "title": "Crew quarters",
-      "text": "<p>The quarters are worse than empty - they are mid-sentence. A meal long cold in the galley, the fork laid down beside it with care. A game frozen on a table, pieces mid-move, a blanket still holding the dent of someone who rose and did not sit back down.</p><p>At the far end, one of them did not go quiet. No body, but the place a body fought: a bunk frame bent outward, a panel scored deep, and on the bulkhead a line of letters scratched into the paint with something hard. A maintenance kit lies spilled beneath it, a med-gel ampoule rolled into the corner.</p>",
+      "text": "<p>The quarters are worse than empty - they are mid-sentence. A meal long cold in the galley, the fork laid down beside it with care.</p><p>At the far end, one of them did not go quiet. No body, but the place a body fought: a bunk frame bent outward, a panel scored deep, and on the bulkhead a line of letters scratched into the paint with something hard. A maintenance kit lies spilled beneath it, a med-gel ampoule rolled into the corner.</p>",
       "choices": [
         { "text": "Take the med-gel from the spilled kit.", "requires": { "notFlag": "tookgel2" }, "effects": { "add": ["medgel"], "flags": { "tookgel2": true } }, "to": "quarters" },
         { "text": "Read the scratched warning on the bulkhead.", "requires": { "notFlag": "unseen" }, "effects": { "sanity": -16, "flags": { "unseen": true } }, "to": "quarters_warning" },
@@ -88,19 +87,20 @@
     },
     "quarters_warning": {
       "title": "Crew quarters",
-      "text": "<p>You make yourself read it, letter by gouged letter. The hand was failing toward the end, the lines going loose and wild, but the message holds:</p><p><em>\"IT WORKS BY YOUR LOOKING. THE BAY IS OPEN GROUND AND IT WATCHES THERE. DON'T LOOK AT IT, DON'T LOOK AT THE POD, KEEP YOUR EYES DOWN AND CROSS SLOW. IT ONLY HAS YOU WHEN YOU GIVE IT YOUR EYES.\"</em></p><p>Below the words a shaky arrow points down, at your own feet. The turned chairs. The room that recorded itself. It does not hunt by sound or scent - it hunts by being noticed, and to give it your attention is to hand it the leash.</p>",
+      "text": "<p>You make yourself read it, letter by gouged letter. The hand was failing toward the end, the lines going loose and wild, but the message holds:</p><p><em>\"IT WORKS BY YOUR LOOKING. THE BAY IS OPEN GROUND AND IT WATCHES THERE. DON'T LOOK AT IT, DON'T LOOK AT THE POD, KEEP YOUR EYES DOWN AND CROSS SLOW. IT ONLY HAS YOU WHEN YOU GIVE IT YOUR EYES.\"</em></p><p>Below the words a shaky arrow points down, at your own feet. The turned chair. The stylus stopped mid-entry. It hunts by being noticed, and your eyes are the loudest thing you have.</p>",
       "choices": [
         { "text": "Step back from the wall, eyes on the floor.", "to": "quarters" }
       ]
     },
     "bay": {
       "title": "Launch bay hatch",
+      "onEnter": { "sanity": -5 },
       "text": "<p>The pressure hatch unseals with a sigh and the launch bay opens out - a wide cold room, a blast door for its far wall, and across forty meters of bare deck the evac pod in its cradle. No cover between, no console to crouch behind, just the open floor and the immediate certainty that the floor is not empty. The emptiness has a weight to it, and a patience, and it has registered the hatch coming open.</p><p>The pod's cradle will want a charged cell to spin the drive. The forty meters will want something else from you.</p>",
       "sanityText": {
-        "62": "<p>The hatch opens and the bay is already aware of it. Forty meters of bare deck, the pod a small bright promise at the far end, and the air over the floor thick the way water is thick, an attention turning toward the open hatch like a face you refuse to find. It wants your eyes. You can feel exactly where it is by how badly you want to look.</p>"
+        "62": "<p>The hatch opens and the bay is already aware of it. Forty meters of bare deck, a blast door sealing the far wall, and the evac pod in its cradle a small bright promise at the far end. The air over the floor is thick the way water is thick, an attention turning toward the open hatch like a face you refuse to find. It wants your eyes. You can feel exactly where it is by how badly you want to look.</p>"
       },
       "choices": [
-        { "text": "Cross with your eyes down, slow and unlooking, the way the warning said.", "requires": { "flag": "unseen", "item": "powercell" }, "to": "cross_unseen", "locked": "Cross to the pod, eyes down. (the drive needs a charged power cell from the array, and you need to know how to cross unseen)" },
+        { "text": "Cross with your eyes down, slow and unlooking, the way the warning said.", "requires": { "flag": "unseen", "item": "powercell" }, "to": "cross_unseen", "locked": "Cross to the pod. (the drive needs a charged power cell from the array, and the open floor wants something from you that you do not yet understand)" },
         { "text": "Cross the open floor as fast as you can to the pod.", "requires": { "notFlag": "unseen" }, "effects": { "sanity": -30 }, "to": "bay_ran" },
         { "text": "Haul the blast door open to be sure of the way out first.", "requires": { "notFlag": "openeddoor" }, "effects": { "flags": { "openeddoor": true } }, "to": "end_hatch" },
         { "text": "Back away and seal the hatch.", "to": "ring" }
@@ -108,7 +108,7 @@
     },
     "bay_ran": {
       "title": "Launch bay",
-      "text": "<p>You break for the pod at a dead sprint, boots cracking on the deck, and every meter is a mistake. Motion is a kind of shout. The weight in the room turns on you all at once, a pressure that closes around your skull like a fist, and the forty meters stretch until the pod seems to recede ahead of you. You reach the cradle gasping, something very close at your back now and no longer patient. You did not keep your eyes down. It knows exactly where you are.</p>",
+      "text": "<p>You break for the pod at a dead sprint, boots cracking on the deck, and every meter is a mistake. Motion is a kind of shout. The weight in the room turns on you all at once, and the pressure of being seen lands between your shoulder blades and stays there, and the forty meters stretch until the pod seems to recede ahead of you. You reach the cradle gasping, something very close at your back now and no longer patient. You did not keep your eyes down. It knows exactly where you are.</p>",
       "choices": [
         { "text": "Get into the pod and seal it - if there is power to fly.", "requires": { "item": "powercell" }, "to": "end_partial" },
         { "text": "Claw at the dead console - no cell, no charge, nothing.", "requires": { "notItem": "powercell" }, "to": "end_caught" }
@@ -116,7 +116,8 @@
     },
     "cross_unseen": {
       "title": "Launch bay",
-      "text": "<p>You fix your eyes on the seam between two deck plates and you walk. Slow as wading a current, each footfall set down soft, your gaze nailed to the floor a meter ahead. The weight slides past you, around you, searching - close enough to stir the hair on your arms - but you do not give it your eyes. Not the pod, not the dark of the room, only the next plate and the next. It cannot find the edges of you if you do not draw them for it. Forty meters of the hardest stillness of your life, and then your hand finds the cold lip of the cradle.</p>",
+      "onEnter": { "sanity": -14 },
+      "text": "<p>You fix your eyes on the seam between two deck plates and you walk. Slow as wading a current, each footfall set down soft. The weight slides past you, around you, searching - close enough to stir the hair on your arms - but you do not give it your eyes. Not the pod, not the dark of the room, only the next plate and the next. It cannot find the edges of you if you do not draw them for it. Forty meters of the hardest stillness of your life, and then your hand finds the cold lip of the cradle.</p>",
       "choices": [
         { "text": "Seat the power cell and board the pod, eyes still down.", "requires": { "item": "powercell" }, "to": "end_escape" }
       ]
@@ -132,28 +133,28 @@
       "ending": {
         "type": "escape",
         "stamp": "// LAUNCH - SEEN",
-        "text": "<p>You slam the cell home and the drive catches. The hatch irises shut a breath before the thing at your back arrives, and you feel it strike the hull as the pod tears free - one enormous blow, denied. VIGIL falls away into the black. You made it, heart slamming, the drive sound under your feet.</p><p>But the quiet in the pod is the wrong quiet, the listening kind. You crossed that floor with your eyes wide, and it had a long clear look at you. Close them and you are back on the deck with the weight bending toward you. It kept a thread of you and will reel it in slow, across whatever distance, for as long as you have a mind left to be found in. You got out. You will never again be entirely alone, and that is worse.</p>"
+        "text": "<p>You slam the cell home and the drive catches. The hatch irises shut a breath before the thing at your back arrives, and you feel it strike the hull as the pod tears free - one enormous blow, denied. VIGIL falls away into the black. You made it, the drive sound steady under your feet.</p><p>But the quiet in the pod is the wrong quiet, the listening kind. You crossed that floor with your eyes wide, and it had a long clear look at you. Close them and you are back on the deck with the weight bending toward you. It kept a thread of you.</p>"
       }
     },
     "end_broadcast": {
       "ending": {
         "type": "dead",
         "stamp": "// DISTRESS - ANSWERED",
-        "text": "<p>You key the distress loop. VIGIL throws your position into the dark on every band at once - here, a living thing is here, come and take it - and it does not stop sending. The crew stayed still and unseen, and the thing aboard never learned where they were. You have just told it. You feel the moment its attention turns to you, the way a room changes when someone looks up. The lights die one bank at a time down the length of the station, drawing closer to the comms room, to the only voice still calling. Your hand is still on the key when it reaches you. A distress call, you understand too late, is just a way of standing up in the dark and saying: look here. Take me.</p>"
+        "text": "<p>You key the distress loop. VIGIL throws your position into the dark and does not stop sending. The crew went one by one, and quiet was the only cover any of them had. You have just thrown yours away on every band at once. You feel the moment its attention turns to you, the way a room changes when someone looks up. The lights die one bank at a time down the length of the station, drawing closer to the comms room, to the only voice still calling. Your hand is still on the key when it reaches you. A distress call, you understand too late, is just a way of standing up in the dark and saying: look here. Take me.</p>"
       }
     },
     "end_hatch": {
       "ending": {
         "type": "dead",
         "stamp": "// BLAST DOOR - OPEN",
-        "text": "<p>You set your shoulder to the blast door and haul, and it grinds back on the stars, and for one foolish triumphant second you are looking straight out at the way home. Which means you are looking. Your back is to forty meters of patient weight, your eyes thrown wide open in the worst possible room. You hear it cross the deck without hurry. There is no point turning around - turning around is exactly what it wants, and you have already given it everything else.</p>"
+        "text": "<p>You set your shoulder to the blast door and haul, and it grinds back on the stars, and for one foolish triumphant second you are looking straight out at the way home. In this room it does not matter what you look at - looking at anything is giving it your eyes, and yours are wide open with your back to forty meters of patient weight. You hear it cross the deck without hurry.</p>"
       }
     },
     "end_caught": {
       "ending": {
         "type": "dead",
         "stamp": "// OPEN GROUND",
-        "text": "<p>The console is dead and there is no cell to wake it. You are forty meters out on open ground with your eyes wide and your mind a flare, and the pod will not fly. The room has all of you now, every edge of you drawn bright, and it takes its time - patience was always the whole of it. You should have kept your eyes down. You should have brought the charge. You did neither, and the dark folds shut.</p>"
+        "text": "<p>The console is dead and there is no cell to wake it. You are forty meters out on open ground with your eyes wide and your mind a flare, and the pod will not fly. The room has all of you now, every edge of you drawn bright, and it takes its time - patience was always the whole of it. You gave it your eyes the whole way across. The dark folds shut.</p>"
       }
     }
   }

@@ -2,7 +2,7 @@
   "id": "becalmed",
   "title": "BECALMED",
   "byline": "Generation ship 'Long Patience'. Reactor cold. No one left but you.",
-  "spec": { "size": "short", "punishment": "cruel", "escape": "forbidden" },
+  "spec": { "size": "standard", "punishment": "cruel", "escape": "forbidden" },
   "character": {
     "role": "reactor watch officer",
     "expertise": ["reactor", "power systems", "ship mechanics", "watch procedure", "manual cold-start"],
@@ -11,7 +11,7 @@
   "watching": [
     "THE REACTOR WENT COLD ON YOUR WATCH.",
     "YOU SLEPT THROUGH ALL OF IT.",
-    "THEY ARE STILL ASLEEP. ALL OF THEM.",
+    "THEY STOPPED TRYING TO WAKE YOU.",
     "THE COLD IS ALMOST DONE NOW.",
     "FOUR GENERATIONS. ONE WATCH.",
     "THE KEY WAS AN ARM AWAY.",
@@ -34,16 +34,16 @@
     },
     "watchroom_log": {
       "title": "Watch station",
-      "text": "<p>You scroll. The entries after yours are not entries. They are four words, logged by hand, once an hour, by crew who were awake when you were not: <em>he will not wake.</em> Then again. Then a column of it, down and down, in different hands, until the hands stop.</p><p>You slept in the one chair on the ship where sleep was forbidden, and the cold came in around you, and no one could rouse you.</p>",
+      "text": "<p>You scroll. The entries after yours are not entries. Four words, logged by hand, once an hour, by crew who were awake when you were not: <em>he will not wake.</em> Then again. Then a column of it, down and down, in different hands, until the hands stop.</p>",
       "choices": [
         { "text": "Close the log. Go find them.", "to": "spine" }
       ]
     },
     "spine": {
       "title": "Spinal corridor",
-      "text": "<p>The corridor runs the length of the ship. Frost has started on the rivets, fine as mold. Your breath hangs in front of you and does not move. The air is becalmed - going nowhere, with you inside it.</p><p>Forward, the bridge, where the watch was kept. Aft, the muster hall, where the others would have gathered. Amidships, the lifeboat lock.</p>",
+      "text": "<p>The corridor runs the ship's whole length. Frost has started on the rivets, fine as mold. Your breath hangs in front of you and does not move. The air is becalmed - going nowhere, with you inside it.</p><p>Forward, the bridge, where the watch was kept. Aft, the muster hall, where the others would have gathered. Amidships, the lifeboat lock.</p>",
       "sanityText": {
-        "45": "<p>The corridor is longer than it was. You are sure of it now. The frost has crept up the walls in patterns that almost spell four words, and your breath hangs where you left it, marking each place you have already stood. Forward: the bridge. Aft: the muster hall. Amidships: the lifeboat lock.</p>"
+        "45": "<p>Your breath hangs where you left it, marking each place you have already stood. The frost has climbed the walls in patterns that keep almost spelling the same four words: <em>he will not wake</em>. Forward: the bridge. Aft: the muster hall. Amidships: the lifeboat lock.</p>"
       },
       "choices": [
         { "text": "Forward, to the bridge.", "to": "bridge" },
@@ -54,35 +54,59 @@
     },
     "bridge": {
       "title": "Bridge",
-      "text": "<p>Every console is dark. The forward port shows the same handful of stars it has shown for forty years, none of them any nearer. The captain's seat faces the dark, and the captain is in it, hands folded, nine days still.</p><p>On the helm lies the manual reactor key - the one the watch turns the instant the core falters. It was an arm's length from your chair. It is an arm's length from you now, and nine days too late to mean anything.</p>",
+      "onEnter": { "sanity": -6 },
+      "text": "<p>Every console is dark. The forward port shows the same handful of stars it has shown for forty years, none of them any nearer. The captain's seat faces the dark, and the captain is in it, hands folded. He stayed when the others went to the boat. The cold kept him where he chose to sit.</p><p>The manual reactor key kept its place on the helm through all of it - the key the watch turns the instant the core falters, the key that was an arm's length from your chair while you slept.</p>",
       "choices": [
-        { "text": "Take the reactor key.", "requires": { "notItem": "key" }, "effects": { "add": ["key"] }, "to": "bridge" },
-        { "text": "Sit in the captain's seat and look at what you let die.", "requires": { "notFlag": "satcaptain" }, "effects": { "sanity": -30, "flags": { "satcaptain": true } }, "to": "bridge" },
-        { "text": "Carry the key down to the reactor deck.", "requires": { "item": "key" }, "to": "reactor" },
+        { "text": "Take the reactor key from the helm.", "requires": { "notItem": "key" }, "effects": { "add": ["key"] }, "to": "bridge" },
+        { "text": "Stand at the captain's shoulder and look at him.", "requires": { "notFlag": "sawcaptain" }, "effects": { "sanity": -30, "flags": { "sawcaptain": true } }, "to": "bridge_seat" },
+        { "text": "Carry the key down to the reactor deck. You will not come back up.", "requires": { "item": "key" }, "to": "reactor" },
         { "text": "Back to the corridor.", "to": "spine" }
+      ]
+    },
+    "bridge_seat": {
+      "title": "Bridge",
+      "text": "<p>You come around the seat and stand at the captain's shoulder, where the watch reports were given. The cold has kept him exact: head up, eyes open under a film of frost, fixed on the forward port.</p><p>He kept the watch you left. All the way out.</p>",
+      "choices": [
+        { "text": "Step back.", "to": "bridge" }
       ]
     },
     "muster": {
       "title": "Muster hall",
-      "text": "<p>The long tables are set. The meal on them is nine days frozen, every plate full, as though everyone rose at once and went somewhere better together. No bodies. Only the places they kept, and the cold keeping them.</p><p>A wall locker hangs open. Inside, one med-gel ampoule, the field kind, for a mind that has started to slip its moorings. The rest is bare. The others took what they needed and left you this, or left it by accident; you will not know which. Down the tables, one place is set for one, the chair pulled out. The watch-keeper's. Yours.</p>",
+      "onEnter": { "sanity": -6 },
+      "text": "<p>The long tables are set. The meal on them is frozen solid, every plate full, as though everyone rose at once and went somewhere better together. No bodies. Only the places they kept, and the cold keeping them.</p><p>A wall locker hangs open, stripped near to bare. Someone left one med-gel ampoule, the field kind - for you, or by accident; you will not know which. Down the tables, one place is set apart, the chair pulled out. The watch-keeper's. Yours.</p>",
       "choices": [
         { "text": "Take the med-gel ampoule.", "requires": { "notFlag": "tookgel" }, "effects": { "add": ["medgel"], "flags": { "tookgel": true } }, "to": "muster" },
-        { "text": "Walk to your own pulled-out chair and look at it.", "requires": { "notFlag": "walkedtables" }, "effects": { "sanity": -22, "flags": { "walkedtables": true } }, "to": "muster" },
+        { "text": "Walk down the tables to your own pulled-out chair.", "requires": { "notFlag": "walkedtables" }, "effects": { "sanity": -22, "flags": { "walkedtables": true } }, "to": "muster_chair" },
         { "text": "Back to the corridor.", "to": "spine" }
+      ]
+    },
+    "muster_chair": {
+      "title": "Muster hall",
+      "text": "<p>You walk the length of the tables to the pulled-out chair. The place is set like all the others, the plate full and furred with frost - but here the cup is poured as well, and the chair is turned a little off true, toward the hatch.</p><p>They kept it facing the door.</p>",
+      "choices": [
+        { "text": "Step away from the chair.", "to": "muster" }
       ]
     },
     "lock": {
       "title": "Lifeboat lock",
-      "text": "<p>The cradle is empty. The one boat the ship carried, the one mercy for four hundred, is gone - launched days ago by hands that did the arithmetic and counted you among the lost. They could not bear to wait in here with the cold and the chair and you.</p><p>The outer hatch is still here. Manual, a wheel a child could turn, onto the same dark they chose. Frost has reached the spokes. Your hand fits them exactly, and something in you has already decided.</p>",
+      "onEnter": { "sanity": -8 },
+      "text": "<p>The cradle is empty. The one boat the ship carried, the one mercy for four hundred, is gone - launched days ago by hands that did the arithmetic and counted you among the lost.</p><p>The outer hatch is still here. Manual, a wheel a child could turn, onto the same dark they chose. Frost has reached the spokes. Your hand fits them exactly.</p>",
       "choices": [
-        { "text": "Press your face to the inner port and watch where the boat went.", "requires": { "notFlag": "watched" }, "effects": { "sanity": -30, "flags": { "watched": true } }, "to": "lock" },
+        { "text": "Press your face to the inner port and look for where the boat went.", "requires": { "notFlag": "watched" }, "effects": { "sanity": -30, "flags": { "watched": true } }, "to": "lock_port" },
         { "text": "Turn the wheel. Follow them out.", "to": "end_airlock" },
         { "text": "Back to the corridor.", "to": "spine" }
       ]
     },
+    "lock_port": {
+      "title": "Lifeboat lock",
+      "text": "<p>Your breath freezes to the port at once. You scrape a circle clear with your thumb and look out along the launch line, into the dark they went into.</p><p>The boat is still there. A boat-shaped black against the stars, holding off the hull at the distance of a thrown stone. Drive dark. Ports dark. Days now, and it has not gone anywhere either.</p>",
+      "choices": [
+        { "text": "Step back from the port.", "to": "lock" }
+      ]
+    },
     "reactor": {
       "title": "Reactor deck",
-      "text": "<p>The core is a black slab gone to absolute cold. The key fits the manual socket the way it always would have, the way it would have nine days ago if you had been awake. You turn it now. Nothing catches. The fuel is past restart, the moderators frozen solid through - you know to the hour when that became true, and the hour was the first one. The key turns and turns in a dead lock, and its small click is the only sound the ship has left. You are turning a key in the cold to feel your own hand move.</p>",
+      "text": "<p>The core is a black slab gone to absolute cold. The key fits the manual socket the way it would have nine days ago, if you had been awake. You turn it now. Nothing catches. The fuel is past restart, the moderators frozen solid through - you know to the hour when that became true, and the hour was the first one. The key turns and turns in a dead lock, and its small click is the only sound the ship has left.</p>",
       "choices": [
         { "text": "Keep turning the key until your fingers stop.", "to": "end_core" }
       ]
@@ -91,21 +115,21 @@
       "ending": {
         "type": "dead",
         "stamp": "// CORE COLD",
-        "text": "<p>You turn the key until your fingers stop closing, and go on meaning to turn it after. There is no warmth to make, no core to wake; there never was, after the first hour. The cold takes you the way it took the watch - slowly, while you sit in the chair. Far forward, the last green cell gives out, and the ship keeps its long patience with you at last.</p>"
+        "text": "<p>You turn the key until your fingers will not close, then stand there meaning to turn it. The cold takes you on your feet, the way it took the ship - slowly, from the outside in. Far forward, the last green cell gives out, and the ship keeps its long patience with you at last.</p>"
       }
     },
     "end_airlock": {
       "ending": {
         "type": "dead",
         "stamp": "// LOCK CYCLED",
-        "text": "<p>The wheel gives easily. The hatch breaks its seal, and the dark takes the air in one soft pull and then takes you. For a single clean moment before the cold there is no chair, no log, no four words - only the emptiness the others chose, and you going out into it after them. Too late, and willing, and alone.</p>"
+        "text": "<p>The wheel gives easily. The hatch breaks its seal, and the dark takes the air in one soft pull, and then takes you. For one clean moment there is no cold at all. They went out in the one boat, with air and arithmetic. You go out as you are.</p>"
       }
     },
     "end_stop": {
       "ending": {
         "type": "dead",
         "stamp": "// WATCH ENDED",
-        "text": "<p>You sit down in the corridor where the frost spells four words, and you do not get up. There is nowhere the getting up would take you. The ship holds still around you, becalmed, and you keep its last watch the way you kept its first - sitting down - until the cold closes the log on you too, and the green cell forward winks out, and the ship is finally, fully, alone.</p>"
+        "text": "<p>You sit down under the frost where it spells <em>he will not wake</em>, and you do not get up. There is nowhere the getting up would take you. You keep the ship's last watch the way you kept the first one - sitting down - and the frost climbs from the rivets onto your sleeves, fine as mold, in no hurry at all.</p>"
       }
     }
   }

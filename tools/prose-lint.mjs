@@ -109,8 +109,11 @@ export function lintProse(ep, ctx = {}) {
   const openers = {};
   const phraseCounts = {};
   const triadCounts = {};
+  let scaffoldTotal = 0; // L15: "the way X" simile-scaffold uses across the episode
   const STOP = ["you", "your", "the", "a", "an", "it", "and"];
   const TRIAD_RE = /\w+,\s+\w+,\s+and\s+\w+/g;
+  const SCAFFOLD_RE = /\bthe way\b/gi;
+  const SCAFFOLD_MAX = 5;
 
   for (const [id, node] of Object.entries(ep.nodes)) {
     const renderings = [];
@@ -127,8 +130,10 @@ export function lintProse(ep, ctx = {}) {
     // in every low-sanity variant without tripping the repetition checks, while
     // genuine reuse across *different* nodes still accrues.
     const nodeOpeners = {}, nodePhrases = {}, nodeTriads = {};
+    let nodeScaffold = 0;
     for (const plain of renderings) {
       const locOpen = {}, locPhrase = {}, locTriad = {};
+      nodeScaffold = Math.max(nodeScaffold, (plain.match(SCAFFOLD_RE) || []).length);
       for (const sent of sentencesOf(plain)) {
         const w = wordsOf(sent);
         if (!w.length) continue;
@@ -152,6 +157,7 @@ export function lintProse(ep, ctx = {}) {
     for (const [k, v] of Object.entries(nodeOpeners)) openers[k] = (openers[k] || 0) + v;
     for (const [k, v] of Object.entries(nodePhrases)) phraseCounts[k] = (phraseCounts[k] || 0) + v;
     for (const [k, v] of Object.entries(nodeTriads)) triadCounts[k] = (triadCounts[k] || 0) + v;
+    scaffoldTotal += nodeScaffold;
   }
 
   // cadence: uniform sentence length reads as robotic
@@ -170,6 +176,10 @@ export function lintProse(ep, ctx = {}) {
   // copy-pasted phrases
   for (const [g, n] of Object.entries(phraseCounts)) {
     if (n >= 3) warnings.push(`cadence: phrase "${g}" repeats ${n}x across the episode`);
+  }
+  // L15: one simile scaffold must not become the episode's default move
+  if (scaffoldTotal > SCAFFOLD_MAX) {
+    warnings.push(`cadence: the "the way ..." simile scaffold appears ${scaffoldTotal}x across the episode (advisory max ${SCAFFOLD_MAX}); one comparison frame is becoming the default move -- recast the excess (L15)`);
   }
 
   // ---- state-coherence (needs solver context) ----
