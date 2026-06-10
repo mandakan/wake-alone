@@ -41,8 +41,12 @@ machine introduced as shape and stillness only (gestalt, L4 out-of-domain).
 **fathom/corridor** - orientation footing first (L8: who you are, what you do, what you
 were doing), then one precise impossible detail, grounded in a body image.
 
-> It was a number a moment ago, and now there is only the smooth place where it was, the
-> way a tooth goes and the tongue keeps finding the gap.
+> You survey dead structures for a living - wrecks, drifted hulls, the things that stop
+> answering, and they send you in to chart what is left: measure the passages, draw the
+> map, bring it home. That is the job, and you are good at it. You were partway through
+> this one, counting paces down a corridor, when you noticed you had lost the count. Not
+> forgotten. Lost. It was a number a moment ago, and now there is only the smooth place
+> where it was, the way a tooth goes and the tongue keeps finding the gap.
 
 ## The presence (never described; built from displacement and reaction)
 
