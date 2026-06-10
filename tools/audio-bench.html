@@ -1,0 +1,89 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>skein-audio — tuning bench</title>
+<!--
+  Auditioning bench for engine/skein-audio.js. Open this file directly in a
+  browser, hit begin, drag the sanity slider and listen. Tune the constants at
+  the top of engine/skein-audio.js by ear. Uses the vendored vendor/tone.min.js.
+-->
+<style>
+  :root { color-scheme: dark; }
+  body { background:#0a0b0c; color:#c9c6bf; font:15px/1.5 "B612 Mono",ui-monospace,monospace;
+         margin:0; min-height:100vh; display:grid; place-items:center; }
+  .panel { width:min(620px,92vw); border:1px solid #2a2c2e; padding:28px 30px;
+           background:#101214; }
+  h1 { font-size:15px; letter-spacing:.28em; text-transform:uppercase; margin:0 0 22px;
+       color:#8a8680; font-weight:400; }
+  .row { display:grid; grid-template-columns:120px 1fr 56px; align-items:center; gap:14px;
+         margin:14px 0; }
+  label { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#7b7873; }
+  input[type=range] { width:100%; accent-color:#b54b3a; }
+  output { text-align:right; font-variant-numeric:tabular-nums; color:#c9c6bf; }
+  .buttons { display:flex; gap:10px; flex-wrap:wrap; margin:22px 0 6px; }
+  button { background:#16191b; color:#c9c6bf; border:1px solid #2f3234; padding:10px 16px;
+           font:inherit; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+           cursor:pointer; }
+  button:hover { border-color:#b54b3a; color:#e6e2da; }
+  button:disabled { opacity:.4; cursor:default; }
+  .hint { font-size:12px; color:#6a6762; margin-top:18px; }
+  .start { display:block; width:100%; padding:16px; margin-bottom:6px; border-color:#b54b3a; }
+</style>
+
+<div class="panel">
+  <h1>skein-audio — tuning bench</h1>
+
+  <button id="start" class="start">▶ begin (unlock audio)</button>
+
+  <div class="row">
+    <label for="sanity">sanity</label>
+    <input id="sanity" type="range" min="0" max="100" value="100" disabled>
+    <output id="sanityV">100</output>
+  </div>
+  <div class="row">
+    <label for="vol">volume</label>
+    <input id="vol" type="range" min="0" max="100" value="90" disabled>
+    <output id="volV">90</output>
+  </div>
+
+  <div class="buttons">
+    <button class="node" data-id="cryobay" disabled>room: cryobay</button>
+    <button class="node" data-id="corridor" disabled>room: corridor</button>
+    <button class="node" data-id="center" disabled>room: center</button>
+  </div>
+  <div class="buttons">
+    <button class="st" data-k="reveal" disabled>stinger: reveal</button>
+    <button class="st" data-k="sanity" disabled>stinger: sanity</button>
+    <button class="st" data-k="dead" disabled>stinger: dead</button>
+    <button id="mute" disabled>mute</button>
+  </div>
+
+  <p class="hint">Drag sanity from 100 → 0 slowly: the drone detunes and beats, a
+    tritone partial fades in past the midpoint, room tone closes in, and a sub
+    rumble swells near the bottom. "room" buttons retune the tonal centre
+    (crossfaded). Autoplay policy means nothing sounds until you hit begin.</p>
+</div>
+
+<script src="../vendor/tone.min.js"></script>
+<script src="../engine/skein-audio.js"></script>
+<script>
+  const audio = new SkeinAudio();
+  const $ = (s) => document.querySelector(s);
+  const enableAll = () => document.querySelectorAll('input,button').forEach(el => { if (el.id !== 'start') el.disabled = false; });
+
+  $('#start').addEventListener('click', async () => {
+    await audio.init();
+    audio.wake(); // the engine gates audibility to play scenes; the bench is always "in play"
+    audio.setSanity(+$('#sanity').value);
+    audio.setVolume(+$('#vol').value / 100);
+    $('#start').textContent = '● running';
+    $('#start').disabled = true;
+    $('#mute').textContent = audio.muted ? 'unmute' : 'mute';
+    enableAll();
+  });
+
+  $('#sanity').addEventListener('input', (e) => { $('#sanityV').value = e.target.value; audio.setSanity(+e.target.value); });
+  $('#vol').addEventListener('input', (e) => { $('#volV').value = e.target.value; audio.setVolume(+e.target.value / 100); });
+  document.querySelectorAll('.node').forEach(b => b.addEventListener('click', () => audio.setNode(b.dataset.id)));
+  document.querySelectorAll('.st').forEach(b => b.addEventListener('click', () => audio.stinger(b.dataset.k)));
+  $('#mute').addEventListener('click', () => { const on = audio.toggle(); $('#mute').textContent = on ? 'mute' : 'unmute'; });
+</script>

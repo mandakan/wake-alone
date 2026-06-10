@@ -58,7 +58,14 @@ const inject =
 
 const template = readFileSync(join(ROOT, "engine", "template.html"), "utf8");
 if (!template.includes("/*__INJECT__*/")) { console.log(`${C.red}template is missing /*__INJECT__*/ marker${C.reset}`); process.exit(1); }
-const html = template.replace("/*__INJECT__*/", inject);
+let html = template.replace("/*__INJECT__*/", inject);
+
+// inline the vendored audio stack (Tone.js + skein-audio) so dist stays one file.
+// replace() takes a function so `$` sequences in minified Tone stay literal.
+if (!template.includes("<!--__AUDIO__-->")) { console.log(`${C.red}template is missing <!--__AUDIO__--> marker${C.reset}`); process.exit(1); }
+const toneSrc = readFileSync(join(ROOT, "vendor", "tone.min.js"), "utf8");
+const audioSrc = readFileSync(join(ROOT, "engine", "skein-audio.js"), "utf8");
+html = html.replace("<!--__AUDIO__-->", () => `<script>\n${toneSrc}\n</script>\n<script>\n${audioSrc}\n</script>`);
 
 mkdirSync(join(ROOT, "dist"), { recursive: true });
 writeFileSync(join(ROOT, "dist", "index.html"), html);

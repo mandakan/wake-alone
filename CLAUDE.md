@@ -21,10 +21,14 @@ episodes/
 engine/
   template.html     the runtime; do not put story content here
   item-names.json   inventory id -> display label (add new items here)
+  skein-audio.js    procedural sanity-coupled ambience (no audio assets; Tone.js)
+vendor/
+  tone.min.js       pinned Tone.js (see vendor/README.md); inlined at build
 tools/
   validate.mjs      node tools/validate.mjs  (the guardrail)
   build.mjs         node tools/build.mjs     (validates, then inlines -> dist/index.html)
   new.mjs           node tools/new.mjs --id x --title "..."  (valid skeleton)
+  audio-bench.html  open directly: tune skein-audio constants by ear
 dist/index.html     build output: standalone, open directly in a browser
 ```
 
