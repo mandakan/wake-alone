@@ -134,6 +134,8 @@
   .boot{max-width:520px;margin:0 auto;padding-top:18vh;font-family:var(--font-display);font-size:20px;text-align:left}
   .boot-line{color:var(--phosphor-dim);white-space:pre;visibility:hidden}
   .boot-prompt{margin-top:26px;color:var(--phosphor);visibility:hidden}
+  .eplist{transition:opacity .9s ease}
+  .eplist.eplist-hidden{opacity:0;pointer-events:none}
   .epcard{border:1px solid var(--phosphor-a28);padding:16px 18px;margin:12px 0;cursor:pointer;transition:background .15s,border-color .15s}
   .epcard:hover{background:var(--phosphor-a08);border-color:var(--phosphor)}
   .epcard.locked{cursor:not-allowed;color:var(--phosphor-faint);border-color:rgba(255,176,0,.1)}
@@ -220,7 +222,7 @@
   .scar--dead,.scar--madness{color:var(--red)} .scar--escape{color:var(--green)}
 
   /* Accessibility: hold the calm state -- no flicker or cursor blink. */
-  @media (prefers-reduced-motion: reduce){ .screen{animation:none} .cursor{animation:none} }
+  @media (prefers-reduced-motion: reduce){ .screen{animation:none} .cursor{animation:none} .eplist{transition:none} }
 
   /* ---- LAB: staging-only FX showcase (#lab). Never reached by players. ---- */
   .lab{position:fixed;top:0;right:0;z-index:80;width:264px;max-height:100vh;overflow:auto;
@@ -753,7 +755,7 @@ function recordScar(type, stamp){
 
 function titleScreen(){
   episode=null; state=null; clearWatch();
-  if(AUDIO) AUDIO.sleep(); // the salvage menu is silent
+  if(AUDIO) AUDIO.menu(); // distant calm drone: the ship is out there, even from the menu
   html.removeAttribute("data-tier"); html.classList.remove("crush","madness");
   html.style.setProperty("--glitch","0"); html.style.setProperty("--bleed","0");
   applyScreenFilter();
@@ -769,11 +771,36 @@ function titleScreen(){
       <div class="epn">${n}</div><div class="ept">${ep.title}</div>
       <div class="epb">${ep.byline||""}</div>${scar}</div>`;
   }).join("");
+  const sub = MANIFEST.subtitle||"";
+  const typing = !menuTyped && !REDUCED && !!sub;
   root.innerHTML = `<div class="title-screen">
     <div class="bigtitle glitchable glow">${words.join("<br>")}</div>
-    <div class="sub">${MANIFEST.subtitle||""}<span class="cursor"></span></div>
-    <div class="eplist">${cards}</div></div>` + footer();
+    <div class="sub"><span id="subtype">${typing?"":sub}</span><span class="cursor"></span></div>
+    <div class="eplist${typing?" eplist-hidden":""}">${cards}</div></div>` + footer();
   scrollTop(false);
+  if(typing) typeSubtitle(sub);
+}
+/* One-time tagline type-out on the first menu after boot: char-by-char with
+   telemetry blips (silent on spaces, lower on punctuation), episode cards held
+   back until the line lands. Any press completes it instantly. */
+let menuTyped=false;
+function typeSubtitle(text){
+  menuTyped=true; // once per load, even if interrupted by navigation
+  const el=document.getElementById("subtype");
+  let timer=null, i=0;
+  const done=()=>{ if(timer){ clearTimeout(timer); timer=null; }
+    document.removeEventListener("pointerdown",done);
+    if(!el.isConnected) return; // navigated away mid-type
+    el.textContent=text;
+    const list=root.querySelector(".eplist"); if(list) list.classList.remove("eplist-hidden"); };
+  document.addEventListener("pointerdown",done);
+  const step=()=>{
+    if(!el.isConnected || i>=text.length) return done();
+    const ch=text[i++]; el.textContent+=ch;
+    if(AUDIO && ch!==" ") AUDIO.blip(/[a-z0-9]/i.test(ch)?"char":"punct");
+    timer=setTimeout(step, ch===" " ? 95 : 38+Math.random()*24);
+  };
+  timer=setTimeout(step, 350);
 }
 function footer(showExit){
   const exit = showExit
