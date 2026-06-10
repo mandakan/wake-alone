@@ -14,6 +14,9 @@
  * Wiring (see INTEGRATION.md):
  *   const audio = new SkeinAudio();
  *   startButton.addEventListener('click', async () => { await audio.init(); ... });
+ *   audio.menu();                      // distant calm drone (salvage menu)
+ *   audio.wake(); / audio.sleep();     // full ambience (play) / silence (boot)
+ *   audio.blip('char'|'punct'|'boot'); // UI telemetry blips (typed tagline, boot beep)
  *   // on every navigation:
  *   audio.setSanity(state.sanity);     // 0..100
  *   audio.setNode(nodeId, node);       // retune per room, crossfaded
@@ -33,6 +36,8 @@
   const RAMP = 3.0;              // seconds for sanity-driven param changes to glide
   const NODE_RAMP = 4.0;         // seconds to crossfade tonal centre between rooms
   const MASTER_CEIL = 0.85;      // hard cap on output gain
+  const MENU_LEVEL = 0.33;       // menu-scene master scale: same ship, heard from outside
+  const BLIP = { charHz: 780, punctHz: 520, driftCents: 30, volDb: -18 }; // typed-tagline telemetry voice
 
   // A dark, mostly-minor set of roots the per-room retune can pick from, in
   // semitone offsets from ROOT_HZ. Kept narrow and low so no room sounds "nice".
@@ -55,7 +60,7 @@
       this._dread = 0;            // 0 (calm) .. 1 (gone), = (100 - sanity)/100
       this._roomSemi = 0;         // current per-room semitone offset
       this._muted = this._loadMutePref();
-      this._awake = false;        // scene gate: graph runs from first gesture, audible only in play
+      this._scene = 'off';        // 'off' (boot screen) | 'menu' (distant calm drone) | 'play' (full ambience)
       this._userVolume = opts.volume != null ? opts.volume : 0.9;
       this._nodes = {};
     }
@@ -77,7 +82,8 @@
       const n = this._nodes;
 
       // master -> destination, with a dark limiter so stingers can't clip
-      n.master = new Tone.Gain(0).connect(new Tone.Limiter(-2).toDestination());
+      n.limiter = new Tone.Limiter(-2).toDestination();
+      n.master = new Tone.Gain(0).connect(n.limiter);
 
       // big, dark reverb the drone sits in; noise stays mostly dry
       n.reverb = new Tone.Reverb({ decay: 9, preDelay: 0.05, wet: 0.55 }).connect(n.master);
@@ -196,9 +202,44 @@
       }
     }
 
-    // scene gate, orthogonal to mute: wake() entering play, sleep() on the menu.
-    wake() { this._awake = true; if (this.isReady) this._applyMaster(RAMP); }
-    sleep() { this._awake = false; if (this.isReady) this._applyMaster(2.0); }
+    // UI voice for the boot beep and the typed-tagline telemetry blips. Bypasses
+    // the scene gate (it must sound on the boot screen, where the drone is still
+    // silent) but respects mute and the volume pref. One mono synth, lazily built.
+    blip(kind = 'char') {
+      if (!this.isReady || this._muted) return;
+      const n = this._nodes;
+      try {
+        if (!n.blipSynth) {
+          n.blipLp = new Tone.Filter({ type: 'lowpass', frequency: 1400, Q: 0.5 }).connect(n.limiter);
+          n.blipSynth = new Tone.Synth({
+            oscillator: { type: 'triangle' },
+            envelope: { attack: 0.004, decay: 0.028, sustain: 0, release: 0.012 },
+            volume: BLIP.volDb
+          }).connect(n.blipLp);
+        }
+        const now = Tone.now(), v = this._userVolume;
+        if (kind === 'boot') { // the audio bus coming up: two slower notes
+          n.blipSynth.triggerAttackRelease(BLIP.punctHz, 0.09, now, 0.9 * v);
+          n.blipSynth.triggerAttackRelease(BLIP.charHz, 0.07, now + 0.13, 0.7 * v);
+        } else {
+          const hz = (kind === 'punct' ? BLIP.punctHz : BLIP.charHz)
+            * Math.pow(2, (Math.random() * 2 - 1) * BLIP.driftCents / 1200);
+          n.blipSynth.triggerAttackRelease(hz, 0.03, now, 0.5 * v);
+        }
+      } catch (e) { /* a UI sound must never break the UI */ }
+    }
+
+    // scene gate, orthogonal to mute: sleep() on the boot screen, menu() on the
+    // salvage menu (distant, dread clamped calm), wake() entering play.
+    wake() { this._setScene('play'); }
+    menu() { this._setScene('menu'); }
+    sleep() { this._setScene('off'); }
+    _setScene(s) {
+      this._scene = s;
+      if (!this.isReady) return;
+      this._applyDread(RAMP); // menu clamps dread to calm; play restores it
+      this._applyMaster(s === 'off' ? 2.0 : RAMP);
+    }
 
     setVolume(v) { this._userVolume = clamp(Number(v), 0, 1); if (this.isReady) this._applyMaster(0.3); }
     mute() { this._muted = true; this._saveMutePref(); if (this.isReady) this._applyMaster(0.5); }
@@ -216,13 +257,15 @@
     // --- internals ---------------------------------------------------------
 
     _applyMaster(time) {
-      const target = (this._muted || !this._awake) ? 0 : this._userVolume * MASTER_CEIL;
+      const scene = this._scene === 'play' ? 1 : (this._scene === 'menu' ? MENU_LEVEL : 0);
+      const target = this._muted ? 0 : this._userVolume * MASTER_CEIL * scene;
       this._nodes.master.gain.rampTo(target, time);
     }
 
     // map dread (0..1) onto every voice. All ramped so it never steps.
     _applyDread(time) {
-      const d = this._dread, n = this._nodes;
+      // the menu holds calm regardless of the last episode's sanity
+      const d = this._scene === 'menu' ? 0 : this._dread, n = this._nodes;
 
       // drone present at all times, a touch louder as dread rises
       n.droneGain.gain.rampTo(lerp(0.45, 0.62, d), time);
