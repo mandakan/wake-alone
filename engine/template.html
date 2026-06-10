@@ -875,7 +875,7 @@ window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); appl
    the hash to empty and lands on the menu. ---- */
 function route(){
   const hash = location.hash.replace(/^#/,"").toLowerCase();
-  if(hash==="lab"){ if(labAllowed() && !labOn) lab(); return; }
+  if(hash==="lab" && labAllowed()){ if(!labOn) lab(); return; }
   if(labOn) return; // lab owns the screen on staging; never auto-leaves it
   const ep = hash && EPISODES.find(e=> (e.id||"").toLowerCase()===hash && !e.locked && e.nodes);
   if(ep){ if(!episode || episode.id!==ep.id) startEpisode(ep); return; }
