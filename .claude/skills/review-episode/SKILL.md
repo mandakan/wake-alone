@@ -41,11 +41,19 @@ Read these before dispatching any lens (they are the rubric):
 ## The four lenses
 
 Dispatch all four as **parallel sub-agents in a single message** (Agent tool, one block,
-multiple calls). Each sub-agent gets: the full episode JSON, `CLAUDE.md`,
-`docs/craft-lessons.md`, the lens prompt below, and the findings schema. Each returns a
-findings array (JSON) and nothing else. Tell each lens explicitly: "the validator already
-owns structure and mechanical slop - do not report anything it catches; report only what
-your lens judges."
+multiple calls), each with **`model: "sonnet"`**. Each sub-agent gets: the full episode
+JSON, `CLAUDE.md`, `docs/craft-lessons.md`, the lens prompt below, and the findings schema.
+Each returns a findings array (JSON) and nothing else. Tell each lens explicitly: "the
+validator already owns structure and mechanical slop - do not report anything it catches;
+report only what your lens judges."
+
+**Why sonnet:** each lens applies a written rubric to a fixed text, and the merged findings
+are triaged by the stronger main-loop model, which owns final judgment - a missed nit costs
+little, a false positive dies in triage. This is where the flow's token cost concentrates
+(four agents, each reloading ~50KB of rubric + episode), so do not silently upgrade them.
+**Escalation valve:** if during triage one lens's output reads shallow or generic for the
+episode at hand (e.g. zero findings on a first draft), re-run that single lens once with no
+`model` override (it then inherits the strong main-loop model). Never upgrade all four.
 
 ### Lens 1 - Ending legibility (L2)
 

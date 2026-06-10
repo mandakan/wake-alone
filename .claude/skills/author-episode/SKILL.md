@@ -48,6 +48,22 @@ Like `spec`, the `character` block is validated for shape, reported by `validate
 build (it never ships). If the user gives no protagonist, pick a plausible role for the setting and
 state your assumption.
 
+## Model economy (which model does which step)
+
+Strong-model tokens (Fable/Opus) are the scarce resource; spend them only where taste is the
+output. The split:
+
+- **Main loop (strong model) - creative and judgment work.** Planning the spine, drafting
+  and rewriting prose, the clean-prose pass, the final ledger read, the body-state pass,
+  triaging review findings. Never delegate prose drafting or prose rewrites: a second hand
+  rewriting sentences it did not draft is a coherence risk, and this is exactly the work the
+  strong model is for.
+- **Sonnet sub-agents (Agent tool, `model: "sonnet"`) - rubric and mechanical work.** The
+  review lenses (see `review-episode`), corpus technique notes, and the mechanical half of
+  the validate loop (step 4).
+- **Haiku sub-agents** - pure scans with no judgment, e.g. "list every node whose text or
+  choices mention hands" for the body-state pass on a long episode.
+
 ## Procedure
 
 1. **Read the references first.** Read `CLAUDE.md` (creative bible + sanity economy),
@@ -56,9 +72,13 @@ state your assumption.
    the reader complete the picture; describe less), `docs/inspiration.md` (the public-domain source
    bible - craft rules and
    motifs; inspiration only, never verbatim, never named IP), `docs/style-cards.md` (distilled prose
-   technique per source), and `episodes/derelict.json` (the canonical, validated example). The
-   `corpus/` folder holds a few complete PD reference texts - study them for cadence and structure,
-   but never copy phrasing (see `corpus/SOURCES.md`). Match the house tone.
+   technique per source), and `episodes/derelict.json` (the canonical, validated example). Match the house tone.
+
+   Do **not** read the `corpus/` texts raw on the main loop - they are ~40k tokens and
+   `docs/style-cards.md` already distills them. If you need one source's cadence beyond what the
+   cards give, dispatch a sonnet sub-agent to read that single corpus file and return at most 300
+   words of technique notes (cadence, structure, devices - never phrasing to reuse; see
+   `corpus/SOURCES.md`).
 
 2. **Scaffold with the dials:**
    `npm run new -- --id <slug> --title "<TITLE>" --byline "<line>" --size <size> --punishment <level>`
@@ -66,7 +86,10 @@ state your assumption.
    a gated escape). Replace the placeholder prose and structure with the real episode; keep it
    solvable. Add any new inventory item ids to `engine/item-names.json`.
 
-3. **Plan the spine.** Decide the setting, the central wrongness, the two things from different
+3. **Plan the spine.** If the user ran `ideate-episode` first, its approved brief *is* the
+   spine: take the mechanic, escape gate, character block, dials, ending list, and never-shown
+   list as decided - do not re-pitch the premise. Otherwise decide the setting, the central
+   wrongness, the two things from different
    branches that gate the escape (item + flag is the standard pattern), where the 1-2 `medgel`
    restores live, and the nasty endings (>= the punishment floor). Reason about the optimal escape
    path: forced sanity loss minus restores must leave the player above 0 — hard-won, not impossible.
@@ -88,6 +111,16 @@ state your assumption.
    - advisory `warn`s (play-time outside the size range, cruel-but-no-madness, dead item/flag,
      dead choice, horror cliches, robotic cadence, first-person slips, never-shown sanityText,
      state-incoherent "your <item>") — address them unless you have a deliberate reason not to.
+
+   Split the loop by error class. **Mechanical errors** - non-existent node typos, unknown
+   `requires`/`effects` keys, non-ASCII punctuation and doubled dashes, missing
+   `engine/item-names.json` labels - may be delegated: dispatch one sonnet sub-agent with the
+   episode path and the validator JSON, instructed to apply minimal fixes only (never reword a
+   sentence beyond a punctuation substitution), re-run `node tools/validate.mjs episodes/<id>.json
+   --json` until those classes are clean, and return whatever errors remain. **Creative errors** -
+   `unwinnable` (the sanity economy), spec size/death-ratio floors that need new nodes, slop-register
+   rewrites, and any `warn` whose fix touches prose - stay on the main loop. If the first validator
+   run reports both kinds, fix the creative ones first, then hand off the mechanical tail.
 
    Write to avoid slop in the first place: vary sentence length, cut filler and cliche, stay in
    second person, and prefer concrete specific detail over generic atmosphere. After a draft, a
