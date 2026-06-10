@@ -57,6 +57,7 @@
   class SkeinAudio {
     constructor(opts = {}) {
       this.isReady = false;
+      this._initing = false;      // re-entrancy guard: two gestures can race init()
       this._dread = 0;            // 0 (calm) .. 1 (gone), = (100 - sanity)/100
       this._roomSemi = 0;         // current per-room semitone offset
       this._muted = this._loadMutePref();
@@ -67,15 +68,18 @@
 
     // Build the whole graph. Idempotent; safe to await more than once.
     async init() {
-      if (this.isReady) return;
+      if (this.isReady || this._initing) return;
+      this._initing = true;
       if (typeof Tone === 'undefined') {
         console.warn('[skein-audio] Tone.js not found on window; audio disabled.');
+        this._initing = false;
         return;
       }
       try {
         await Tone.start(); // unlocks the AudioContext from the gesture
       } catch (e) {
         console.warn('[skein-audio] could not start audio context:', e);
+        this._initing = false;
         return;
       }
 
@@ -131,6 +135,7 @@
       n.detuneLfo.connect(n.fifth.detune);
 
       this.isReady = true;
+      this._initing = false;
 
       // fade in to the current state
       this._applyMaster(0.0);
