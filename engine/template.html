@@ -732,7 +732,7 @@ function titleScreen(){
       <div class="ept">[ ${ep.title} ]</div><div class="epb">${ep.byline||""}</div></div>`;
     const o = scars[ep.id];
     const scar = o ? `<div class="scar scar--${o.type}">// last attempt: ${esc(o.label||"UNKNOWN")}</div>` : "";
-    return `<div class="epcard" onclick="startEpisode(EPISODES[${i}])">
+    return `<div class="epcard" onclick="location.hash='${ep.id}'">
       <div class="epn">${n}</div><div class="ept">${ep.title}</div>
       <div class="epb">${ep.byline||""}</div>${scar}</div>`;
   }).join("");
