@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.7.0](https://github.com/mandakan/wake-alone/compare/v0.6.0...v0.7.0) (2026-06-10)
+
+
+### Features
+
+* **audio:** menu scene level + blip UI voice ([b20853a](https://github.com/mandakan/wake-alone/commit/b20853a7e497adc4ab160874e965ecf99c561c37))
+* **becalmed:** experimental from-scratch rewrite against the L1-L15 ledger ([b7cbc53](https://github.com/mandakan/wake-alone/commit/b7cbc539b3795f612ec2fac2df079be22a1ec5fb))
+* **bench:** blip + scene trigger rows ([d9da543](https://github.com/mandakan/wake-alone/commit/d9da5439e37615f4f638ff8ab7a59a0f81dcc787))
+* **craft:** corpus review lessons L11-L15 with enforcement, fixes across all 7 episodes ([3f8e7ef](https://github.com/mandakan/wake-alone/commit/3f8e7ef07b542fc135b60e4069ce5e35c11b4c47))
+* **craft:** traces dial - tunable death-evidence register (L17 ladder) ([150f2db](https://github.com/mandakan/wake-alone/commit/150f2dbaabd308f3c8ac6a95430ae53e96f24ac1))
+* **engine:** POST boot screen gates routing + audio unlock ([3f903da](https://github.com/mandakan/wake-alone/commit/3f903da62b6ffb5e3ffcb12c0228b5ca384092fc))
+* **engine:** procedural sanity-coupled ambience (skein-audio + vendored Tone) ([420794f](https://github.com/mandakan/wake-alone/commit/420794f30a4d4ca43d9093e105599939863d1de7))
+* **engine:** typed tagline with blips + distant menu drone ([5492158](https://github.com/mandakan/wake-alone/commit/54921583732a1603c6a57aac9f45ccd29d0d767d))
+* **episodes:** FAULT - you are the ship's AI; craft lessons L16-L17 ([9917160](https://github.com/mandakan/wake-alone/commit/9917160ace004f1d5d3ed0f6af53f8f815bf1aab))
+* **skills:** model-tiered episode flow + interactive ideate-episode skill ([425ae71](https://github.com/mandakan/wake-alone/commit/425ae71f7aa94b0f6c4e4d46660c3d4c6a67f9c1))
+
+
+### Bug Fixes
+
+* **audio:** guard init() against same-gesture re-entrancy ([f6151a2](https://github.com/mandakan/wake-alone/commit/f6151a278e14d6908d38498b44fddb6299a800af))
+* **engine:** single init path, listener cleanup, boot polish ([45f4d54](https://github.com/mandakan/wake-alone/commit/45f4d545e31b79006695e9a8d3599206279785ed))
+* **engine:** unlock audio on pointerup so touch grants user activation ([3bb0005](https://github.com/mandakan/wake-alone/commit/3bb00052ab28cf97aa599f02884e3126c39789f7))
+
 ## [0.6.0](https://github.com/mandakan/wake-alone/compare/v0.5.0...v0.6.0) (2026-06-10)
 
 
