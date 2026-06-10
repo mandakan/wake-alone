@@ -862,9 +862,23 @@ function lab(){
 
 setInterval(tickHud, 720);
 window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); applyScreenFilter(); } });
+/* ---- ROUTING: the URL hash is the single source of truth for which SCREEN is
+   shown -- empty = salvage menu, #<episode-id> = that episode (started fresh),
+   #lab = lab mode. Story nodes never touch history, so Back from any node pops
+   the hash to empty and lands on the menu. ---- */
+function route(){
+  const hash = location.hash.replace(/^#/,"").toLowerCase();
+  if(hash==="lab"){ if(labAllowed() && !labOn) lab(); return; }
+  if(labOn) return; // lab owns the screen on staging; never auto-leaves it
+  const ep = hash && EPISODES.find(e=> (e.id||"").toLowerCase()===hash && !e.locked && e.nodes);
+  if(ep){ if(!episode || episode.id!==ep.id) startEpisode(ep); return; }
+  // empty / unknown / locked -> menu (guarded so a duplicate empty hashchange is a no-op)
+  if(episode || !root.querySelector(".title-screen")) titleScreen();
+}
+function returnToMenu(){ if(location.hash) location.hash=""; else route(); }
 const labHash=()=> location.hash.toLowerCase()==="#lab";
-if(labHash() && labAllowed()) lab(); else titleScreen();
-window.addEventListener("hashchange", ()=>{ if(labHash() && labAllowed() && !labOn) lab(); });
+window.addEventListener("hashchange", route);
+route();
 </script>
 </body>
 </html>
