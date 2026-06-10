@@ -76,7 +76,13 @@
         return;
       }
       try {
-        await Tone.start(); // unlocks the AudioContext from the gesture
+        // Unlock the AudioContext from the gesture. Raced against a timeout:
+        // without user activation the browser leaves resume() PENDING forever
+        // (it never rejects), which would wedge _initing and block every retry.
+        await Promise.race([
+          Tone.start(),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('no user activation; context still suspended')), 3000))
+        ]);
       } catch (e) {
         console.warn('[skein-audio] could not start audio context:', e);
         this._initing = false;

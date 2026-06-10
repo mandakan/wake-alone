@@ -960,12 +960,14 @@ function bootScreen(){
     if(bus) bus.textContent="AUDIO BUS ............ OK";
     if(AUDIO) AUDIO.init().then(()=>AUDIO.blip("boot"));
     setTimeout(()=>{
-      document.removeEventListener("pointerdown",press);
+      document.removeEventListener("pointerup",press);
       document.removeEventListener("keydown",press);
       booted=true; route();
     }, BOOT_WAKE_MS);
   };
-  document.addEventListener("pointerdown", press);
+  /* pointerUP, not down: on touch devices only pointerup/touchend grant the user
+     activation the audio unlock needs (pointerdown does on mouse only). */
+  document.addEventListener("pointerup", press);
   document.addEventListener("keydown", press);
 }
 /* ---- ROUTING: the URL hash is the single source of truth for which SCREEN is
