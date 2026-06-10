@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0](https://github.com/mandakan/wake-alone/compare/v0.5.0...v0.6.0) (2026-06-10)
+
+
+### Features
+
+* **engine:** add hash router and returnToMenu helper ([18de4e7](https://github.com/mandakan/wake-alone/commit/18de4e7c7d6e5377d06ad30f67c4251afbd83047))
+* **engine:** in-story abort-to-menu link in play footer ([f0d6f97](https://github.com/mandakan/wake-alone/commit/f0d6f97223f18adb2a98a6361d964422e45bddde))
+* **engine:** route ending/madness menu buttons through returnToMenu ([992b970](https://github.com/mandakan/wake-alone/commit/992b9701b12ceda30ed48892e190faabd689f5de))
+* **engine:** start episodes via URL hash (deep links) ([a20649b](https://github.com/mandakan/wake-alone/commit/a20649bc5a0b3a8a476da1a56eea6b6e83feac3b))
+
+
+### Bug Fixes
+
+* **engine:** route #lab on a non-lab host to the menu, not a blank screen ([95affdd](https://github.com/mandakan/wake-alone/commit/95affddbd412c19c8cdddedfa5ffa082e7d2008c))
+* **engine:** tidy router dead code, single play footer, injection-safe episode link ([e54c083](https://github.com/mandakan/wake-alone/commit/e54c083d87c7a321dcf1c96fdaa594fe90d91f9e))
+
 ## [0.5.0](https://github.com/mandakan/wake-alone/compare/v0.4.0...v0.5.0) (2026-06-09)
 
 
