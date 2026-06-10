@@ -56,6 +56,13 @@
     <button class="st" data-k="dead" disabled>stinger: dead</button>
     <button id="mute" disabled>mute</button>
   </div>
+  <div class="buttons">
+    <button class="bl" data-k="char" disabled>blip: char</button>
+    <button class="bl" data-k="punct" disabled>blip: punct</button>
+    <button class="bl" data-k="boot" disabled>blip: boot</button>
+    <button id="scene-menu" disabled>scene: menu</button>
+    <button id="scene-play" disabled>scene: play</button>
+  </div>
 
   <p class="hint">Drag sanity from 100 → 0 slowly: the drone detunes and beats, a
     tritone partial fades in past the midpoint, room tone closes in, and a sub
@@ -85,5 +92,8 @@
   $('#vol').addEventListener('input', (e) => { $('#volV').value = e.target.value; audio.setVolume(+e.target.value / 100); });
   document.querySelectorAll('.node').forEach(b => b.addEventListener('click', () => audio.setNode(b.dataset.id)));
   document.querySelectorAll('.st').forEach(b => b.addEventListener('click', () => audio.stinger(b.dataset.k)));
+  document.querySelectorAll('.bl').forEach(b => b.addEventListener('click', () => audio.blip(b.dataset.k)));
+  $('#scene-menu').addEventListener('click', () => audio.menu());
+  $('#scene-play').addEventListener('click', () => audio.wake());
   $('#mute').addEventListener('click', () => { const on = audio.toggle(); $('#mute').textContent = on ? 'mute' : 'unmute'; });
 </script>
