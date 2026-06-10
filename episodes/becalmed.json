@@ -9,127 +9,161 @@
     "backstory": "Eighteen years on the watch, the last six standing the reactor vigil on the 'Long Patience' - the one post where you never sleep, because the manual key is an arm's length away and the core does not wait. You know exactly how cold a reactor has to get before it cannot come back, and exactly how long that took. You were asleep for all of it."
   },
   "watching": [
-    "THE REACTOR WENT COLD ON YOUR WATCH.",
-    "YOU SLEPT THROUGH ALL OF IT.",
-    "THEY STOPPED TRYING TO WAKE YOU.",
-    "THE COLD IS ALMOST DONE NOW.",
-    "FOUR GENERATIONS. ONE WATCH.",
-    "THE KEY WAS AN ARM AWAY.",
-    "NO STAR. NOT ANYMORE.",
-    "YOUR NAME IS AT THE TOP.",
-    "STILL. EVERYTHING IS STILL.",
-    "YOU LET THE LONG PATIENCE END."
+    "THE HUM IS NOT COMING BACK.",
+    "YOUR EYES WERE OPEN.",
+    "NINE DAYS. YOU BREATHED THE WHOLE TIME.",
+    "THEY MOVED THE CHILDREN OFF YOUR DECK.",
+    "THE LANE IS STILL CLEAR.",
+    "ONE ARM'S REACH. YOU MEASURED IT.",
+    "THEY STOPPED WAITING.",
+    "SIGNED. DATED. WITNESSED.",
+    "THE STAR NEVER KNEW YOU WERE COMING.",
+    "SIT DOWN. THE WATCH IS YOURS."
   ],
   "start": "watchroom",
   "startSanity": 100,
-  "startInventory": [],
+  "startInventory": ["lamp"],
   "nodes": {
     "watchroom": {
       "title": "Watch station",
-      "text": "<p>You wake in the chair you were not supposed to sleep in. One backup cell throws a slow green across the dead consoles, and the green is failing. No drive-hum under your feet. No air-handler. The ship that has carried four generations toward a star none of you will live to see has stopped.</p><p>The shift log is open. Your name is at the top of it. The reactor went cold on your watch. The timestamp says nine days ago.</p>",
+      "text": "<p>The hum is gone. That is what wakes you - not the cold. Eighteen years of watch put that sound deeper in you than your own pulse, and there is nothing now where it sat. You lift your head off the console edge and frost cracks along your sleeve.</p><p>The station, by the book: board, chair, log, the key slot an arm's reach from where you sat. The board idles on its standby strip, amber and dim. The log holds your last entry with nine days of other hands beneath it. Procedure is procedure, even now: the log first, then the key.</p><p>You were asleep. You do not sleep on watch; you have not slept on watch in six years; you were asleep for nine days, and the core is cold. Anyone left aboard will have gone aft toward its last heat - you know that before you are out of the chair. You get out of the chair anyway, and the watch lamp comes off its charge point and into your hand by habit. Through the hatch, the axial corridor runs off into the dark.</p>",
+      "sanityText": {
+        "35": "<p>The watch station is a box of dead readouts and your own hanging breath. The chair holds the shape of nine days pressed into it. On the board, the amber standby strip keeps up its one small lie: that there is anything left to stand watch over.</p>"
+      },
       "choices": [
-        { "text": "Read down the log past your name.", "requires": { "notFlag": "readlog" }, "effects": { "sanity": -20, "flags": { "readlog": true } }, "to": "watchroom_log" },
-        { "text": "Stand up. Go find the others.", "to": "spine" }
+        { "text": "Read the entries that came after yours.", "requires": { "notFlag": "readlog" }, "effects": { "sanity": -15, "flags": { "readlog": true } }, "to": "watchroom_log" },
+        { "text": "Take the watch key from its slot.", "requires": { "notItem": "watchkey", "flag": "readlog" }, "effects": { "add": ["watchkey"] }, "to": "watchroom_key" },
+        { "text": "Log yourself back on watch and sit.", "requires": { "flag": "tried" }, "to": "end_watch", "locked": "(not before the log is read to its end and the start board aft has had its chance)" },
+        { "text": "Step out into the axial corridor.", "to": "axis" }
+      ]
+    },
+    "watchroom_key": {
+      "title": "Watch station",
+      "text": "<p>The slot gives the key up without ceremony. One arm's reach. You cross it now, nine days late, and it costs nothing at all - that is the worst of it, how light the key sits in your glove. A thousand drills taught your hand this exact reach, and your hand did every one of them awake.</p>",
+      "choices": [
+        { "text": "Pocket the key.", "to": "watchroom" }
       ]
     },
     "watchroom_log": {
       "title": "Watch station",
-      "text": "<p>You scroll. The entries after yours are not entries. Four words, logged by hand, once an hour, by crew who were awake when you were not: <em>he will not wake.</em> Then again. Then a column of it, down and down, in different hands, until the hands stop.</p>",
+      "text": "<p>You scroll down past your name. For a while the entries keep watch format - hand-keyed, on the hour, by people holding on to procedure because procedure was what was left. <em>Core offline. Watch officer unresponsive. Attempting revival.</em> Hour by hour the entries get shorter. Then the spelling starts to go.</p><p>One entry, four days in, is longer than the rest. <em>0414. His eyes are open. He is not awake. We have moved the children off this deck.</em></p><p>The final entry is in the captain's hand and it is not about the core. It relieves you of the watch. Signed, dated, witnessed by two officers whose names you have known all your life.</p><p>From the chair where you slept to the watch key: one arm. Every watch officer measures that distance their first week. You measured it. They knew you had.</p>",
       "choices": [
-        { "text": "Close the log. Go find them.", "to": "spine" }
+        { "text": "Close the log.", "to": "watchroom" }
       ]
     },
-    "spine": {
-      "title": "Spinal corridor",
-      "text": "<p>The corridor runs the ship's whole length. Frost has started on the rivets, fine as mold. Your breath hangs in front of you and does not move. The air is becalmed - going nowhere, with you inside it.</p><p>Forward, the bridge, where the watch was kept. Aft, the muster hall, where the others would have gathered. Amidships, the lifeboat lock.</p>",
+    "axis": {
+      "title": "Axial corridor",
+      "onEnter": { "sanity": -5 },
+      "text": "<p>The axial corridor runs her whole length, bow to core, and the lamp finds frost on every surface of it, fine as fur. Nothing stirs. The circulation is dead, so your breath hangs where you leave it, and looking back you can see the small grey marks of it all the way to the watch station hatch - a record of you, going nowhere.</p><p>Four generations were born along this corridor.</p>",
       "sanityText": {
-        "45": "<p>Your breath hangs where you left it, marking each place you have already stood. The frost has climbed the walls in patterns that keep almost spelling the same four words: <em>he will not wake</em>. Forward: the bridge. Aft: the muster hall. Amidships: the lifeboat lock.</p>"
+        "30": "<p>The corridor swallows lamplight and gives back frost. Your old breath hangs at the junctions, one small grey shape for every time you stood deciding which dark to walk into. The ship has stopped waiting. You are still pretending to choose.</p>"
       },
       "choices": [
-        { "text": "Forward, to the bridge.", "to": "bridge" },
-        { "text": "Aft, to the muster hall.", "to": "muster" },
-        { "text": "Amidships, to the lifeboat lock.", "to": "lock" },
-        { "text": "Sit down here in the cold and stop.", "requires": { "sanityMax": 30 }, "to": "end_stop" }
+        { "text": "Forward, to the observation blister.", "to": "bow" },
+        { "text": "The boat deck.", "to": "boatdeck" },
+        { "text": "The family ring.", "to": "quarters" },
+        { "text": "Aft, to the core.", "to": "reactor_ante" },
+        { "text": "Back to the watch station.", "to": "watchroom" }
       ]
     },
-    "bridge": {
-      "title": "Bridge",
-      "onEnter": { "sanity": -6 },
-      "text": "<p>Every console is dark. The forward port shows the same handful of stars it has shown for forty years, none of them any nearer. The captain's seat faces the dark, and the captain is in it, hands folded. He stayed when the others went to the boat. The cold kept him where he chose to sit.</p><p>The manual reactor key kept its place on the helm through all of it - the key the watch turns the instant the core falters, the key that was an arm's length from your chair while you slept.</p>",
+    "bow": {
+      "title": "Observation blister",
+      "onEnter": { "sanity": -12 },
+      "text": "<p>The blister is a half-globe of glass at the bow, iced over on the inside. You scrape a port clear with your sleeve and put your eye to it.</p><p>Stars. Thousands of them, fixed. Somewhere among them is the star the Long Patience has been falling toward for four generations, and you cannot say which one. The nav desk could say, but it is dead, and its instruments were never your trade anyway. You hold your glove against the glass until the cold bites through. Nothing out there presses back.</p>",
+      "sanityText": {
+        "30": "<p>Glass, ice, stars. You wipe a port clear and look for the destination star as if finding it would change anything. Pick one. Any of them will do as well as the true one now, and none of them is looking back.</p>"
+      },
       "choices": [
-        { "text": "Take the reactor key from the helm.", "requires": { "notItem": "key" }, "effects": { "add": ["key"] }, "to": "bridge" },
-        { "text": "Stand at the captain's shoulder and look at him.", "requires": { "notFlag": "sawcaptain" }, "effects": { "sanity": -30, "flags": { "sawcaptain": true } }, "to": "bridge_seat" },
-        { "text": "Carry the key down to the reactor deck. You will not come back up.", "requires": { "item": "key" }, "to": "reactor" },
-        { "text": "Back to the corridor.", "to": "spine" }
+        { "text": "Back to the corridor.", "to": "axis" }
       ]
     },
-    "bridge_seat": {
-      "title": "Bridge",
-      "text": "<p>You come around the seat and stand at the captain's shoulder, where the watch reports were given. The cold has kept him exact: head up, eyes open under a film of frost, fixed on the forward port.</p><p>He kept the watch you left. All the way out.</p>",
+    "boatdeck": {
+      "title": "Boat deck",
+      "text": "<p>Sixteen drop-boats hang nose-down in their cradles, frosted to the deck. A single pass of the lamp over the launch rails is enough: rail charge comes off the main bus, the main bus comes off the core, and no boat on this deck was ever leaving without the reactor alive. The crew knew that as well as you do.</p><p>A drop-boat carries one charge of its own - a starter cell behind the service panel, enough to light the board and run the air, never to fly. It is also the one charge left aboard that a start board would answer.</p><p>Boat three's hatch stands open.</p>",
       "choices": [
-        { "text": "Step back.", "to": "bridge" }
+        { "text": "Look inside boat three.", "requires": { "notFlag": "sawboat" }, "effects": { "sanity": -8, "flags": { "sawboat": true } }, "to": "boat_inside" },
+        { "text": "Pull the starter cell from boat three's service panel.", "requires": { "notFlag": "pulledcell" }, "effects": { "add": ["cell"], "flags": { "pulledcell": true } }, "to": "boatdeck" },
+        { "text": "Take the med-gel from the boat's first-aid rack.", "requires": { "notFlag": "tookgel1" }, "effects": { "add": ["medgel"], "flags": { "tookgel1": true } }, "to": "boatdeck" },
+        { "text": "Crank the manual drop release anyway.", "to": "end_boat" },
+        { "text": "Back to the corridor.", "to": "axis" }
       ]
     },
-    "muster": {
-      "title": "Muster hall",
-      "onEnter": { "sanity": -6 },
-      "text": "<p>The long tables are set. The meal on them is frozen solid, every plate full, as though everyone rose at once and went somewhere better together. No bodies. Only the places they kept, and the cold keeping them.</p><p>A wall locker hangs open, stripped near to bare. Someone left one med-gel ampoule, the field kind - for you, or by accident; you will not know which. Down the tables, one place is set apart, the chair pulled out. The watch-keeper's. Yours.</p>",
+    "boat_inside": {
+      "title": "Boat three",
+      "text": "<p>Somebody made boat three ready. Ration tins stacked and lashed. Bedding laid out along the benches, bunks made up against the hull wall, sized going down like steps - corners squared, never slept in.</p><p>Whoever did this stopped doing it. No note says why. You stand in the hatchway with the lamp very steady, and then you step back out.</p>",
       "choices": [
-        { "text": "Take the med-gel ampoule.", "requires": { "notFlag": "tookgel" }, "effects": { "add": ["medgel"], "flags": { "tookgel": true } }, "to": "muster" },
-        { "text": "Walk down the tables to your own pulled-out chair.", "requires": { "notFlag": "walkedtables" }, "effects": { "sanity": -22, "flags": { "walkedtables": true } }, "to": "muster_chair" },
-        { "text": "Back to the corridor.", "to": "spine" }
+        { "text": "Step back out to the deck.", "to": "boatdeck" }
       ]
     },
-    "muster_chair": {
-      "title": "Muster hall",
-      "text": "<p>You walk the length of the tables to the pulled-out chair. The place is set like all the others, the plate full and furred with frost - but here the cup is poured as well, and the chair is turned a little off true, toward the hatch.</p><p>They kept it facing the door.</p>",
+    "quarters": {
+      "title": "The family ring",
+      "text": "<p>The family ring curves off the axis in a long row of doorways, every door open, every cabin dark. Nobody shut anything when they went. Cups still on tables. A jacket over a chair back, stiff with frost. The lamp keeps picking out small things until you stop letting it.</p><p>At the junction, a first-aid point sits flush in the wall.</p>",
       "choices": [
-        { "text": "Step away from the chair.", "to": "muster" }
+        { "text": "Crack the ice off the first-aid point and open it.", "requires": { "notFlag": "tookgel2" }, "effects": { "add": ["medgel"], "flags": { "tookgel2": true } }, "to": "quarters" },
+        { "text": "Stop at the doorframe with the height marks.", "requires": { "notFlag": "sawmarks" }, "effects": { "sanity": -10, "flags": { "sawmarks": true } }, "to": "quarters_marks" },
+        { "text": "Back to the corridor.", "to": "axis" }
       ]
     },
-    "lock": {
-      "title": "Lifeboat lock",
-      "onEnter": { "sanity": -8 },
-      "text": "<p>The cradle is empty. The one boat the ship carried, the one mercy for four hundred, is gone - launched days ago by hands that did the arithmetic and counted you among the lost.</p><p>The outer hatch is still here. Manual, a wheel a child could turn, onto the same dark they chose. Frost has reached the spokes. Your hand fits them exactly.</p>",
+    "quarters_marks": {
+      "title": "The family ring",
+      "text": "<p>A doorframe by the junction carries height marks, scored into the paint and dated. Four columns, the oldest worn soft, begun before you were born. The newest mark is knee-high and the paint of it is still bright.</p><p>The marks were the ship keeping a promise. You strip your glove and put your thumb on the newest one. Then you take it back, because the frost there melts.</p>",
       "choices": [
-        { "text": "Press your face to the inner port and look for where the boat went.", "requires": { "notFlag": "watched" }, "effects": { "sanity": -30, "flags": { "watched": true } }, "to": "lock_port" },
-        { "text": "Turn the wheel. Follow them out.", "to": "end_airlock" },
-        { "text": "Back to the corridor.", "to": "spine" }
+        { "text": "Step back from the doorframe.", "to": "quarters" }
       ]
     },
-    "lock_port": {
-      "title": "Lifeboat lock",
-      "text": "<p>Your breath freezes to the port at once. You scrape a circle clear with your thumb and look out along the launch line, into the dark they went into.</p><p>The boat is still there. A boat-shaped black against the stars, holding off the hull at the distance of a thrown stone. Drive dark. Ports dark. Days now, and it has not gone anywhere either.</p>",
+    "reactor_ante": {
+      "title": "Core anteroom",
+      "onEnter": { "sanity": -20 },
+      "text": "<p>The anteroom to the core is where the warmth lasted longest, and it is where they went. The whole ship's company sits against the containment wall and against each other, layered in everything soft the ship had, and the frost has made one surface of all of them. The lamp does not reach the far end of the room. It does not need to.</p><p>Down the middle, hatch to start board, runs a clear lane. Nobody lies in it. They left you a path.</p>",
       "choices": [
-        { "text": "Step back from the port.", "to": "lock" }
+        { "text": "Walk the lamp along the faces.", "requires": { "item": "lamp", "notFlag": "sawfaces" }, "effects": { "sanity": -15, "flags": { "sawfaces": true } }, "to": "ante_faces" },
+        { "text": "Seat the starter cell in the board's well.", "requires": { "item": "cell", "notFlag": "seated" }, "effects": { "remove": ["cell"], "flags": { "seated": true } }, "to": "ante_seat" },
+        { "text": "Turn the watch key. Run the cold-start.", "requires": { "item": "watchkey", "flag": "seated", "notFlag": "tried" }, "effects": { "sanity": -25, "flags": { "tried": true } }, "to": "coldstart", "locked": "(the board answers a charged boat cell seated in its well and the watch key - and it answers once)" },
+        { "text": "Lie down among them.", "to": "end_among" },
+        { "text": "Back to the corridor.", "to": "axis" }
       ]
     },
-    "reactor": {
-      "title": "Reactor deck",
-      "text": "<p>The core is a black slab gone to absolute cold. The key fits the manual socket the way it would have nine days ago, if you had been awake. You turn it now. Nothing catches. The fuel is past restart, the moderators frozen solid through - you know to the hour when that became true, and the hour was the first one. The key turns and turns in a dead lock, and its small click is the only sound the ship has left.</p>",
+    "ante_seat": {
+      "title": "Core anteroom",
+      "text": "<p>You carry the cell down the lane they left, eyes on the board, because the lane runs narrow and the company sits close on either side of it. Nobody turns to watch. The cell goes into its well with a click your hands know from a hundred drills, and the start board wakes a handful of amber lights to consider it.</p>",
       "choices": [
-        { "text": "Keep turning the key until your fingers stop.", "to": "end_core" }
+        { "text": "Step back from the board.", "to": "reactor_ante" }
       ]
     },
-    "end_core": {
+    "ante_faces": {
+      "title": "Core anteroom",
+      "text": "<p>You walk the light along them slowly, because they earned it. The frost has taken the detail and kept the attitude: heads leaned together, arms over shoulders, the smallest ones innermost, where the warmth was pooled and spent. You find faces you have known your whole life, and the cold has made them all one family, which they were.</p><p>None of them faces the start board or the hatch. At the end they had each other to look at, and they used the time for that.</p>",
+      "choices": [
+        { "text": "Lower the lamp.", "to": "reactor_ante" }
+      ]
+    },
+    "coldstart": {
+      "title": "Core anteroom",
+      "text": "<p>The cell sits in the well. You park the lamp on the board's shelf, turn the key, and your hands carry the rest on their own - eighteen years of drill, every step in order, no step skipped even now, even here, with the company at your back. Preheat. Bank dump. Hold.</p><p>You watch the temperature ladder while the cell spends itself into the core, and you already knew - had known since the watch station, the moment you woke into the silence. A core this far under the line does not come back; the line is on the gauge because somebody, somewhere, once had to find out where it was.</p><p>The sequence runs to its end because you let it finish. The numbers settle back exactly where they were. The board thanks you for your input and asks for nothing further. The key comes out of the slot as easily as it went in, and the lamp comes back to your hand.</p>",
+      "choices": [
+        { "text": "Walk back down the lane.", "to": "reactor_ante" },
+        { "text": "Go forward to the watch station.", "to": "watchroom" }
+      ]
+    },
+    "end_watch": {
       "ending": {
         "type": "dead",
-        "stamp": "// CORE COLD",
-        "text": "<p>You turn the key until your fingers will not close, then stand there meaning to turn it. The cold takes you on your feet, the way it took the ship - slowly, from the outside in. Far forward, the last green cell gives out, and the ship keeps its long patience with you at last.</p>"
+        "stamp": "// WATCH RESUMED",
+        "text": "<p>The captain's last entry relieved you of the watch. You key the log open and write beneath it, your hand steady in the cold: <em>Relief refused. Watch resumed.</em> You reckon the time as close as you can and enter it.</p><p>The chair takes your shape back. You set the watch key in its slot, an arm's length from your hand, where it was the whole time. A watch has a form: key racked, log current, eyes forward. The form is what you have left, so you keep it. The cold climbs through the deck in its own time.</p><p>This time you are awake for all of it.</p>"
       }
     },
-    "end_airlock": {
+    "end_among": {
       "ending": {
         "type": "dead",
-        "stamp": "// LOCK CYCLED",
-        "text": "<p>The wheel gives easily. The hatch breaks its seal, and the dark takes the air in one soft pull, and then takes you. For one clean moment there is no cold at all. They went out in the one boat, with air and arithmetic. You go out as you are.</p>"
+        "stamp": "// MUSTERED",
+        "text": "<p>There is room at the edge of them, the way there was a lane. You set the lamp on the deck plate, facing out down the lane, and you work yourself in against the outer row, and where your bare hand rests, the frost does not melt. You are not warm enough for that any more.</p><p>Held in close like this, the cold almost passes for shelter. You let your eyes close. There is no one left to log it.</p><p>Down the lane, the lamp keeps the watch.</p>"
       }
     },
-    "end_stop": {
+    "end_boat": {
       "ending": {
         "type": "dead",
-        "stamp": "// WATCH ENDED",
-        "text": "<p>You sit down under the frost where it spells <em>he will not wake</em>, and you do not get up. There is nowhere the getting up would take you. You keep the ship's last watch the way you kept the first one - sitting down - and the frost climbs from the rivets onto your sleeves, fine as mold, in no hurry at all.</p>"
+        "stamp": "// ADRIFT",
+        "text": "<p>The drop release is spring and gravity, built for a day when nothing else answered. You climb in past bunks made up and never slept in, stand the lamp on a bench, and dog the hatch. The crank takes both hands and gives up its arc grudgingly, and then the cradle lets go. The boat falls away from the Long Patience.</p><p>In the port, the ship goes from being everything to being a shape, dark against the stars. No drive lights to take you anywhere; a drop-boat flies on what its rail gives it, and the rails went cold with the core. You knew that on the deck. You knew it with your hand on the crank. The ship hangs in the port, near enough to read her name.</p><p>Neither of you is going anywhere.</p>"
       }
     }
   }
