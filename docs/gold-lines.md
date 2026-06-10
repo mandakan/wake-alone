@@ -126,8 +126,9 @@ concrete anchor (gauge, hand) re-introduced, not assumed.
 reasonable.
 
 > The table takes your weight the way a thing takes a weight it was shaped for, because
-> it was. [...] That is the whole of the offer: do nothing, be finished, and never get up
-> into the cold again.
+> it was, and the cold tension settles back into its place in you, familiar already, and
+> the lens above you warms. [...] That is the whole of the offer: do nothing, be
+> finished, and never get up into the cold again.
 
 **fathom/center** - the character narrates their own failure to resist, in two flat
 sentences.
@@ -170,11 +171,55 @@ one durable bodily image.
 
 ---
 
-## TODO (user): the FATHOM triple
+## The FATHOM triple - one ending, three states (L8 + L9)
 
-The single most instructive asset is in git history: the same FATHOM ending in its three
-states - fog (oblique, no anchor), lecture (anchor present, implications itemized), and
-the shipped version (anchor + one flat stroke). Extract with
-`git log -p --follow episodes/fathom.json`, paste the three versions side by side here
-under this heading with one line each on why the first two fail. That before/during/after
-of a REAL beat teaches the L8/L9 target better than both lessons' full text.
+The same beat (`fathom/end_center`, the descent ending) as it moved through review. This
+before/during/after of a real beat is the L8/L9 target shown, not described: the first
+version has no anchor, the second has the anchor but itemizes the iceberg, the third
+lands the anchor and stops.
+
+**1. Fog** (commit `b2d969e`, original draft) - FAILS L8: no concrete picturable thing
+anywhere; "the place is attention" is a concept, and concepts cannot be feared.
+
+> You look up at what is looking, because the centre of a structure is where its truth is
+> kept and you have always gone to the centre - that is the discipline, the last good
+> habit you have left.
+>
+> No spine here to read. You look up, and the looking has no other side to meet - no face
+> behind it, no edge where its regard stops and you start. You came down to find what the
+> place is, and the place is the attention itself, and you are the one held point inside
+> it: close, still, kept awake, the way a specimen is kept that is not yet finished being
+> learned. It does not look back, because there is no back to it - only the looking, and
+> you, and all the patience there is.
+
+**2. Lecture** (commits `795413d` + `a59027d`, the L8 fix over-corrected) - the anchor
+arrives (the kept thing in the cradle) but FAILS L9: every implication is itemized ("no
+hull to pace, no star, no hatch, no ship waiting home"), the whole iceberg surfaced, and
+nothing is left for the reader to assemble.
+
+> You cross to the cradle, because the truth of a structure sits at its centre, and
+> finding the truth is the work - the last of the work left to you.
+>
+> What is in the cradle is small, and kept, and breathing. Wired on every side, fed and
+> warmed and held right at the edge of alive. You know its shape the way you know your
+> own hands, because it is what is left of you - the part they kept when the rest stopped
+> being useful. There were no corridors - no hull to pace, no star, no hatch, no ship
+> waiting home. Only this room, and the thing in the cradle, and twenty years of a
+> charted life run behind its eyes to keep it walking somewhere while they watched what
+> it did. You came all the way down to find what the place is built around. It is built
+> around you. The dark leans in to see whether the thing in the cradle has understood -
+> and it has, and that is the measurement, and they take it.
+
+**3. Shipped** (commit `4f39f22`, the recut) - the synthesis: one anchor, a sentence or
+two of accretion, one flat stroke ("It has."), stop. The vat, the forever, the no-body
+stay unsaid for the reader to furnish.
+
+> You cross to the cradle. The truth of a structure sits at its centre, and finding the
+> truth is the work - the last of the work left to you.
+>
+> What is in the cradle is small, and kept, and breathing, wired on every side and held
+> at the edge of warm. You know the shape of it the way you know your own hands. You came
+> all the way down to find what the place is built around, and it is this, and it has
+> been this the whole time, with twenty years of corridor poured in to keep it walking
+> somewhere. The dark bends close over the cradle to see whether it has understood. It
+> has.
