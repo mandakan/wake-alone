@@ -131,6 +131,9 @@
   .bigtitle{font-family:var(--font-display);font-size:clamp(46px,14vw,84px);line-height:.9;letter-spacing:2px}
   .sub{font-family:var(--font-display);font-size:24px;color:var(--phosphor-dim);margin:6px 0 40px}
   .eplist{max-width:520px;margin:0 auto;text-align:left}
+  .boot{max-width:520px;margin:0 auto;padding-top:18vh;font-family:var(--font-display);font-size:20px;text-align:left}
+  .boot-line{color:var(--phosphor-dim);white-space:pre;visibility:hidden}
+  .boot-prompt{margin-top:26px;color:var(--phosphor);visibility:hidden}
   .epcard{border:1px solid var(--phosphor-a28);padding:16px 18px;margin:12px 0;cursor:pointer;transition:background .15s,border-color .15s}
   .epcard:hover{background:var(--phosphor-a08);border-color:var(--phosphor)}
   .epcard.locked{cursor:not-allowed;color:var(--phosphor-faint);border-color:rgba(255,176,0,.1)}
@@ -898,11 +901,53 @@ function lab(){
 
 setInterval(tickHud, 720);
 window.addEventListener("resize", ()=>{ if(state){ setScreen(isPlayNode()); applyScreenFilter(); } });
+/* ---- BOOT: every fresh load opens on a silent POST scroll; the press that
+   dismisses it is the autoplay gesture that unlocks audio (the first beep you
+   ever hear is the audio bus coming up). It gates routing, so deep links
+   (#episode-id) pass through the boot too, then land in the episode. ---- */
+const BOOT_LINES = [
+  "SKEIN RUNTIME v" + VERSION,
+  "MEM CHECK ............ OK",
+  "PHOSPHOR ............. OK",
+  "NEURAL LINK .......... DEGRADED",
+  "AUDIO BUS ............ WAITING"
+];
+let booted = false;
+function bootScreen(){
+  root.innerHTML = `<div class="boot">` +
+    BOOT_LINES.map(l=>`<div class="boot-line">${esc(l)}</div>`).join("") +
+    `<div class="boot-prompt">&gt; PRESS ANY KEY TO WAKE<span class="cursor"></span></div></div>`;
+  const lines=[...root.querySelectorAll(".boot-line")];
+  const prompt=root.querySelector(".boot-prompt");
+  let shown=0, timer=null, atPrompt=false, waking=false;
+  const showPrompt=()=>{ if(timer){ clearInterval(timer); timer=null; }
+    lines.forEach(l=>l.style.visibility="visible");
+    prompt.style.visibility="visible"; atPrompt=true; };
+  if(REDUCED) showPrompt();
+  else timer=setInterval(()=>{ if(shown<lines.length) lines[shown++].style.visibility="visible"; else showPrompt(); }, 190);
+  const press=(e)=>{
+    if(e.type==="keydown" && ["Shift","Control","Alt","Meta"].includes(e.key)) return;
+    if(waking) return;
+    if(!atPrompt){ showPrompt(); return; } // first press fast-forwards the scroll
+    waking=true;
+    const bus=lines.find(l=>l.textContent.startsWith("AUDIO BUS"));
+    if(bus) bus.textContent="AUDIO BUS ............ OK";
+    if(AUDIO) AUDIO.init().then(()=>AUDIO.blip("boot"));
+    setTimeout(()=>{
+      document.removeEventListener("pointerdown",press);
+      document.removeEventListener("keydown",press);
+      booted=true; route();
+    }, 450);
+  };
+  document.addEventListener("pointerdown", press);
+  document.addEventListener("keydown", press);
+}
 /* ---- ROUTING: the URL hash is the single source of truth for which SCREEN is
    shown -- empty = salvage menu, #<episode-id> = that episode (started fresh),
    #lab = lab mode. Story nodes never touch history, so Back from any node pops
    the hash to empty and lands on the menu. ---- */
 function route(){
+  if(!booted) return; // the boot screen owns the screen until the wake press
   const hash = location.hash.replace(/^#/,"").toLowerCase();
   if(hash==="lab" && labAllowed()){ if(!labOn) lab(); return; }
   if(labOn) return; // lab owns the screen on staging; never auto-leaves it
@@ -913,7 +958,7 @@ function route(){
 }
 function returnToMenu(){ if(location.hash) location.hash=""; else route(); }
 window.addEventListener("hashchange", route);
-route();
+bootScreen();
 </script>
 </body>
 </html>
