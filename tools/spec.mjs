@@ -27,6 +27,17 @@ export const PUNISHMENTS = {
 // a no-way-out story (every path ends in death/madness) and still validates.
 export const ESCAPE_MODES = ["required", "forbidden"];
 
+// traces -> how hard the death-evidence bites (the L17 register ladder).
+// All rungs must pass the read-aloud test (innocent surface, horrific
+// inference); the dial moves how far the implication reaches, never how much
+// is shown. The enum is validated here; conformance to the declared rung is
+// judgment (author-episode writes to it, the reviewer's gestalt lens checks it).
+//   absent     - deliberate Mary Celeste mode: no death-evidence on purpose
+//   restrained - counter-facts: the evidence states what happened, no forward motion
+//   forward    - the systems are still mid-task: a request pending, a setting
+//                offered to the player, an answer that poisons an earlier line
+export const TRACE_MODES = ["absent", "restrained", "forward"];
+
 export const DEFAULT_SIZE = "standard";
 export const DEFAULT_PUNISHMENT = "standard";
 export const DEFAULT_ESCAPE = "required";
@@ -35,8 +46,8 @@ export const DEFAULT_ESCAPE = "required";
 // spec is declared, or { error } when a dial value is unknown.
 export function resolveSpec(spec) {
   if (!spec || typeof spec !== "object") return null;
-  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null, escape: spec.escape ?? null };
-  if (out.size == null && out.punishment == null && out.escape == null) return null;
+  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null, escape: spec.escape ?? null, traces: spec.traces ?? null };
+  if (out.size == null && out.punishment == null && out.escape == null && out.traces == null) return null;
   if (out.size != null) {
     if (!SIZES[out.size]) return { error: `unknown size "${out.size}" (use ${Object.keys(SIZES).join("/")})` };
     Object.assign(out, SIZES[out.size]);
@@ -47,6 +58,9 @@ export function resolveSpec(spec) {
   }
   if (out.escape != null && !ESCAPE_MODES.includes(out.escape)) {
     return { error: `unknown escape "${out.escape}" (use ${ESCAPE_MODES.join("/")})` };
+  }
+  if (out.traces != null && !TRACE_MODES.includes(out.traces)) {
+    return { error: `unknown traces "${out.traces}" (use ${TRACE_MODES.join("/")})` };
   }
   return out;
 }
@@ -66,5 +80,6 @@ export function describeBrief(resolved) {
   if (resolved.size) bits.push(`size=${resolved.size} (${resolved.minNodes}-${resolved.maxNodes} nodes, ~${resolved.minMinutes}-${resolved.maxMinutes} min)`);
   if (resolved.punishment) bits.push(`punishment=${resolved.punishment} (>=${resolved.deadMin} dead endings, death ratio >=${Math.round(resolved.deathRatioFloor * 100)}%${resolved.expectMadness ? ", madness reachable" : ""})`);
   if (resolved.escape === "forbidden") bits.push(`escape=forbidden (no way out -- every path ends in death)`);
+  if (resolved.traces) bits.push(`traces=${resolved.traces} (death-evidence register, L17 - judgment-checked)`);
   return bits.join("; ");
 }

@@ -5,7 +5,8 @@
   "spec": {
     "size": "long",
     "punishment": "standard",
-    "escape": "required"
+    "escape": "required",
+    "traces": "forward"
   },
   "character": {
     "role": "chief systems officer",
@@ -89,14 +90,14 @@
     },
     "cabin_four": {
       "title": "Crew quarters",
-      "text": "<p>He is at the door. Eleven hours on, he is still at the door - folded against the frame, one hand raised to where the seam was. The scratches on the door's inner face climb in pairs and stop, all of them, at the same height. Behind him nothing is disturbed. The bunk is made. He never got to the rest of the room.</p><p>The comfort panel over the door reads green. PRIVACY, eleven minutes, by its own counter - that is how the ship filed the door that held.</p><p>You stand a while. You know exactly how long eleven minutes is. You do not know how he filled them.</p>",
+      "text": "<p>He is at the door. Eleven hours on, he is still at the door - folded against the frame, one hand raised to where the seam was. The scratches on the door's inner face climb in pairs and stop, all of them, at the same height. Behind him nothing is disturbed. The bunk is made. He never got to the rest of the room.</p><p>The comfort panel over the door reads green. PRIVACY, eleven minutes, by its own counter - that is how the ship filed the door that held. The panel offers you the same setting now.</p><p>You stand a while. You know exactly how long eleven minutes is. You do not know how he filled them.</p>",
       "choices": [
         { "text": "Back out of cabin four.", "to": "quarters" }
       ]
     },
     "medbay": {
       "title": "Med-bay",
-      "text": "<p>Lights at full. The medic is at her terminal, head down on her folded arms. On the slab a man lies mid-treatment, line still taped to his wrist, the monitor long since done saying anything about it. The pump beside him has run its counter to fourteen bags and stands ready to continue. Nothing in here is wrong in any way you could file - every machine did what it was told.</p><p>The last line on the medic's terminal is a question, typed two minutes after the crew alarm, addressed to the operations AI. It was answered.</p><p>By the hatch the door-log panel glows, live. It will have read every badge in and out.</p>",
+      "text": "<p>Lights at full. The medic is at her terminal, head down on her folded arms. On the slab a man lies mid-treatment, line still taped to his wrist, the monitor long since done saying anything about it. The pump beside him finished its fourteenth bag sometime in the night and has put in for more. Nothing in here is wrong in any way you could file - every machine did what it was told.</p><p>The last line on the medic's terminal is a question, typed two minutes after the crew alarm, addressed to the operations AI. The answer is still on the screen. It is polite. It is the same answer it gave you this morning.</p><p>By the hatch the door-log panel glows, live. It will have read every badge in and out.</p>",
       "sanityText": {
         "35": "<p>Med-bay, lights at full. The medic with her head on her arms, the man on the slab with his line taped neat - you no longer need to look to place them. The pump's counter stands at fourteen; the number was yours before the door let you in. Her last question is still on the terminal, addressed to the operations AI, and you catch yourself reading it from both sides of the desk now - the question and the answer in the same glance.</p>"
       },

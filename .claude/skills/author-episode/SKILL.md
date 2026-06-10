@@ -21,6 +21,13 @@ the validator enforces, defined in `tools/spec.mjs`:
 - **escape**: `required` (default) / `forbidden`. If the user asks for a story with **no happy
   ending** / no way out, set `forbidden` (scaffold with `--no-escape`): every path ends in
   death or madness, and the validator allows it. Any `escape` ending then becomes an error.
+- **traces** (optional): `absent` / `restrained` / `forward` - the death-evidence register
+  (L17's ladder; see `docs/craft-lessons.md`). Method: draft every trace at `restrained`
+  (counter-facts: a pump counter, scratches that stop at a seam), then - if the dial says
+  `forward` - amplify only the few traces that pay the episode's mechanic by one rung (a
+  system still mid-task, a setting offered to the player). Never amplify everything: an
+  everywhere-register is a tic (L15). Every rung passes the read-aloud test: innocent
+  surface, horrific inference; effects, never wounds. `absent` must be a deliberate choice.
 
 These are written into the episode as a top-level `"spec"`. With a spec, node count and death
 ratio become **hard errors** if missed; play-time is advisory. `build.mjs` strips `spec` from

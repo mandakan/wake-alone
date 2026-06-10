@@ -77,6 +77,14 @@ episode at hand (e.g. zero findings on a first draft), re-run that single lens o
 > the prose must stay shape, weight, dread - never function, never operating hints, never
 > "what part is missing." A description that explains how an out-of-domain object works is
 > a finding. Cite the node id. Use lesson ref "L4".
+>
+> Also check the **death-evidence register (L17)**: every trace of how the crew died must
+> name an effect, never a wound, and pass the read-aloud test - innocent surface, horrific
+> inference. If the episode declares `spec.traces`, judge conformance to the rung: `absent`
+> means zero evidence on purpose (any trace is a finding); `restrained` means counter-facts
+> with no forward motion; `forward` allows systems still mid-task. Flag any trace that tips
+> into shown injury, and flag a `forward` register applied everywhere (a tic, L15). Use
+> lesson ref "L17" for these.
 
 ### Lens 3 - Slop beyond the linter
 

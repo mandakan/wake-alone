@@ -145,6 +145,12 @@ the validator then enforces. The dials and their thresholds live in `tools/spec.
   exist (the universal rule). `forbidden` is a no-way-out story: any `escape` ending is an
   `ERROR`, but it must still be completable (some death/madness ending stays reachable). Scaffold
   one with `--no-escape` (or `--escape forbidden`).
+- **traces** — optional: `absent` / `restrained` / `forward`. How hard the death-evidence bites
+  (lesson L17's register ladder). `absent` is a deliberate Mary Celeste no-evidence episode;
+  `restrained` states what happened (counter-facts, no forward motion); `forward` leaves the
+  systems still mid-task (a request pending, a setting offered to the player). Every rung must
+  pass the read-aloud test: innocent surface, horrific inference - effects, never wounds. The
+  enum is a hard `ERROR` if misspelled; conformance to the rung is judgment (author + reviewer).
 
 With a `spec`, missing a hard floor is an `ERROR`. Without one, only the universal rules apply
 (solvable with at least one survivable escape, ≥2 nasty endings advised). The `author-episode`

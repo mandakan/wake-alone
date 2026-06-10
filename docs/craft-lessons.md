@@ -385,3 +385,17 @@ without understanding.
 **Enforced by:** this rule + the skill's final-read ("can the player find how the crew died, and does
 each trace name an effect, not a wound? if the episode has none, was that chosen on purpose?") + the
 reviewer's gestalt and tension lenses. Judgment, not mechanically checkable.
+**Addendum (2026-06): the register ladder and the `traces` dial.** Trace intensity is tunable per
+episode via the optional spec field `"traces"` (`tools/spec.mjs`, enum-validated):
+- `absent` - deliberate Mary Celeste mode; satisfies the deliberate-zero clause above.
+- `restrained` - counter-facts: the evidence states what happened, no forward motion ("the pump's
+  counter reads fourteen bags").
+- `forward` - the systems are still mid-task: a request pending ("has put in for more"), a setting
+  offered to the player ("the panel offers you the same setting now"), an answer that poisons an
+  earlier line ("it is the same answer it gave you this morning").
+Every rung must pass the **read-aloud test**: the nastiest sentence stays one a child could read
+aloud without understanding - the dial moves how far the implication reaches, never how much is
+shown. Method: draft all traces at `restrained`, then amplify only the few that pay the episode's
+mechanic by one rung; never amplify everywhere (L15 - a register used everywhere becomes a tic).
+To re-tune a shipped episode, declare the dial in its spec and run `/review-episode` - the gestalt
+lens reports rung mismatches as findings.
