@@ -109,5 +109,45 @@ export function validateAdventure(entry, chapters) {
     }
   }
 
+  // exportability: a declared export the chapter can never have set when a run
+  // ends (any ending or a madness collapse -- the engine records progress at
+  // both) is a contract the engine can never fulfil.
+  chapters.forEach(({ decl }, i) => {
+    const s = solved[i];
+    if (!s || s.truncated) return;
+    const exportable = new Set(s.madnessFlags);
+    for (const set of s.endingFlags.values()) for (const f of set) exportable.add(f);
+    for (const f of (Array.isArray(decl.exports) ? decl.exports : [])) {
+      if (!f.startsWith("prior_") && !exportable.has(f))
+        E(`chapter ${i + 1}: export "${f}" can never be set when any reachable ending is recorded`);
+    }
+  });
+
+  // dead export: nothing downstream (next chapter's imports or unlock flag) reads it.
+  for (let i = 0; i < chapters.length; i++) {
+    const next = chapters[i + 1];
+    const nextImports = next && Array.isArray(next.decl.imports) ? next.decl.imports : [];
+    const nextUnlock = next ? parseUnlock(next.decl.unlock) : null;
+    for (const f of (Array.isArray(chapters[i].decl.exports) ? chapters[i].decl.exports : [])) {
+      const read = nextImports.includes(f) || (nextUnlock && nextUnlock.kind === "flag" && nextUnlock.value === f);
+      if (!read) W(`chapter ${i + 1}: export "${f}" is never imported or read by an unlock downstream (dead export?)`);
+    }
+  }
+
+  // dead import: no requires gate in the chapter reads the carried flag.
+  chapters.forEach(({ decl, ep }, i) => {
+    if (!ep || !ep.nodes) return;
+    const readFlags = new Set();
+    for (const node of Object.values(ep.nodes)) {
+      for (const c of (node.choices || [])) {
+        if (c.requires && c.requires.flag) readFlags.add(c.requires.flag);
+        if (c.requires && c.requires.notFlag) readFlags.add(c.requires.notFlag);
+      }
+    }
+    for (const f of (Array.isArray(decl.imports) ? decl.imports : [])) {
+      if (!readFlags.has(f)) W(`chapter ${i + 1}: import "${f}" is never read by any gate in the chapter (dead import?)`);
+    }
+  });
+
   return { errors, warnings };
 }

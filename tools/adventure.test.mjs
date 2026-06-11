@@ -121,5 +121,30 @@ function pack(decls, eps) { return decls.map((decl, i) => ({ decl, ep: eps[i] })
   check("imports: prior_end_<real ending> accepted", !hasErr(r3, "prior_end_out"), r3.errors.join("; "));
 }
 
+// --- solver-backed: an export that can never be set at any reachable ending ---
+{
+  const decls = [{ file: "a1.json", exports: ["ghost"] }, { file: "a2.json", imports: ["ghost"] }];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  const r = validateAdventure(entry, pack(decls, [chEp("a1", { setsFlag: "took" }), chEp("a2", { importGate: "ghost" })]));
+  check("exportability: unsettable export errors", hasErr(r, '"ghost"'), r.errors.join("; "));
+}
+
+// --- warns: dead export (nothing downstream reads it) ---
+{
+  const decls = [{ file: "a1.json", exports: ["took"] }, { file: "a2.json" }];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  const r = validateAdventure(entry, pack(decls, [chEp("a1", { setsFlag: "took" }), chEp("a2")]));
+  check("warns: dead export", hasWarn(r, 'export "took"'), r.warnings.join("; "));
+  check("warns: dead export is not an error", r.errors.length === 0, r.errors.join("; "));
+}
+
+// --- warns: dead import (no gate in the chapter reads it) ---
+{
+  const decls = [{ file: "a1.json", exports: ["took"] }, { file: "a2.json", imports: ["took"] }];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  const r = validateAdventure(entry, pack(decls, [chEp("a1", { setsFlag: "took" }), chEp("a2")]));
+  check("warns: dead import", hasWarn(r, 'import "took"'), r.warnings.join("; "));
+}
+
 console.log(`\n${failed ? C.red : C.green}adventure: ${passed} passed, ${failed} failed${C.reset}\n`);
 process.exit(failed ? 1 : 0);
