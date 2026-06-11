@@ -17,5 +17,6 @@
   "seal": "EVA seal",
   "isolation-key": "master isolation key",
   "cartridge": "packet cartridge",
-  "sled": "log sled"
+  "sled": "log sled",
+  "bleedkey": "bleed valve key"
 }

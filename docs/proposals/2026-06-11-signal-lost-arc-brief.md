@@ -200,7 +200,9 @@ report exists in the system), `kept_the_log` (the physical backup survives),
 ## Chapter 3 -- RETRACTION (tycho-retraction, played last, chronological origin)
 
 unlock: `{ "type": "escape" }`. imports: `heard_the_seams`, `anomaly_filed`,
-`prior_escape`.
+`kept_the_log`, `answered_it` -- ALL FOUR of chapter 2's exports bind here, so the
+finished contract has zero dead carryover. (`prior_escape` dropped arc-wide: with
+escape-type unlocks it is always true and can gate nothing meaningfully.)
 
 spec: `{ "size": "short", "punishment": "gentle", "escape": "required", "traces": "absent" }`
 character: junior relay technician, 22, first solo posting, eight months out of
@@ -243,6 +245,13 @@ Import-gated optional beats:
   half-beat late -- ordinary comms hardware; the player hears the first seam.
 - `anomaly_filed`: the ops binder holds a blank anomaly-report template; she flips past
   it. The only report that will ever matter is filed twenty years from now, by her.
+- `kept_the_log`: in the archive rack, a fresh log sled sits factory-wrapped in its
+  cradle. She logs it as spare stock and moves on. The player carried that sled out of
+  the station twenty years from now, full of the proof.
+- `answered_it`: the SOS protocol requires a voice authentication tag -- STATE YOUR
+  NAME FOR THE RECORD. She says it, plainly, into the board one door forward of the
+  speakers. The player who answered the thing in chapter 2 is hearing the original of
+  the sample it said back to her perfectly.
 
 Sanity economy: forced ~20-25; 1 medgel. Gentle -- the chapter's weight is dramatic
 irony, not attrition.
@@ -256,18 +265,19 @@ irony, not attrition.
   "byline": "Relay station Tycho-4. The distress call is in your own voice.",
   "chapters": [
     { "file": "tycho-delivery.json",
-      "exports": ["read_the_address", "partial_handshake", "heard_it_refined", "pulled_the_packet"] },
+      "exports": ["read_the_address", "partial_handshake"] },
     { "file": "tycho-migration.json", "unlock": { "type": "escape" },
-      "imports": ["read_the_address", "partial_handshake", "prior_escape"],
+      "imports": ["read_the_address", "partial_handshake"],
       "exports": ["heard_the_seams", "anomaly_filed", "kept_the_log", "answered_it"] },
     { "file": "tycho-retraction.json", "unlock": { "type": "escape" },
-      "imports": ["heard_the_seams", "anomaly_filed", "prior_escape"] }
+      "imports": ["heard_the_seams", "anomaly_filed", "kept_the_log", "answered_it"] }
   ] }
 ```
 
-(`heard_it_refined`, `pulled_the_packet`, `kept_the_log`, `answered_it` are declared
-ahead of need -- chapter authoring may bind or drop them; drop unused ones before merge
-to avoid dead-export warns.)
+(Final contract, zero dead carryover: chapter 1's `heard_it_refined` and
+`pulled_the_packet` stay as in-episode flags but are dropped from the manifest exports
+-- chapter 2 is written and imports nothing from them; every remaining declared export
+is imported by the next chapter.)
 
 ## Authoring order and logistics
 
@@ -356,6 +366,47 @@ chapter's full JSON.
 - Geography/terminology added to canon: archive log bay by the door with a mirror lock (sled ejects only mid-cycle); formal channel terminal at the end of the binder shelf on ops; clearance terminal by the berth's inner hatch; first-aid tin screwed to the archive shelf, crew issue, older than her service (available to ch3).
 - Ch3 must honor: attempt counter at the 20-year mark is 7,348 ("once a cycle" is the station's own cycle, slightly under a day - do not equate to 365/year); the anomaly number is 20-1141; the ops board faces the door; the SOS's first four words stay "This is Tycho-4 - ".
 - Known pre-merge issue: `kept_the_log` and `answered_it` are not in ch3's planned imports; bind them in ch3 or drop them from the ch2 export list before the arc merges (dead-export warns until then are expected).
+
+### As-built: tycho-retraction (shipped 2026-06-11, `episodes/tycho-retraction.json`)
+
+- Validator: PASS, solvable; 10 nodes (10 reachable); best escape survives 100% (forced loss 22:
+  the call -10, the crawl/bleed -8, the retraction -4; ONE medgel, workshop kit); death ratio 67%;
+  madness not reachable (gentle does not require it). Play-time advisory (~11 min vs short's 3-8)
+  stands deliberately: node count is the hard contract, and the register beats are prose-dense.
+- Endings: `out` (escape, stamp `// QUEUE: 1` - the bookend to ch1's `// QUEUE EMPTY`),
+  `end_spike` (dead; anchor: the plant manual open to the general-issue page, the station
+  amendment two tabs further), `end_cascade` (dead; anchor: the loop trace steady at last).
+- All four imports bound, gating only optional beats: `heard_the_seams` -> `loopback` (transmit
+  loopback a half-beat late), `answered_it` -> `record` (the auth tag played back - the night's
+  whole spoken record of her name; note ch2's playback was assembled from pieces, not this clip
+  replayed, so the irony is original-vs-seamed, not original-vs-copy), `anomaly_filed` -> `rounds`
+  (blank ANOMALY REPORT template flipped past),
+  `kept_the_log` -> the sled-count choice inside `rounds` (factory-wrapped sled logged as spare
+  stock; safe to co-host with the binder beat because ch2's escape gate forces both flags
+  together). Zero-import escape holds (solver runs imports-off).
+- New canon: the sector rescue coordinator's vessel is **SRV CORMORANT** (ch1 named no vessel;
+  invented here). The crawl-hatch frame seal weeps at the lower corner, original fit, filed to
+  the wear log and never repaired. The eight-months/six-weeks reconciliation: eight-month
+  posting, stationmaster rotated out on schedule six weeks before the night, relief two boards
+  behind - she holds the watch alone. The dozen-times-a-shift word is "copy".
+- Manifest finalized: ch1 exports trimmed to `read_the_address` + `partial_handshake`; ch3 added
+  with unlock `{"type":"escape"}` and all four ch2 exports as imports. Zero dead exports, zero
+  dead imports across the contract.
+- Item: `bleedkey` = "bleed valve key" added to `engine/item-names.json`.
+- Gate sequencing (deliberate, per "After the fix" in the ch3 section above): `retraction_filed`
+  is only reachable after the bleed (rule 5 staging - a retraction filed over an open casualty is
+  the wrong act, and `end_cascade` IS the comms-first route). The bleedkey+flag gate is therefore
+  sequential by design, not the derelict-style two-independent-branch pattern.
+- Review pass (2026-06-11): escape ending de-editorialized (no "promised", no closing relay
+  verdict - the queue entry and `// QUEUE: 1` carry it); SOS body dissolves after the four words
+  (no fault/class/rate catalogue); `record` loses the persistence claim ("for as long as the call
+  is anywhere"); workshop base text made state-neutral (L13); end_cascade closes flat ("steady at
+  last. Flat."); locked close-out hint moved to her register. Cross-chapter edit to ch2
+  (`tycho-migration.json`, `speakers`): "the reading of something that has only ever seen the name
+  written down" -> "a seam down the middle of your own name" - the ch3 auth tag means the station
+  holds a correct spoken sample from day one, so written-only was a contradiction; the
+  mispronunciation is now attributed to assembly. Validator: declared chapter exports now suppress
+  the per-episode dead-flag warn (mirrors imports; adventure.mjs still checks dead exports).
 
 ## Register specimens (approved tone; redraft at authoring)
 
