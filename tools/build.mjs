@@ -23,6 +23,10 @@ for (const entry of manifest.episodes) {
     episodes.push({ locked: true, title: entry.title || "LOCKED", byline: entry.byline || "" });
     continue;
   }
+  if (entry.anomaly) {
+    episodes.push({ anomaly: true, title: entry.title || "ANOMALY", byline: entry.byline || "" });
+    continue;
+  }
   const ep = JSON.parse(readFileSync(join(EP_DIR, entry.file), "utf8"));
   const r = validateEpisode(ep, ep.id);
   if (!r.ok) {
@@ -69,7 +73,7 @@ html = html.replace("<!--__AUDIO__-->", () => `<script>\n${toneSrc}\n</script>\n
 
 mkdirSync(join(ROOT, "dist"), { recursive: true });
 writeFileSync(join(ROOT, "dist", "index.html"), html);
-console.log(`\n${C.green}built dist/index.html${C.reset} ${C.dim}(${(html.length/1024).toFixed(0)} kB, ${episodes.filter(e=>!e.locked).length} playable episode(s))${C.reset}`);
+console.log(`\n${C.green}built dist/index.html${C.reset} ${C.dim}(${(html.length/1024).toFixed(0)} kB, ${episodes.filter(e=>!e.locked && !e.anomaly).length} playable episode(s))${C.reset}`);
 
 // Copy runtime assets the inlined HTML references by URL (favicon source, the iOS
 // home-screen icon, and the Open Graph card). These cannot be inlined: og:image must
