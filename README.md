@@ -79,6 +79,7 @@ repo only if a second anthology ever needs the engine.
 - **`tools/validate.mjs`** - the guardrail. A sanity-aware solver proves at least one *survivable*
   path reaches an escape, and it catches dangling pointers, orphans, dead ends, soft-locks (a
   required item/flag never obtainable), and misspelled gate keys. Exits non-zero on any error.
+- **`tools/adventure.mjs`** - the cross-chapter contract for multi-chapter adventures: unlock conditions, the bounded flag carryover, and solver-backed continuity checks across chapters.
 - **`tools/prose-lint.mjs`** - flags the mechanical tells of generated slop (non-ASCII punctuation,
   essay register, robotic cadence) so episodes read like prose, not output.
 - **`tools/build.mjs`** - validates, then inlines episodes into `engine/template.html` -> `dist/`.

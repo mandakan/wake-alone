@@ -26,6 +26,7 @@ vendor/
   tone.min.js       pinned Tone.js (see vendor/README.md); inlined at build
 tools/
   validate.mjs      node tools/validate.mjs  (the guardrail)
+  adventure.mjs     cross-chapter contract for chaptered adventures (unlock + carryover)
   build.mjs         node tools/build.mjs     (validates, then inlines -> dist/index.html)
   new.mjs           node tools/new.mjs --id x --title "..."  (valid skeleton)
   audio-bench.html  open directly: tune skein-audio constants by ear
@@ -167,6 +168,31 @@ the validator then enforces. The dials and their thresholds live in `tools/spec.
 With a `spec`, missing a hard floor is an `ERROR`. Without one, only the universal rules apply
 (solvable with at least one survivable escape, ≥2 nasty endings advised). The `author-episode`
 skill drives these dials end to end.
+
+## Adventures (chaptered episodes)
+
+The manifest may group ordered chapters into an adventure (issue #3; spec in
+`docs/superpowers/specs/2026-06-11-chaptered-adventures-design.md`):
+
+```jsonc
+{ "adventure": "arc", "title": "...", "byline": "...",
+  "chapters": [
+    { "file": "arc-one.json", "exports": ["saw_it"] },             // cap: 4 flags
+    { "file": "arc-two.json", "unlock": "any", "imports": ["saw_it", "prior_escape"] }
+  ] }
+```
+
+Each chapter is an ordinary episode that must validate standalone. Later chapters
+stay encrypted on the menu until the previous chapter's recorded completion
+satisfies their `unlock` ("any" | `{"ending": id}` | `{"type": t}` | `{"flag": f}`).
+On completion (madness included) the engine records the ending's identity and which
+declared `exports` the run set (`skein_progress_v1` in localStorage); the next
+chapter's `imports` are preset as flags, plus the reserved `prior_escape` /
+`prior_dead` / `prior_madness` / `prior_end_<nodeId>`. The hard rule: **imports may
+only gate optional beats** -- every chapter must still reach a survivable escape
+with zero imports (`tools/adventure.mjs` + the solver enforce the whole contract;
+chapter ids share one namespace with episode and adventure ids). Reverse
+chronology is the house authoring convention for adventures, not an engine rule.
 
 ## Don't
 
