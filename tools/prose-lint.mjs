@@ -214,6 +214,31 @@ export function lintProse(ep, ctx = {}) {
         }
       }
     }
+    // L13 converse: a pickup room must not keep describing its item after the take.
+    // Fires only at the acquisition site (a choice here adds the item) AND only when
+    // the solver proves the node can render with the item already in inventory --
+    // a console *asking* for an item elsewhere stays legal.
+    for (const [id, node] of Object.entries(ep.nodes)) {
+      const held = nodeItems.get(id);
+      if (held === undefined) continue;
+      const addedHere = new Set();
+      for (const c of node.choices || []) {
+        for (const it of (c.effects && c.effects.add) || []) addedHere.add(it);
+      }
+      if (!addedHere.size) continue;
+      const fields = [["text", node.text]];
+      for (const [k, v] of Object.entries(node.sanityText || {})) fields.push([`sanityText["${k}"]`, v]);
+      for (const it of addedHere) {
+        if (!held.has(it)) continue; // never re-rendered with the item in hand
+        const label = itemNames && itemNames[it];
+        const names = [...new Set([it, label, label && label.split(/\s+/).pop()].filter(Boolean))];
+        for (const [fname, raw] of fields) {
+          const plain = stripTags(raw || "");
+          const nm = names.find((n) => new RegExp(`\\b${escapeRe(n)}\\b`, "i").test(plain));
+          if (nm) warnings.push(`node "${id}": ${fname} still names "${nm}" but the player can be carrying "${it}" on a revisit -- reword so the room holds after the take (L13)`);
+        }
+      }
+    }
   }
 
   return { errors, warnings };

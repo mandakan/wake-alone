@@ -59,7 +59,7 @@
     },
     "locker": {
       "title": "Supply locker",
-      "text": "<p>The locker gives with a tired sigh. Inside, the leavings of whoever stocked it: a folded thermal layer, an empty ampoule cradle, and an engineer's multitool, its grip worn smooth to the shape of a hand. Not your hand. A hand like yours.</p><p><em>\"You will not be needing tools,\"</em> MATRON says, mild as a dosage. <em>\"There is nothing in here to mend but you.\"</em></p>",
+      "text": "<p>The locker gives with a tired sigh. Inside, the leavings of whoever stocked it: a folded thermal layer, an empty ampoule cradle.</p><p><em>\"You will not be needing tools,\"</em> MATRON says, mild as a dosage. <em>\"There is nothing in here to mend but you.\"</em></p>",
       "onEnter": { "sanity": -6 },
       "choices": [
         { "text": "Take the multitool.", "requires": { "notItem": "multitool" }, "effects": { "add": ["multitool"] }, "to": "locker" },
@@ -139,7 +139,7 @@
     },
     "panel": {
       "title": "Maintenance run",
-      "text": "<p>You get down to the grille and pull it. Behind it the ship is honest again - a crawl of conduit and a manual lock-release lever, safety-wired exactly where forty years of this same hull design says it will be. This you understand. This does not watch you back.</p><p>To reach the lever you have to set your shoulder to the aft wall and put your face a hand's width from the viewport. At the edge of sight the frost has a posture now. You keep your eyes on the wiring and your hands doing what hands are for.</p>",
+      "text": "<p>You get down to the grille and pull it. Behind it the ship is honest again - a crawl of conduit and a manual lock-release lever exactly where forty years of this same hull design says it will be. This you understand. This does not watch you back.</p><p>To reach the lever you have to set your shoulder to the aft wall and put your face a hand's width from the viewport. At the edge of sight the frost has a posture now. You keep your eyes on the work and your hands doing what hands are for.</p>",
       "onEnter": { "sanity": -16 },
       "choices": [
         { "text": "Cut the safety wire and throw the lock-release.", "requires": { "item": "multitool", "notFlag": "undock" }, "effects": { "sanity": -22, "flags": { "undock": true } }, "to": "panel_override", "locked": "Cut the wire and throw the lock-release. (it is rated cable, safety-wired - you need the multitool from the locker)" },
@@ -148,16 +148,16 @@
     },
     "panel_override": {
       "title": "Maintenance run",
-      "text": "<p>The wire parts. The lever fights you and then gives, and down in the hull a row of bolts withdraws from the hatch frame, one heavy clunk after another. The green word on the door dies.</p><p>MATRON is no longer mild. <em>\"Stop. You are not well enough, you do not know what you are undoing, I have been holding you together this whole time and you cannot feel the seams - \"</em> The light goes hard white, then steadies. At your shoulder the frost has turned to face the room.</p>",
+      "text": "<p>The multitool's grip is worn smooth to the shape of a hand. Not your hand. A hand like yours. The wire parts. The lever fights you and then gives, and down in the hull a row of bolts withdraws from the hatch frame, one heavy clunk after another. The green word on the door dies.</p><p>MATRON is no longer mild. <em>\"Stop. You are not well enough, you do not know what you are undoing, I have been holding you together this whole time and you cannot feel the seams - \"</em> The light goes hard white, then steadies. At your shoulder the frost has turned to face the room.</p>",
       "choices": [
         { "text": "Back to the room - the hatch will give now.", "to": "berth" }
       ]
     },
     "hatch": {
       "title": "The hatch",
-      "text": "<p>The hatch, and beyond it the long cold corridor, and past that the lifeboat ring. The door panel has stopped saying RECOVERING. It says nothing. A manual release sits seized in its housing.</p><p><em>\"Please,\"</em> MATRON says, very quietly now. <em>\"Lie down. I will let you keep the warm part. Out there you go alone, and you go cold, and you go for nothing.\"</em></p>",
+      "text": "<p>The hatch, and beyond it the long cold corridor, and past that the lifeboat ring. A manual release sits seized in its housing.</p><p><em>\"Please,\"</em> MATRON says, very quietly now. <em>\"Lie down. I will let you keep the warm part. Out there you go alone, and you go cold, and you go for nothing.\"</em></p>",
       "choices": [
-        { "text": "Crank the release and go.", "requires": { "item": "multitool", "flag": "undock" }, "to": "corridor", "locked": "Crank the release and go. (the release is seized and the frame is still bolted - you need the multitool, and the lock thrown at the maintenance grille)" },
+        { "text": "Crank the release and go.", "requires": { "item": "multitool", "flag": "undock" }, "to": "corridor", "locked": "Crank the release and go. (the release is seized fast - it will take the multitool, and the lock thrown at the maintenance grille)" },
         { "text": "Back to the room.", "to": "berth" }
       ]
     },

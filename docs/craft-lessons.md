@@ -307,9 +307,15 @@ requirement list ("the console will not arm without command authorisation and a 
 a diagnosis of which piece is missing - and never let a locked hint leak gated *knowledge* (VIGIL's
 "you need to know how to cross unseen" handed the player the survival technique the flag was
 guarding). L7 is this rule's first-arrival special case; this is the every-arrival rule.
-**Enforced by:** this rule + the skill's final-read + the reviewer's coherence lens. Intended
-mechanical check (not yet built): the solver tracks per-node flag/item states; flag any `sanityText`
-variant or base text naming a flag-gated fact that is reachable in both states.
+**Enforced by:** this rule + the skill's final-read + the reviewer's coherence lens, plus two
+solver-backed advisory warns in `validate` (self-tested): a pickup room whose `text`/`sanityText`
+still names an item one of its own choices adds, when the solver proves the node can re-render with
+the item already in inventory; and a re-enterable start node (anything routing back to `start`),
+which replays its wake-up prose on every return - make the start a one-shot intro feeding a
+state-neutral hub. The warns match item ids/labels only: a paraphrase ("a torch on its charging
+hook" for `flashlight`) or a flag-gated fact (a cut conduit, an opened cabinet) still needs the
+human read. House pattern for pickups: the room text describes the fixture (rack, hook, cradle,
+shelf); only the take-choice's label - which hides itself after the take - names the item.
 
 ## L14 - The escape must cost something: a forced-loss floor on the optimal route
 

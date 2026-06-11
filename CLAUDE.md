@@ -88,8 +88,10 @@ sanity clamps 0–100, sanity ≤ 0 at a non-ending point is instant madness, me
 
 And as advisory `warn`s: too few reachable `dead` endings (a horror episode should offer a
 few — see Endings below), dead choices (a `requires` that never opens), dead items/flags
-(obtained or set but never read by any gate), and a near-costless escape (L14: the optimal
-escape route should force ~20+ sanity loss, med-gel ignored — the climax must have teeth).
+(obtained or set but never read by any gate), a near-costless escape (L14: the optimal
+escape route should force ~20+ sanity loss, med-gel ignored — the climax must have teeth),
+and a re-enterable start node (L13: anything routing back to `start` replays its wake-up
+prose on every return — make the start a one-shot intro feeding a state-neutral hub).
 
 The solver is itself covered by `npm test` (fixture episodes with known verdicts). Don't weaken
 it to pass an episode; fix the episode.
@@ -99,9 +101,11 @@ from reading like generated slop. Hard `ERROR`s: non-ASCII punctuation (em-dash,
 ellipsis - the top LLM tells) and doubled dashes (stories use a single hyphen `-`; house style is
 ASCII, calibrated to `derelict`), and essay/marketing register (`delve`, `leverage`, `seamless`, ...). Advisory `warn`s: horror cliches, robotic cadence
 (uniform sentence length, repeated openers, "X, Y, and Z" triads, copy-pasted phrases, an
-over-used "the way X" simile scaffold — L15), first-person slips outside quoted speech, plus two
-solver-backed coherence checks -- a `sanityText` variant that can never display, and prose that
-says "your <item>" where the player can't hold it.
+over-used "the way X" simile scaffold — L15), first-person slips outside quoted speech, plus three
+solver-backed coherence checks -- a `sanityText` variant that can never display, prose that
+says "your <item>" where the player can't hold it, and a stale pickup room (L13: a node whose
+`text`/`sanityText` still names an item its own choice adds, when the player can re-enter already
+carrying it — describe the fixture in the room text; let the self-hiding take-choice name the item).
 
 ## Creative bible (keep episodes consistent)
 

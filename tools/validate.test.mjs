@@ -25,8 +25,9 @@ const dead   = (stamp = "// DEAD") => ({ ending: { type: "dead", stamp, text: "<
 // --- fixture: clean, winnable, 2 dead endings, no dead items/flags ---
 {
   const ep = {
-    id: "clean", title: "CLEAN", start: "hub", startSanity: 100,
+    id: "clean", title: "CLEAN", start: "intro", startSanity: 100,
     nodes: {
+      intro: { text: "<p>w</p>", choices: [{ text: "take stock", to: "hub" }] }, // one-shot wake (nothing routes back) -- L13
       hub: { text: "<p>h</p>", choices: [
         { text: "open door", to: "exit", requires: { item: "key" }, locked: "locked" },
         { text: "search closet", to: "closet" },
@@ -42,6 +43,51 @@ const dead   = (stamp = "// DEAD") => ({ ending: { type: "dead", stamp, text: "<
   check("clean: winnable", r.report.winnable === true);
   check("clean: 2 dead endings", r.report.deadEndings === 2, `got ${r.report?.deadEndings}`);
   check("clean: no warnings", r.warnings.length === 0, r.warnings.join("; "));
+}
+
+// --- fixture: L13 stale pickup room — text still names the item after the take ---
+{
+  const mk = (roomText) => ({
+    id: "stale", title: "STALE", start: "intro", startSanity: 100,
+    nodes: {
+      intro: { text: "<p>w</p>", choices: [{ text: "take stock", to: "hub" }] },
+      hub: { text: "<p>the door wants a key</p>", choices: [ // names the item but does not add it -> legal
+        { text: "open door", to: "exit", requires: { item: "key" }, locked: "locked" },
+        { text: "the side room", to: "room" },
+        { text: "jump in pit", to: "pit" },
+        { text: "touch the void", to: "void" },
+      ]},
+      room: { text: roomText, onEnter: { sanity: -25 }, choices: [
+        { text: "take the key", to: "room", requires: { notItem: "key" }, effects: { add: ["key"] } },
+        { text: "back", to: "hub" },
+      ]},
+      exit: escape(), pit: dead("// PIT"), void: dead("// VOID"),
+    },
+  });
+  const stale = validateEpisode(mk("<p>A key lies in reach on the shelf.</p>"));
+  check("stale pickup: warned", hasWarn(stale, `node "room": text still names "key"`), stale.warnings.join("; "));
+  check("stale pickup: asking-for-item node not warned", !hasWarn(stale, `node "hub": text still names`), stale.warnings.join("; "));
+  const fixed = validateEpisode(mk("<p>A shelf, swept bare at one end.</p>"));
+  check("stale pickup: state-neutral reword passes", !hasWarn(fixed, "still names"), fixed.warnings.join("; "));
+}
+
+// --- fixture: L13 re-enterable start — wake prose must not replay ---
+{
+  const ep = {
+    id: "restart", title: "RESTART", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>you wake</p>", choices: [
+        { text: "search closet", to: "closet" },
+        { text: "leave", to: "exit", requires: { item: "key" }, locked: "locked" },
+        { text: "pit", to: "pit" }, { text: "void", to: "void" },
+      ]},
+      closet: { text: "<p>c</p>", onEnter: { add: ["key"], sanity: -25 }, choices: [{ text: "back", to: "hub" }] },
+      exit: escape(), pit: dead("// PIT"), void: dead("// VOID"),
+    },
+  };
+  const r = validateEpisode(ep);
+  check("re-enterable start: warned", hasWarn(r, `start node "hub" is re-enterable`), r.warnings.join("; "));
+  check("re-enterable start: still valid (advisory)", r.ok, r.errors.join("; "));
 }
 
 // --- fixture: unwinnable — escape exists but onEnter cost forces madness first ---

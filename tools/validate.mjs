@@ -37,11 +37,11 @@ import { DIVERSITY } from "./diversity-config.mjs";
 import { checkDiversity, loadAllowlist } from "./diversity.mjs";
 import { validateAdventure } from "./adventure.mjs"; // safe cycle: only the CLI body calls it
 
-let ITEM_NAMES = {};
-try { ITEM_NAMES = JSON.parse(readFileSync(join(EPISODES_DIR, "..", "engine", "item-names.json"), "utf8")); } catch {}
-
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const EPISODES_DIR = join(ROOT, "episodes");
+
+let ITEM_NAMES = {};
+try { ITEM_NAMES = JSON.parse(readFileSync(join(ROOT, "engine", "item-names.json"), "utf8")); } catch {}
 
 const ENDING_TYPES = ["escape", "dead", "madness"];
 const REQUIRE_KEYS = ["item", "notItem", "flag", "notFlag", "sanityMin", "sanityMax"];
@@ -199,6 +199,13 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
     if (!hasRealExit) E(`node "${id}": every choice is a locked hint with no destination (trap)`);
   }
 
+  // L13: a re-enterable start node replays its wake-up / first-visit prose on
+  // every return. Route returns to a state-neutral hub and keep the waking
+  // one-shot (an intro node nothing points back at).
+  const startBackrefs = [...edges.entries()].filter(([, tos]) => tos.includes(ep.start)).map(([id]) => id);
+  if (startBackrefs.length)
+    W(`start node "${ep.start}" is re-enterable (from ${startBackrefs.join(", ")}) -- its first-visit/wake prose replays on every return; make the start a one-shot intro feeding a state-neutral hub (L13)`);
+
   // ---- structural reachability from start (ignores sanity/gates) ----
   const reached = new Set();
   const stack = ep.nodes[ep.start] ? [ep.start] : [];
@@ -349,6 +356,7 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
   }
 
   // ---- prose hygiene + state-coherence (slop linter) ----
+  if (process.env.DEBUG_NODEITEMS && solver) console.error("DEBUG", [...solver.nodeItems].map(([k, v]) => `${k}:[${[...v]}]`).join(" "));
   const prose = lintProse(ep, {
     nodeItems: solver ? solver.nodeItems : undefined,
     nodeMinSanity: solver ? solver.nodeMinSanity : undefined,

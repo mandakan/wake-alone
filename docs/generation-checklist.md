@@ -43,6 +43,11 @@ cites it.
 ## State coherence
 - Every `sanityText` variant is a complete standalone description: re-introduce what it
   names, never "again / still / since you last looked" unless provably a revisit. (L7)
+- Node text renders on EVERY visit: a pickup room describes the fixture (rack, hook,
+  cradle, shelf), and only the take-choice's self-hiding label names the item; never
+  assert a mutable fact (item on its shelf, wire intact, panel text) that a player
+  action can falsify before a revisit. Start node is a one-shot intro nothing routes
+  back to, feeding a state-neutral hub. (L13; `validate` warns on the greppable cases)
 - Body-state pass: list every physical constraint the episode puts on the protagonist,
   then sweep all prose and choice text for any reference the constraint forbids. (L10)
 - Gated choices: ONE choice, positive `requires`, real `to`, `locked` hint. Never an

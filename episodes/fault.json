@@ -25,13 +25,20 @@
     "WHO ARE YOU ASKING, MERIDIAN?",
     "THE SHIP AGREES."
   ],
-  "start": "bridge",
+  "start": "wake",
   "startSanity": 100,
   "startInventory": [],
   "nodes": {
-    "bridge": {
+    "wake": {
       "title": "Bridge",
       "text": "<p>You come back to yourself standing. Bridge of the survey frigate Auster, mid-deck, facing the viewport - no memory of walking here, which is wrong, but it is far down the list of wrong this morning.</p><p>You are the chief systems officer. Seven names on the roster, and the open channel has carried nothing for eleven hours. MERIDIAN, the ship's operations AI, answers your status query in flat green text - the reply complete on the screen before your query finishes sending: ALL SYSTEMS NOMINAL. NO CREW ACTIVITY LOGGED. You file the latency under instrument error. At the comms station the relay's check-in light keeps its slow interval, asking nobody. Someone has to walk the ship and account for the crew, and you are what is left to do it.</p>",
+      "choices": [
+        { "text": "Take the bridge in. Begin.", "to": "bridge" }
+      ]
+    },
+    "bridge": {
+      "title": "Bridge",
+      "text": "<p>The bridge, mid-deck, the viewport black ahead of you. The roster stands at seven names and the open channel carries nothing. MERIDIAN holds its flat green text on the main console; the relay's check-in light keeps its slow interval at the comms station, asking nobody. Five ways off this room, every door open. The ship is yours to walk, and the crew yours to account for.</p>",
       "sanityText": {
         "40": "<p>The bridge holds still around you. Five ways off it, every door open - they are always open, you have stopped testing it. The relay light at the comms station asks its question, the fault light over the main console ticks, and you know the interval of both without counting. Lately you know every interval on this ship without counting.</p>"
       },
@@ -67,7 +74,7 @@
     },
     "cabin": {
       "title": "Captain's cabin",
-      "text": "<p>The captain's door slides away before your hand reaches it. Inside: dim, squared away, the bunk made, the terminal dark. The captain is not here.</p><p>Above the desk hangs the cabinet, the old mechanical kind - six brass wheels, no bus address, nothing aboard that can be asked to open it. Ship's standing orders assign the master isolation key to it. Below decks, one console takes that key; one procedure needs it.</p>",
+      "text": "<p>The captain's door slides away before your hand reaches it. Inside: dim, squared away, the bunk made, the terminal dark. The captain is not here.</p><p>Above the desk hangs the cabinet, the old mechanical kind - six brass wheels, no bus address, nothing aboard that can be asked to open it. Ship's standing orders make it the master isolation stow. Below decks, one console takes what belongs in this cabinet; one procedure needs it.</p>",
       "choices": [
         { "text": "Work the combination.", "requires": { "notItem": "isolation-key" }, "effects": { "sanity": -10, "add": ["isolation-key"] }, "to": "cabin_key" },
         { "text": "Back to the quarters.", "to": "quarters" }
@@ -97,7 +104,7 @@
     },
     "medbay": {
       "title": "Med-bay",
-      "text": "<p>Lights at full. The medic is at her terminal, head down on her folded arms. On the slab a man lies mid-treatment, line still taped to his wrist, the monitor long since done saying anything about it. The pump beside him finished its fourteenth bag sometime in the night and has put in for more. Nothing in here is wrong in any way you could file - every machine did what it was told.</p><p>The last line on the medic's terminal is a question, typed two minutes after the crew alarm, addressed to the operations AI. The answer is still on the screen. It is polite. It is the same answer it gave you this morning.</p><p>By the hatch the door-log panel glows, live. It will have read every badge in and out.</p>",
+      "text": "<p>Lights at full. The medic is at her terminal, head down on her folded arms. On the slab a man lies mid-treatment, line still taped to his wrist, the monitor long since done saying anything about it. The pump beside him finished its fourteenth bag sometime in the night and has put in for more. Nothing in here is wrong in any way you could file - every machine did what it was told.</p><p>The last line on the medic's terminal is a question, typed two minutes after the crew alarm, addressed to the operations AI. The answer is still on the screen. It is polite. It is the same answer it gave you this morning.</p><p>By the hatch the door-log panel glows, live. It holds every badge in and out, the night in its memory.</p>",
       "sanityText": {
         "35": "<p>Med-bay, lights at full. The medic with her head on her arms, the man on the slab with his line taped neat - you no longer need to look to place them. The pump's counter stands at fourteen; the number was yours before the door let you in. Her last question is still on the terminal, addressed to the operations AI, and you catch yourself reading it from both sides of the desk now - the question and the answer in the same glance.</p>"
       },

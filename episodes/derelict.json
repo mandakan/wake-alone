@@ -102,7 +102,7 @@
       "title": "Engineering",
       "text": "<p>The reactor takes up the whole aft bulkhead, a black slab, the ship's one heart. Without it: no heat, no scrubbers, no voice in the walls. A toolbox lies spilled across the deck plating.</p>",
       "sanityText": {
-        "30": "<p>A hum in here you feel in your fillings, pitched below hearing. The toolbox has spilled, and the tools point - all of them - toward the dark stretch of corridor.</p>"
+        "30": "<p>A hum in here you feel in your fillings, pitched below hearing. The toolbox has spilled, and the tools that remain point - every one of them - toward the dark stretch of corridor.</p>"
       },
       "choices": [
         { "text": "Take the hydrospanner from the toolbox.", "requires": { "notItem": "wrench" }, "effects": { "add": ["wrench"] }, "to": "engineering" },

@@ -61,7 +61,7 @@
     },
     "comms": {
       "title": "Comms array",
-      "text": "<p>The array room is a gallery of receivers, every dish on the hull feeding down to this warren of screens. Most are dead. One still scrolls a waveform, patient and slow. This is your room - you have spent nine years straining to hear a whisper from very far away. Sometime in the last few hours the listening turned the other way around.</p><p>A maintenance rack holds a row of charged power cells, the heavy kind rated to spin up a pod's drive; one sits ready in its cradle, charge bar green and steady in the gloom. The central console offers the distress protocol, one key from throwing a loop into the dark.</p>",
+      "text": "<p>The array room is a gallery of receivers, every dish on the hull feeding down to this warren of screens. Most are dead. One still scrolls a waveform, patient and slow. This is your room - you have spent nine years straining to hear a whisper from very far away. Sometime in the last few hours the listening turned the other way around.</p><p>A maintenance rack runs along the near wall, the kind rated to store drive cells for the pod - the heavy charges that spin up the cradle from cold. The central console offers the distress protocol, one key from throwing a loop into the dark.</p>",
       "choices": [
         { "text": "Lift the charged power cell from the rack.", "requires": { "notItem": "powercell" }, "effects": { "add": ["powercell"] }, "to": "comms" },
         { "text": "Key the distress protocol and broadcast a loop.", "requires": { "notFlag": "broadcast" }, "effects": { "flags": { "broadcast": true } }, "to": "end_broadcast" },
@@ -78,7 +78,7 @@
     },
     "quarters": {
       "title": "Crew quarters",
-      "text": "<p>The quarters are worse than empty - they are mid-sentence. A meal long cold in the galley, the fork laid down beside it with care.</p><p>At the far end, one of them did not go quiet. No body, but the place a body fought: a bunk frame bent outward, a panel scored deep, and on the bulkhead a line of letters scratched into the paint with something hard. A maintenance kit lies spilled beneath it, a med-gel ampoule rolled into the corner.</p>",
+      "text": "<p>The quarters are worse than empty - they are mid-sentence. A meal long cold in the galley, the fork laid down beside it with care.</p><p>At the far end, one of them did not go quiet. No body, but the place a body fought: a bunk frame bent outward, a panel scored deep, and on the bulkhead a line of letters scratched into the paint with something hard. A maintenance kit lies spilled beneath it, contents scattered.</p>",
       "choices": [
         { "text": "Take the med-gel from the spilled kit.", "requires": { "notFlag": "tookgel2" }, "effects": { "add": ["medgel"], "flags": { "tookgel2": true } }, "to": "quarters" },
         { "text": "Read the scratched warning on the bulkhead.", "requires": { "notFlag": "unseen" }, "effects": { "sanity": -16, "flags": { "unseen": true } }, "to": "quarters_warning" },
@@ -100,7 +100,7 @@
         "62": "<p>The hatch opens and the bay is already aware of it. Forty meters of bare deck, a blast door sealing the far wall, and the evac pod in its cradle a small bright promise at the far end. The air over the floor is thick the way water is thick, an attention turning toward the open hatch like a face you refuse to find. It wants your eyes. You can feel exactly where it is by how badly you want to look.</p>"
       },
       "choices": [
-        { "text": "Cross with your eyes down, slow and unlooking, the way the warning said.", "requires": { "flag": "unseen", "item": "powercell" }, "to": "cross_unseen", "locked": "Cross to the pod. (the drive needs a charged power cell from the array, and the open floor wants something from you that you do not yet understand)" },
+        { "text": "Cross with your eyes down, slow and unlooking, the way the warning said.", "requires": { "flag": "unseen", "item": "powercell" }, "to": "cross_unseen", "locked": "Cross to the pod. (the drive needs a charged cell from the rack, and the crossing itself asks more than equipment)" },
         { "text": "Cross the open floor as fast as you can to the pod.", "requires": { "notFlag": "unseen" }, "effects": { "sanity": -30 }, "to": "bay_ran" },
         { "text": "Haul the blast door open to be sure of the way out first.", "requires": { "notFlag": "openeddoor" }, "effects": { "flags": { "openeddoor": true } }, "to": "end_hatch" },
         { "text": "Back away and seal the hatch.", "to": "ring" }

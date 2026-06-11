@@ -59,7 +59,7 @@
     },
     "port": {
       "title": "The viewport",
-      "text": "<p>A port the size of your two hands, glazed. The frost on it grows from the inside, which is wrong - frost forms where the cold is, and the cold should be outside.</p><p>A clear port, a known star sighted through the scope, and you have a bearing; a bearing fixes your position; a fixed position is a real place in a real sky you can chart your way out of. It is the soundest instinct you have. On the shelf beneath the port someone laid out an EVA seal and a med-gel ampoule, square, as if for you.</p>",
+      "text": "<p>A port the size of your two hands, glazed. The frost on it grows from the inside, which is wrong - frost forms where the cold is, and the cold should be outside.</p><p>A clear port, a known star sighted through the scope, and you have a bearing; a bearing fixes your position; a fixed position is a real place in a real sky you can chart your way out of. It is the soundest instinct you have. On the shelf beneath the port two things were laid out, square, as if for you - whoever you were going to be when you arrived.</p>",
       "choices": [
         { "text": "Take the EVA seal and the med-gel from the shelf.", "requires": { "notFlag": "tookport" }, "effects": { "add": ["seal", "medgel"], "flags": { "tookport": true } }, "to": "port" },
         { "text": "Scrape the port clear and look out.", "requires": { "notFlag": "portclear" }, "effects": { "sanity": -10, "flags": { "portclear": true, "wrong": true } }, "to": "port_clear" },
@@ -76,7 +76,7 @@
     },
     "register": {
       "title": "The register",
-      "text": "<p>An alcove of records - a docking register, a manifest, a lit terminal still keeping its log. The exact thing you want. A register holds the name of the ship you arrived on and the time you came aboard, and a name and a time are proof, the cheapest and surest proof there is that a person came from somewhere and is owed a way back to it.</p><p>A field kit hangs open on the wall, its foam cut to hold a med-gel ampoule.</p>",
+      "text": "<p>An alcove of records - a docking register, a manifest, a lit terminal still keeping its log. The exact thing you want. A register holds the name of the ship you arrived on and the time you came aboard, and a name and a time are proof, the cheapest and surest proof there is that a person came from somewhere and is owed a way back to it.</p><p>A field kit hangs open on the wall, its foam cut to the shape of something small, the hollow either empty or waiting.</p>",
       "choices": [
         { "text": "Take the med-gel from the kit.", "requires": { "notFlag": "tookreg" }, "effects": { "add": ["medgel"], "flags": { "tookreg": true } }, "to": "register" },
         { "text": "Read the register for the lock code and your own arrival.", "requires": { "notFlag": "readreg" }, "effects": { "sanity": -20, "flags": { "readreg": true, "code": true, "name": true, "wrong": true } }, "to": "register_read" },

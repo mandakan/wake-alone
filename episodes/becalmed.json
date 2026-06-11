@@ -20,28 +20,28 @@
     "THE STAR NEVER KNEW YOU WERE COMING.",
     "SIT DOWN. THE WATCH IS YOURS."
   ],
-  "start": "watchroom",
+  "start": "wake",
   "startSanity": 100,
   "startInventory": ["lamp"],
   "nodes": {
+    "wake": {
+      "title": "Watch station",
+      "text": "<p>The hum is gone. That is what wakes you - not the cold. Eighteen years of watch put that sound deeper in you than your own pulse, and there is nothing now where it sat. You lift your head off the console edge and frost cracks along your sleeve.</p><p>You were asleep. You do not sleep on watch; you have not slept on watch in six years; you were asleep for nine days, and the core is cold. Anyone left aboard will have gone aft toward its last heat - you know that before you are out of the chair. You get out of the chair anyway, and the watch lamp comes off its charge point and into your hand by habit. Procedure is procedure, even now: the log first, then the key.</p>",
+      "choices": [
+        { "text": "Take stock of the station.", "to": "watchroom" }
+      ]
+    },
     "watchroom": {
       "title": "Watch station",
-      "text": "<p>The hum is gone. That is what wakes you - not the cold. Eighteen years of watch put that sound deeper in you than your own pulse, and there is nothing now where it sat. You lift your head off the console edge and frost cracks along your sleeve.</p><p>The station, by the book: board, chair, log, the key slot an arm's reach from where you sat. The board idles on its standby strip, amber and dim. The log holds your last entry with nine days of other hands beneath it. Procedure is procedure, even now: the log first, then the key.</p><p>You were asleep. You do not sleep on watch; you have not slept on watch in six years; you were asleep for nine days, and the core is cold. Anyone left aboard will have gone aft toward its last heat - you know that before you are out of the chair. You get out of the chair anyway, and the watch lamp comes off its charge point and into your hand by habit. Through the hatch, the axial corridor runs off into the dark.</p>",
+      "text": "<p>The station, by the book: board, chair, log, and the watch slot an arm's reach from where you sat. The board idles on its standby strip, amber and dim. The log holds your last entry with nine days of other hands beneath it. Through the hatch, the axial corridor runs off into the dark.</p>",
       "sanityText": {
         "35": "<p>The watch station is a box of dead readouts and your own hanging breath. The chair holds the shape of nine days pressed into it. On the board, the amber standby strip keeps up its one small lie: that there is anything left to stand watch over.</p>"
       },
       "choices": [
         { "text": "Read the entries that came after yours.", "requires": { "notFlag": "readlog" }, "effects": { "sanity": -15, "flags": { "readlog": true } }, "to": "watchroom_log" },
-        { "text": "Take the watch key from its slot.", "requires": { "notItem": "watchkey", "flag": "readlog" }, "effects": { "add": ["watchkey"] }, "to": "watchroom_key" },
+        { "text": "Take the watch key from its slot.", "requires": { "notItem": "watchkey", "flag": "readlog" }, "effects": { "add": ["watchkey"] }, "to": "watchroom" },
         { "text": "Log yourself back on watch and sit.", "requires": { "flag": "tried" }, "to": "end_watch", "locked": "(not before the log is read to its end and the start board aft has had its chance)" },
         { "text": "Step out into the axial corridor.", "to": "axis" }
-      ]
-    },
-    "watchroom_key": {
-      "title": "Watch station",
-      "text": "<p>The slot gives the key up without ceremony. One arm's reach. You cross it now, nine days late, and it costs nothing at all - that is the worst of it, how light the key sits in your glove. A thousand drills taught your hand this exact reach, and your hand did every one of them awake.</p>",
-      "choices": [
-        { "text": "Pocket the key.", "to": "watchroom" }
       ]
     },
     "watchroom_log": {
@@ -79,7 +79,7 @@
     },
     "boatdeck": {
       "title": "Boat deck",
-      "text": "<p>Sixteen drop-boats hang nose-down in their cradles, frosted to the deck. A single pass of the lamp over the launch rails is enough: rail charge comes off the main bus, the main bus comes off the core, and no boat on this deck was ever leaving without the reactor alive. The crew knew that as well as you do.</p><p>A drop-boat carries one charge of its own - a starter cell behind the service panel, enough to light the board and run the air, never to fly. It is also the one charge left aboard that a start board would answer.</p><p>Boat three's hatch stands open.</p>",
+      "text": "<p>Sixteen drop-boats hang nose-down in their cradles, frosted to the deck. A single pass of the lamp over the launch rails is enough: rail charge comes off the main bus, the main bus comes off the core, and no boat on this deck was ever leaving without the reactor alive. The crew knew that as well as you do.</p><p>Every drop-boat is built around a service well behind its panel - one small store of charge by design, enough to light a board and run the air, never to fly. It is the one kind of charge left aboard that a start board would answer.</p><p>Boat three's hatch stands open.</p>",
       "choices": [
         { "text": "Look inside boat three.", "requires": { "notFlag": "sawboat" }, "effects": { "sanity": -8, "flags": { "sawboat": true } }, "to": "boat_inside" },
         { "text": "Pull the starter cell from boat three's service panel.", "requires": { "notFlag": "pulledcell" }, "effects": { "add": ["cell"], "flags": { "pulledcell": true } }, "to": "boatdeck" },

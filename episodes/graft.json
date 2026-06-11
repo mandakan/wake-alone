@@ -34,7 +34,7 @@
     },
     "table": {
       "title": "The table",
-      "text": "<p>You take the measure of yourself by parts, because the whole is too much at once. Your right arm runs off the edge of the table and into the machine, joined at a coupling you would know in the dark - a quarter-turn lock, the kind you have freed a hundred times, except this one is freed into your wrist. Soft restraints hold the other wrist and your chest. A tray of bright tools sits within reach of your good hand.</p><p>Across the bay a cylinder stands lit from inside, and something turns in it, slow. You make yourself look away from that.</p>",
+      "text": "<p>You take the measure of yourself by parts, because the whole is too much at once. Your right arm runs off the edge of the table toward the machine, and the machine met it at a coupling you would know in the dark - a quarter-turn lock, the kind you have freed a hundred times, except this one was set into your wrist. Soft restraints hold the other wrist and your chest. A tray of bright tools sits within reach of your good hand.</p><p>Across the bay a cylinder stands lit from inside, and something turns in it, slow. You make yourself look away from that.</p>",
       "sanityText": {
         "50": "<p>The coal-light has not changed, but the room has. The folded arms above you seem less still than they were - a slow creep at the edge of them you can never quite catch in the act, and can never quite prove is only your eye. You still take yourself in by parts. The whole of it, all at once, is more than you can hold and stay steady.</p>",
         "25": "<p>You read this table now as you read a bad splice: by how it waits. The cylinder across the bay has finished turning toward you. The arms hold their note. Everything in here is patient but you.</p>"
@@ -42,7 +42,7 @@
       "choices": [
         { "text": "Work the soft restraints off your wrist and chest.", "to": "straps" },
         { "text": "The tray of tools beside you.", "to": "tray" },
-        { "text": "Follow your right arm to where it goes.", "to": "arm" },
+        { "text": "Follow your right arm to where it goes.", "requires": { "notFlag": "decoupled" }, "to": "arm" },
         { "text": "The thing folded over you.", "to": "surgeon" },
         { "text": "Get down off the table and cross to the bay.", "requires": { "flag": "decoupled" }, "to": "bay", "locked": "Get down and cross to the bay. (your arm is still seated in the machine - free the coupling first)" }
       ]
@@ -58,7 +58,7 @@
     },
     "tray": {
       "title": "Instrument tray",
-      "text": "<p>The tools are laid in a row, clean, in an order someone trusted. Most of them you have no names for and do not want them. One you do: a self-locking clamp, jaws and a ratchet, near enough to a driver to turn a quarter-turn lock. Your good hand closes on it like meeting someone you know.</p><p>Past the tray, where the row of tools points, a frame stands in you, holding you open. You do not look at it long. Looking does not help, and it is not, you understand, yours to mend.</p>",
+      "text": "<p>The tools are laid in a row, clean, in an order someone trusted. Most of them you have no names for and do not want them. One shape you knew the moment you saw it - jaws and a ratchet, self-locking, near enough to a driver to turn a quarter-turn lock. Your good hand had it like meeting someone you know.</p><p>Past the tray, where the row of tools points, a frame stands in you, holding you open. You do not look at it long. Looking does not help, and it is not, you understand, yours to mend.</p>",
       "onEnter": { "sanity": -10 },
       "choices": [
         { "text": "Take the self-locking clamp.", "requires": { "notItem": "clamp" }, "effects": { "add": ["clamp"] }, "to": "tray" },
@@ -127,7 +127,7 @@
     },
     "supply": {
       "title": "Supply locker",
-      "text": "<p>The locker is ship-standard and opens with a ship-standard sigh, and inside it is the most ordinary thing you have seen since you woke: a field cautery, a sealer, the kind you have used to close a torn coolant line one-handed while the other hand held the rig. It will close a wound the way it closes a line - badly, and enough. Beside it, one med-gel ampoule in its cradle.</p>",
+      "text": "<p>The locker is ship-standard and opens with a ship-standard sigh. Inside, the most ordinary fitting you have seen since you woke: a cradle shaped to a field cautery, the kind you have run one-handed to close a torn coolant line while the other hand held the rig. A tool like that closes a wound the way it closes a line - badly, and enough. A second cradle is sized for a med-gel charge.</p>",
       "choices": [
         { "text": "Take the cautery sealer.", "requires": { "notItem": "sealer" }, "effects": { "add": ["sealer"] }, "to": "supply" },
         { "text": "Take the med-gel ampoule.", "requires": { "notFlag": "kit" }, "effects": { "add": ["medgel"], "flags": { "kit": true } }, "to": "supply" },
@@ -154,7 +154,7 @@
     },
     "rest": {
       "title": "The table",
-      "text": "<p>You lie back. You only mean to rest the legs. The table takes your weight without being asked - it was shaped for it - and the cold tension settles back into its place in you, familiar already, and the lens above you warms. All the machine needs is charge and your stillness. That is the whole of the offer: do nothing, be finished, and never get up into the cold again.</p>",
+      "text": "<p>You lie back. You only mean to rest the legs. The table takes your weight without being asked - it was shaped for it - and its old patience settles over you, familiar already, and the lens above you warms. All the machine needs is charge and your stillness. That is the whole of the offer: do nothing, be finished, and never get up into the cold again.</p>",
       "onEnter": { "sanity": -10 },
       "choices": [
         { "text": "Stay. Do nothing. Let the charge top.", "requires": { "notItem": "powercell" }, "to": "end_resume", "locked": "Stay. Do nothing. Let the charge top. (it cannot top - the cell that feeds it is in your fist)" },

@@ -19,14 +19,21 @@
     "COUNT THE TRAYS. COUNT AGAIN.",
     "IT IS ALREADY ABOARD."
   ],
-  "start": "galley",
+  "start": "wake",
   "startSanity": 100,
   "startInventory": [],
-  "spec": { "size": "standard", "punishment": "gentle" },
+  "spec": { "size": "long", "punishment": "gentle" },
   "nodes": {
+    "wake": {
+      "title": "Galley",
+      "text": "<p>You surface from a sleep you don't remember choosing, cheek stuck to a galley table. Eleven trays. Steam still rises off the nearest one - a spoon laid down mid-bite, a cup with the ring of it still wet.</p><p>No one is at the table. No one answers. You signed on at the last dock - cargo engineer, here for the load, not the company - and all you want is one voice answering back.</p>",
+      "choices": [
+        { "text": "Sit up, and take in the room.", "to": "galley" }
+      ]
+    },
     "galley": {
       "title": "Galley",
-      "text": "<p>You surface from a sleep you don't remember choosing, cheek stuck to a galley table. Eleven trays. Steam still rises off the nearest one - a spoon laid down mid-bite, a cup with the ring of it still wet.</p><p>No one is at the table. No one answers. You signed on at the last dock - cargo engineer, here for the load, not the company - and all you want is one voice answering back. A single work glove lies on the deck by the hatch, palm up, fingers half-curled, set down by someone who meant to come straight back.</p>",
+      "text": "<p>Eleven trays down the table, the nearest still warm to the back of your hand, a spoon set down mid-bite, a cup ringed wet. The chairs are pushed out and empty. A single work glove lies on the deck by the hatch, palm up, fingers half-curled, set down by someone who meant to come straight back.</p>",
       "choices": [
         { "text": "Pick up the glove.", "requires": { "notFlag": "glove" }, "effects": { "sanity": -8, "flags": { "glove": true } }, "to": "galley_glove" },
         { "text": "Check the galley's wall-mounted first-aid station.", "requires": { "notFlag": "aidg" }, "effects": { "add": ["medgel"], "flags": { "aidg": true } }, "to": "galley" },
@@ -57,9 +64,9 @@
     },
     "quarters": {
       "title": "Crew quarters",
-      "text": "<p>Six bunks, blankets thrown back, the warm hollows of people who got up and never lay down again. A music player on a shelf has run off the end of its track and hisses static at the empty room. A personnel locker hangs open beside the nearest bunk: a photo of a coast taped inside the door, a shuttle access chip on a lanyard.</p>",
+      "text": "<p>Six bunks, blankets thrown back, the warm hollows of people who got up and never lay down again. A music player on a shelf has run off the end of its track and hisses static at the empty room. A personnel locker hangs open beside the nearest bunk: a photo of a coast taped inside the door, a lanyard hook below it where the crew kept their access to the shuttle.</p>",
       "sanityText": {
-        "40": "<p>Six bunks. The hollows in the blankets are the right shape for sleepers and too deep for sleep, pressed down by a weight that stayed long after a body's warmth would have faded. The music player hisses; under the hiss, if you let yourself, you can hear it keeping time with your breathing. The personnel locker beside the nearest bunk hangs open: a photo of a coast, an access chip on a lanyard, laid out the way bait is laid out.</p>"
+        "40": "<p>Six bunks. The hollows in the blankets are the right shape for sleepers and too deep for sleep, pressed down by a weight that stayed long after a body's warmth would have faded. The music player hisses; under the hiss, if you let yourself, you can hear it keeping time with your breathing. The personnel locker beside the nearest bunk hangs open: a photo of a coast, a lanyard hook below it, the whole arrangement laid out the way bait is laid out.</p>"
       },
       "choices": [
         { "text": "Lift the access chip from the locker.", "requires": { "notFlag": "tookchip" }, "effects": { "sanity": -12, "add": ["chip"], "flags": { "tookchip": true } }, "to": "quarters_chip" },
@@ -83,7 +90,7 @@
     },
     "hold": {
       "title": "Cargo hold",
-      "text": "<p>The hold is containers stacked six high, the top tiers lost where the lights give out. This part you understand: the load plan, the lashings, the cold vent breathing down the stacks to pool at your ankles. Most are sealed; a few have cracked and spilled packing foam across the deck. A maintenance station is bolted to the bulkhead - tool rack, first-aid box, a torch on its charging hook. Off in the dark, one open container is dripping.</p>",
+      "text": "<p>The hold is containers stacked six high, the top tiers lost where the lights give out. This part you understand: the load plan, the lashings, the cold vent breathing down the stacks to pool at your ankles. Most are sealed; a few have cracked and spilled packing foam across the deck. A maintenance station is bolted to the bulkhead - tool rack, first-aid box, a charging hook on the wall for the hand-light it docks. Off in the dark, one open container is dripping.</p>",
       "sanityText": {
         "40": "<p>The containers climb into a dark the lights don't reach, and they are stowed wrong now - leaning inward, the way trees lean over a path that wants you to keep walking. Foam drifts down through the cold. You tell yourself it is foam. The hold keeps not agreeing.</p>"
       },
@@ -114,7 +121,7 @@
     },
     "engine": {
       "title": "Engine room",
-      "text": "<p>The drive is a wall of warm steel that ticks as it idles. You find the clamp junction without looking for it - a fat conduit running aft off the bus, feeding lock-power to the docking cradle. While it carries current the cradle stays shut, and no shuttle leaves the Amaranth. A diagnostic screen scrolls green. Everything nominal. Nobody home.</p>",
+      "text": "<p>The drive is a wall of warm steel that ticks as it idles. You find the clamp junction without looking for it - a fat conduit running aft off the bus toward the docking cradle. You know the circuit by heart: lock-power down that run holds the cradle shut, and a shut cradle lets no shuttle leave the Amaranth. A diagnostic screen scrolls green. Everything nominal. Nobody home.</p>",
       "sanityText": {
         "40": "<p>The drive ticks like something swallowing. A fat conduit runs along the wall toward the docking cradle, and you do not like looking at it - it has the full, fed look of a thing that has carried something thicker than lock-power down toward the bay. The diagnostic screen scrolls green. Everything nominal. The word has stopped meaning anything.</p>"
       },
