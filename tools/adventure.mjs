@@ -48,6 +48,7 @@ export function validateAdventure(entry, chapters) {
   if (typeof entry.title !== "string" || !entry.title) E(`missing "title"`);
   const decls = Array.isArray(entry.chapters) ? entry.chapters : [];
   if (decls.length < 2) { E(`needs at least 2 chapters (got ${decls.length})`); return { errors, warnings }; }
+  if (chapters.length !== decls.length) { E(`internal: ${chapters.length} packed chapters for ${decls.length} declarations`); return { errors, warnings }; }
 
   // per-chapter shape
   chapters.forEach(({ decl, ep }, i) => {
@@ -63,22 +64,29 @@ export function validateAdventure(entry, chapters) {
     else {
       if (exports.length > EXPORT_CAP) E(`${ch}: ${exports.length} exports exceed the cap of ${EXPORT_CAP} -- the carry set stays small so authoring and validation stay tractable`);
       exports.forEach((f) => { if (f.startsWith("prior_")) E(`${ch}: export "${f}" uses the reserved prior_ namespace (the engine derives those)`); });
+      const dupes = exports.filter((f, idx) => exports.indexOf(f) !== idx);
+      if (dupes.length) W(`${ch}: duplicate export(s) ${[...new Set(dupes)].map((f) => `"${f}"`).join(", ")}`);
     }
     const imports = decl.imports ?? [];
     if (!Array.isArray(imports) || imports.some((f) => typeof f !== "string")) E(`${ch}: "imports" must be an array of flag names`);
   });
 
+  // normalized views: the shape checks above report malformed declarations; every
+  // later phase works on the string-only view so one stray element cannot crash it.
+  const expOf = (decl) => (Array.isArray(decl.exports) ? decl.exports.filter((f) => typeof f === "string") : []);
+  const impOf = (decl) => (Array.isArray(decl.imports) ? decl.imports.filter((f) => typeof f === "string") : []);
+
   // cross-chapter contract (only meaningful where both sides parsed)
   const solved = chapters.map(({ decl, ep }) => {
     if (!ep || !ep.nodes || !ep.nodes[ep.start]) return null;
-    try { return solve(ep, true, Array.isArray(decl.imports) ? decl.imports : []); } catch { return null; }
+    try { return solve(ep, true, impOf(decl)); } catch { return null; }
   });
 
   for (let i = 1; i < chapters.length; i++) {
     const ch = `chapter ${i + 1}`;
     const prev = chapters[i - 1];
     const prevSolve = solved[i - 1];
-    const prevExports = Array.isArray(prev.decl.exports) ? prev.decl.exports : [];
+    const prevExports = expOf(prev.decl);
     const prevEndings = prev.ep ? Object.keys(prev.ep.nodes || {}).filter((n) => prev.ep.nodes[n].ending) : [];
     const reachableEndings = prevSolve ? new Set(prevSolve.endingFlags.keys()) : null;
 
@@ -90,7 +98,7 @@ export function validateAdventure(entry, chapters) {
       return true;
     };
 
-    for (const f of (Array.isArray(chapters[i].decl.imports) ? chapters[i].decl.imports : [])) {
+    for (const f of impOf(chapters[i].decl)) {
       if (PRIOR_FIXED.includes(f)) continue;
       if (f.startsWith("prior_end_")) { okPriorEnd(f); continue; }
       if (!prevExports.includes(f)) E(`${ch}: import "${f}" is not exported by the previous chapter (exports: ${prevExports.join(", ") || "none"})`);
@@ -102,8 +110,16 @@ export function validateAdventure(entry, chapters) {
         if (!prevEndings.includes(u.value)) E(`${ch}: unlock ending "${u.value}" is not an ending node of the previous chapter`);
         else if (reachableEndings && !reachableEndings.has(u.value)) E(`${ch}: unlock ending "${u.value}" is never reachable in the previous chapter`);
       }
-      if (u.kind === "type" && u.value === "escape" && prev.ep && prev.ep.spec && prev.ep.spec.escape === "forbidden")
-        E(`${ch}: unlock {"type":"escape"} after a chapter declared spec.escape="forbidden" can never fire`);
+      if (u.kind === "type") {
+        if (u.value === "escape" && prev.ep && prev.ep.spec && prev.ep.spec.escape === "forbidden")
+          E(`${ch}: unlock {"type":"escape"} after a chapter declared spec.escape="forbidden" can never fire`);
+        else if (prevSolve && !prevSolve.truncated) {
+          const reachable = u.value === "escape" ? prevSolve.winnable
+            : u.value === "dead" ? prevSolve.deadEndings.size > 0
+            : prevSolve.madnessReachable;
+          if (!reachable) E(`${ch}: unlock {"type":"${u.value}"} can never fire -- the previous chapter never reaches a ${u.value} ending`);
+        }
+      }
       if (u.kind === "flag" && !prevExports.includes(u.value))
         E(`${ch}: unlock flag "${u.value}" is not in the previous chapter's exports`);
     }
@@ -117,7 +133,7 @@ export function validateAdventure(entry, chapters) {
     if (!s || s.truncated) return;
     const exportable = new Set(s.madnessFlags);
     for (const set of s.endingFlags.values()) for (const f of set) exportable.add(f);
-    for (const f of (Array.isArray(decl.exports) ? decl.exports : [])) {
+    for (const f of expOf(decl)) {
       if (!f.startsWith("prior_") && !exportable.has(f))
         E(`chapter ${i + 1}: export "${f}" can never be set when any reachable ending is recorded`);
     }
@@ -126,9 +142,9 @@ export function validateAdventure(entry, chapters) {
   // dead export: nothing downstream (next chapter's imports or unlock flag) reads it.
   for (let i = 0; i < chapters.length; i++) {
     const next = chapters[i + 1];
-    const nextImports = next && Array.isArray(next.decl.imports) ? next.decl.imports : [];
+    const nextImports = next ? impOf(next.decl) : [];
     const nextUnlock = next ? parseUnlock(next.decl.unlock) : null;
-    for (const f of (Array.isArray(chapters[i].decl.exports) ? chapters[i].decl.exports : [])) {
+    for (const f of expOf(chapters[i].decl)) {
       const read = nextImports.includes(f) || (nextUnlock && nextUnlock.kind === "flag" && nextUnlock.value === f);
       if (!read) W(`chapter ${i + 1}: export "${f}" is never imported or read by an unlock downstream (dead export?)`);
     }
@@ -144,7 +160,7 @@ export function validateAdventure(entry, chapters) {
         if (c.requires && c.requires.notFlag) readFlags.add(c.requires.notFlag);
       }
     }
-    for (const f of (Array.isArray(decl.imports) ? decl.imports : [])) {
+    for (const f of impOf(decl)) {
       if (!readFlags.has(f)) W(`chapter ${i + 1}: import "${f}" is never read by any gate in the chapter (dead import?)`);
     }
   });

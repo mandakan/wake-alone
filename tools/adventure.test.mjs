@@ -146,5 +146,71 @@ function pack(decls, eps) { return decls.map((decl, i) => ({ decl, ep: eps[i] })
   check("warns: dead import", hasWarn(r, 'import "took"'), r.warnings.join("; "));
 }
 
+// --- malformed elements must report, not crash ---
+{
+  const decls = [{ file: "a1.json", exports: ["took", 5] }, { file: "a2.json", imports: [7] }];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  let r = null, threw = false;
+  try { r = validateAdventure(entry, pack(decls, [chEp("a1", { setsFlag: "took" }), chEp("a2")])); } catch { threw = true; }
+  check("malformed: does not throw", !threw);
+  check("malformed: exports shape error reported", r && hasErr(r, '"exports" must be an array of flag names'));
+  check("malformed: imports shape error reported", r && hasErr(r, '"imports" must be an array of flag names'));
+}
+
+// --- three chapters: the carry window is exactly one chapter ---
+{
+  const decls = [
+    { file: "a1.json", exports: ["took"] },
+    { file: "a2.json", imports: ["took"] },
+    { file: "a3.json", imports: ["took"] },
+  ];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  const eps = [chEp("a1", { setsFlag: "took" }), chEp("a2", { importGate: "took" }), chEp("a3", { importGate: "took" })];
+  const r = validateAdventure(entry, pack(decls, eps));
+  check("window: chapter 3 cannot import what only chapter 1 exported", hasErr(r, 'chapter 3') && hasErr(r, '"took"'), r.errors.join("; "));
+}
+
+// --- exportability: a flag set only on the way into a madness collapse counts ---
+{
+  const madEp = {
+    id: "m1", title: "M1", start: "hub", startSanity: 10,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "take the token and stare", to: "stare" },
+        { text: "out", to: "out" },
+      ]},
+      stare: { text: "<p>s</p>", onEnter: { flags: { token: true } }, choices: [
+        { text: "deeper", to: "hub", effects: { sanity: -50 } },
+      ]},
+      out: { ending: { type: "escape", stamp: "// OUT", text: "<p>o</p>" } },
+    },
+  };
+  const decls = [{ file: "m1.json", exports: ["token"] }, { file: "a2.json", imports: ["token"] }];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  const r = validateAdventure(entry, pack(decls, [madEp, chEp("a2", { importGate: "token" })]));
+  check("exportability: madness-only flag is exportable", !hasErr(r, '"token"'), r.errors.join("; "));
+}
+
+// --- unlock {type} reachability ---
+{
+  const decls = [{ file: "a1.json" }, { file: "a2.json", unlock: { type: "madness" } }];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  const r = validateAdventure(entry, pack(decls, [chEp("a1"), chEp("a2")]));
+  check("unlock-type: unreachable madness unlock errors", hasErr(r, 'never reaches a madness ending'), r.errors.join("; "));
+
+  const decls2 = [{ file: "a1.json" }, { file: "a2.json", unlock: { type: "dead" } }];
+  const e2 = { adventure: "arc", title: "ARC", chapters: decls2 };
+  const r2 = validateAdventure(e2, pack(decls2, [chEp("a1"), chEp("a2")]));
+  check("unlock-type: reachable dead unlock accepted", !hasErr(r2, "never reaches"), r2.errors.join("; "));
+}
+
+// --- duplicate exports warn ---
+{
+  const decls = [{ file: "a1.json", exports: ["took", "took"] }, { file: "a2.json", imports: ["took"] }];
+  const entry = { adventure: "arc", title: "ARC", chapters: decls };
+  const r = validateAdventure(entry, pack(decls, [chEp("a1", { setsFlag: "took" }), chEp("a2", { importGate: "took" })]));
+  check("dupes: duplicate export warns", hasWarn(r, "duplicate export"), r.warnings.join("; "));
+}
+
 console.log(`\n${failed ? C.red : C.green}adventure: ${passed} passed, ${failed} failed${C.reset}\n`);
 process.exit(failed ? 1 : 0);
