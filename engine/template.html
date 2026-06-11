@@ -485,6 +485,7 @@ function meets(req){
   return true;
 }
 function startEpisode(ep){
+  stopAnomalyChurn();
   episode=ep;
   state={ sanity: ep.startSanity??100, inventory:[...(ep.startInventory||[])], flags:{}, entered:{}, current: ep.start };
   html.classList.remove("crush","madness");
@@ -587,6 +588,23 @@ function fillAnomaly(card,heavy){
   if(b) b.textContent=anomNoise(card.dataset.baseNoise||"",heavy);
 }
 function fillAllAnomalies(heavy){ root.querySelectorAll(".epcard.anomaly").forEach(c=>fillAnomaly(c,heavy)); }
+let anomTimer=null;
+function startAnomalyChurn(){
+  stopAnomalyChurn();
+  fillAllAnomalies(false);              // initial corrupted state (also the static state under REDUCED)
+  if(REDUCED) return;                   // reduced-motion: corrupt once, never animate
+  anomTimer=setInterval(()=>fillAllAnomalies(false), 2500);
+}
+function stopAnomalyChurn(){ if(anomTimer){ clearInterval(anomTimer); anomTimer=null; } }
+/* Click does not navigate: a short intensified garble burst that settles, plus a
+   denied blip. Under reduced-motion, a single static re-garble (no animation). */
+function anomalyFlinch(card){
+  if(card.dataset.flinching) return;          // ignore re-clicks until the burst settles
+  if(AUDIO) AUDIO.blip("punct");
+  if(REDUCED){ fillAnomaly(card,true); return; }
+  card.dataset.flinching="1";
+  let n=0; const burst=setInterval(()=>{ fillAnomaly(card,true); if(++n>=6){ clearInterval(burst); fillAnomaly(card,false); delete card.dataset.flinching; } }, 70);
+}
 function badValue(v,tier){
   const r=Math.random();
   if(r<0.22) return "??%";
@@ -807,6 +825,7 @@ function titleScreen(){
     <div class="eplist${typing?" eplist-hidden":""}">${cards}</div></div>` + footer();
   scrollTop(false);
   if(typing) typeSubtitle(sub);
+  startAnomalyChurn();
 }
 /* One-time tagline type-out on the first menu after boot: char-by-char with
    telemetry blips (silent on spaces, lower on punctuation), episode cards held
