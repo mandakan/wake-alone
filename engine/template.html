@@ -855,6 +855,13 @@ function titleScreen(){
       <div class="epn"></div><div class="ept"></div><div class="epb"></div></div>`;
     epNo++;
     const n = "EP " + String(epNo).padStart(2,"0");
+    if(ep.adventure){
+      const prog=loadProgress()[ep.id]||{};
+      const done=ep.chapters.filter(c=>prog[c.id]).length;
+      return `<div class="epcard" data-ep="${esc(ep.id)}" onclick="location.hash=this.dataset.ep">
+        <div class="epn">${n} // MULTIPART // ${done}/${ep.chapters.length} RECOVERED</div>
+        <div class="ept">${ep.title}</div><div class="epb">${ep.byline||""}</div></div>`;
+    }
     if(ep.locked) return `<div class="epcard locked"><div class="epn">${n} // ENCRYPTED</div>
       <div class="ept">[ ${ep.title} ]</div><div class="epb">${ep.byline||""}</div></div>`;
     const o = scars[ep.id];
@@ -872,6 +879,44 @@ function titleScreen(){
   scrollTop(false);
   if(typing) typeSubtitle(sub);
   startAnomalyChurn();
+}
+/* Chapter-select screen for one adventure: chapter 1 always open, later chapters
+   encrypted until the previous chapter's recorded completion satisfies their
+   unlock. Reuses the locked-card styling; PURGE RECORD is a two-step confirm. */
+function adventureScreen(adv){
+  episode=null; state=null; advCtx=null; clearWatch();
+  if(AUDIO) AUDIO.menu();
+  html.removeAttribute("data-tier"); html.classList.remove("crush","madness");
+  html.style.setProperty("--glitch","0"); html.style.setProperty("--bleed","0");
+  applyScreenFilter();
+  const scars = FEAT.scars ? loadScars() : {};
+  const prog = loadProgress()[adv.id]||{};
+  const cards = adv.chapters.map((ch,i)=>{
+    const n = "CH " + String(i+1).padStart(2,"0");
+    if(!chapterUnlocked(adv,i)) return `<div class="epcard locked"><div class="epn">${n} // ENCRYPTED</div>
+      <div class="ept">[ ${ch.title} ]</div><div class="epb">${ch.byline||""}</div></div>`;
+    const o = scars[ch.id];
+    const scar = o ? `<div class="scar scar--${o.type}">// last attempt: ${esc(o.label||"UNKNOWN")}</div>` : "";
+    return `<div class="epcard" data-ep="${esc(ch.id)}" onclick="location.hash=this.dataset.ep">
+      <div class="epn">${n}${prog[ch.id]?" // RECOVERED":""}</div><div class="ept">${ch.title}</div>
+      <div class="epb">${ch.byline||""}</div>${scar}</div>`;
+  }).join("");
+  root.innerHTML = `<div class="title-screen">
+    <div class="bigtitle glitchable glow">${adv.title}</div>
+    <div class="sub">${adv.byline||""}</div>
+    <div class="eplist">${cards}
+      <div style="margin-top:24px">
+        <button class="choice" onclick="returnToMenu()">Return to salvage menu</button>
+        <button class="choice" onclick="purgeAdventure(this,'${esc(adv.id)}')">PURGE LOCAL RECORD</button>
+      </div>
+    </div></div>` + footer();
+  scrollTop(false);
+}
+function purgeAdventure(btn, advId){
+  if(btn.dataset.armed!=="1"){ btn.dataset.armed="1"; btn.textContent="CONFIRM PURGE -- this forgets every segment"; return; }
+  try{ const p=loadProgress(); delete p[advId]; localStorage.setItem(PROG_KEY, JSON.stringify(p)); }catch(e){}
+  const adv=EPISODES.find(e=>e.adventure && e.id===advId);
+  if(adv) adventureScreen(adv);
 }
 /* One-time tagline type-out on the first menu after boot: char-by-char with
    telemetry blips (silent on spaces, lower on punctuation), episode cards held
@@ -1074,12 +1119,26 @@ function route(){
   const hash = location.hash.replace(/^#/,"").toLowerCase();
   if(hash==="lab" && labAllowed()){ if(!labOn) lab(); return; }
   if(labOn) return; // lab owns the screen on staging; never auto-leaves it
+  const adv = hash && EPISODES.find(e=> e.adventure && (e.id||"").toLowerCase()===hash);
+  if(adv){ adventureScreen(adv); return; }
+  if(hash) for(const a of EPISODES){
+    if(!a.adventure) continue;
+    const i=a.chapters.findIndex(c=> (c.id||"").toLowerCase()===hash);
+    if(i>=0){
+      if(!chapterUnlocked(a,i)){ location.hash=a.id; return; } // unmet unlock -> chapter screen
+      if(!episode || episode.id!==a.chapters[i].id) startEpisode(a.chapters[i], {adv:a, idx:i});
+      return;
+    }
+  }
   const ep = hash && EPISODES.find(e=> (e.id||"").toLowerCase()===hash && !e.locked && e.nodes);
   if(ep){ if(!episode || episode.id!==ep.id) startEpisode(ep); return; }
   // empty / unknown / locked -> menu (guarded so a duplicate empty hashchange is a no-op)
   if(episode || !root.querySelector(".title-screen")) titleScreen();
 }
-function returnToMenu(){ if(location.hash) location.hash=""; else route(); }
+function returnToMenu(){
+  if(advCtx){ const a=advCtx.adv.id; advCtx=null; location.hash=a; return; } // chapter ending -> chapter screen (the new unlock is the payoff)
+  if(location.hash) location.hash=""; else route();
+}
 window.addEventListener("hashchange", route);
 bootScreen();
 </script>
