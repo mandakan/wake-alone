@@ -484,10 +484,14 @@ function meets(req){
   if(req.notFlag && state.flags[req.notFlag]) return false;
   return true;
 }
-function startEpisode(ep){
+function startEpisode(ep, advInfo){
   stopAnomalyChurn();
-  episode=ep;
+  episode=ep; advCtx=advInfo||null;
   state={ sanity: ep.startSanity??100, inventory:[...(ep.startInventory||[])], flags:{}, entered:{}, current: ep.start };
+  if(advCtx){
+    const carried=carriedFlags(advCtx.adv, advCtx.idx);
+    if(carried) for(const f of (ep.imports||[])) if(carried.has(f)) state.flags[f]=true;
+  }
   html.classList.remove("crush","madness");
   if(AUDIO) AUDIO.wake();
   goto(ep.start); scrollTop(false);
@@ -734,7 +738,7 @@ function typewrite(el, text, speed, done){
   const id=setInterval(()=>{ i++; el.textContent=text.slice(0,i); if(i>=text.length){ clearInterval(id); done&&done(); } }, speed);
 }
 function renderEnding(end){
-  clearWatch(); recordScar(end.type, end.stamp);
+  clearWatch(); recordScar(end.type, end.stamp); recordProgress(end.type, state.current);
   setScreen(false); html.removeAttribute("data-tier"); applyScreenFilter();
   if(!FEAT.endings || REDUCED){
     if(AUDIO) AUDIO.stinger(end.type==="dead"?"dead":"reveal");
@@ -759,7 +763,7 @@ function renderEnding(end){
   }, 1600);
 }
 function renderMadness(){
-  clearWatch(); recordScar("madness","// COHERENCE LOST");
+  clearWatch(); recordScar("madness","// COHERENCE LOST"); recordProgress("madness", state.current);
   if(AUDIO){ AUDIO.setSanity(0); } // full dread under the coherence-lost screen
   html.removeAttribute("data-tier"); html.classList.add("madness");
   html.style.setProperty("--glitch","0.12"); applyScreenFilter();
@@ -798,8 +802,47 @@ function recordScar(type, stamp){
     localStorage.setItem(SCAR_KEY, JSON.stringify(s)); }catch(e){}
 }
 
+/* ---- 06 THE RECORD KEEPS: adventure progress + cross-chapter carryover.
+   skein_progress_v1: { advId: { chapterId: { type, node, flags:[...] } } }.
+   Completion (any ending, madness included) records the ending's identity and
+   which declared exports the run actually set; the next chapter imports from
+   that record. Purge clears one adventure's record only. ---- */
+const PROG_KEY="skein_progress_v1";
+let advCtx=null; // {adv, idx} while a chapter is playing; null otherwise
+function loadProgress(){ try{ return JSON.parse(localStorage.getItem(PROG_KEY)||"{}"); }catch(e){ return {}; } }
+function recordProgress(type, node){
+  if(!advCtx || !episode) return;
+  try{ const p=loadProgress();
+    (p[advCtx.adv.id]=p[advCtx.adv.id]||{})[episode.id]={ type, node,
+      flags:(episode.exports||[]).filter(f=>state && state.flags[f]) };
+    localStorage.setItem(PROG_KEY, JSON.stringify(p)); }catch(e){}
+}
+function priorRecord(adv, idx){
+  if(idx<=0) return null;
+  return (loadProgress()[adv.id]||{})[adv.chapters[idx-1].id]||null;
+}
+function carriedFlags(adv, idx){
+  const rec=priorRecord(adv, idx);
+  if(!rec) return null;
+  const set=new Set(rec.flags||[]);
+  set.add("prior_"+rec.type);
+  if(rec.node) set.add("prior_end_"+rec.node);
+  return set;
+}
+function chapterUnlocked(adv, idx){
+  if(idx===0) return true;
+  const rec=priorRecord(adv, idx);
+  if(!rec) return false;
+  const u=adv.chapters[idx].unlock;
+  if(u===undefined || u==="any") return true;
+  if(u.ending) return rec.node===u.ending;
+  if(u.type) return rec.type===u.type;
+  if(u.flag) return (rec.flags||[]).includes(u.flag);
+  return false;
+}
+
 function titleScreen(){
-  episode=null; state=null; clearWatch();
+  episode=null; state=null; advCtx=null; clearWatch();
   if(AUDIO) AUDIO.menu(); // distant calm drone: the ship is out there, even from the menu
   html.removeAttribute("data-tier"); html.classList.remove("crush","madness");
   html.style.setProperty("--glitch","0"); html.style.setProperty("--bleed","0");
