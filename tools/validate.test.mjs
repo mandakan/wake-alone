@@ -569,6 +569,26 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("carry: no dead-flag warn for the import", !hasWarn(r, '"prior_escape"'), r.warnings.join("; "));
 }
 
+// --- exports-aware validateEpisode: flags carried out are not dead here ---
+{
+  const ep = {
+    id: "carryout", title: "CO", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", onEnter: { sanity: -25, flags: { saw_it: true } }, choices: [
+        { text: "pry the hatch", to: "out" },
+        { text: "slip", to: "d1" },
+        { text: "fall", to: "d2" },
+      ]},
+      out: escape(), d1: dead("// D1"), d2: dead("// D2"),
+    },
+  };
+  const bare = validateEpisode(ep);
+  check("carryout: without exports the unread flag warns as dead", hasWarn(bare, '"saw_it"'));
+  const r = validateEpisode(ep, ep.id, { exports: ["saw_it"] });
+  check("carryout: with exports declared, no dead-flag warn", !hasWarn(r, '"saw_it"'), r.warnings.join("; "));
+  check("carryout: still ok", r.ok, r.errors.join("; "));
+}
+
 // --- baseline-solvability: an import may not gate the only escape ---
 {
   const ep = {

@@ -31,7 +31,7 @@ for (const entry of manifest.episodes) {
     const chapters = [];
     for (const ch of entry.chapters || []) {
       const ep = JSON.parse(readFileSync(join(EP_DIR, ch.file), "utf8"));
-      const r = validateEpisode(ep, ep.id, { imports: ch.imports || [] });
+      const r = validateEpisode(ep, ep.id, { imports: ch.imports || [], exports: ch.exports || [] });
       if (!r.ok) {
         hadError = true;
         console.log(`${C.red}FAIL${C.reset} ${ep.id}`);
