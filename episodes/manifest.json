@@ -39,6 +39,21 @@
     {
       "file": "fault.json",
       "locked": false
+    },
+    {
+      "anomaly": true,
+      "title": "THE RENDEZVOUS",
+      "byline": "signal degraded beyond recovery threshold"
+    },
+    {
+      "anomaly": true,
+      "title": "COLD STORAGE",
+      "byline": "checksum fault // segment unreadable"
+    },
+    {
+      "anomaly": true,
+      "title": "THE LISTENERS",
+      "byline": "archive integrity compromised"
     }
   ]
 }
