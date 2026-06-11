@@ -27,6 +27,26 @@ for (const entry of manifest.episodes) {
     episodes.push({ anomaly: true, title: entry.title || "ANOMALY", byline: entry.byline || "" });
     continue;
   }
+  if (entry.adventure) {
+    const chapters = [];
+    for (const ch of entry.chapters || []) {
+      const ep = JSON.parse(readFileSync(join(EP_DIR, ch.file), "utf8"));
+      const r = validateEpisode(ep, ep.id, { imports: ch.imports || [] });
+      if (!r.ok) {
+        hadError = true;
+        console.log(`${C.red}FAIL${C.reset} ${ep.id}`);
+        r.errors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));
+      } else {
+        console.log(`${C.green}ok${C.reset}   ${ep.id} ${C.dim}(${r.report.nodes} nodes, endings: ${r.report.endings.join("/")}, ${entry.adventure} ch${chapters.length + 1})${C.reset}`);
+        r.report.items.forEach((i) => usedItems.add(i));
+      }
+      delete ep.spec;
+      delete ep.character;
+      chapters.push({ unlock: ch.unlock, exports: ch.exports || [], imports: ch.imports || [], ...ep });
+    }
+    episodes.push({ adventure: true, id: entry.adventure, title: entry.title || "ADVENTURE", byline: entry.byline || "", chapters });
+    continue;
+  }
   const ep = JSON.parse(readFileSync(join(EP_DIR, entry.file), "utf8"));
   const r = validateEpisode(ep, ep.id);
   if (!r.ok) {
