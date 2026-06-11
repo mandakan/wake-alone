@@ -65,7 +65,7 @@ function episodeWordCount(ep) {
   return n;
 }
 
-export function validateEpisode(ep, name = ep && ep.id) {
+export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
   const errors = [];
   const warnings = [];
   const E = (m) => errors.push(m);
@@ -117,6 +117,11 @@ export function validateEpisode(ep, name = ep && ep.id) {
     collect(n.onEnter);
     (n.choices || []).forEach((c) => collect(c.effects));
   }
+
+  // flags carried in from a previous chapter (adventure contract): obtainable
+  // here without being set here. adventure.mjs verifies the other side.
+  const imports = Array.isArray(opts.imports) ? opts.imports : [];
+  imports.forEach((f) => flags.add(f));
 
   // ---- references, for dead item/flag detection ----
   const reqItems = new Set();   // items read by a gate
@@ -270,7 +275,8 @@ export function validateEpisode(ep, name = ep && ep.id) {
         if (openable && !toResolves) {
           E(`node "${id}" choice[${i}]: clickable (its requirements can be satisfied) but has no valid "to" -- the engine crashes on click. Give it a real destination, or write the locked state as the positive gate on the real choice (requires the thing + a "locked" hint), not an inverted gate with no "to".`);
         }
-        if (!solver.truncated && c.requires && reached.has(id) && !openable) {
+        const importGated = c.requires && ((c.requires.flag && imports.includes(c.requires.flag)) || (c.requires.notFlag && imports.includes(c.requires.notFlag)));
+        if (!solver.truncated && c.requires && reached.has(id) && !openable && !importGated) {
           W(`node "${id}" choice[${i}]: requires never met in any reachable state (dead choice)`);
         }
       });
@@ -334,6 +340,7 @@ export function validateEpisode(ep, name = ep && ep.id) {
     if (!reqItems.has(it) && !removedItems.has(it)) W(`item "${it}" is obtained but never required or consumed (dead item?)`);
   }
   for (const fl of flags) {
+    if (imports.includes(fl)) continue; // carried in; adventure.mjs warns about unread imports
     if (!reqFlags.has(fl)) W(`flag "${fl}" is set but never read by any gate (dead flag?)`);
   }
 

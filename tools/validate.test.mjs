@@ -546,5 +546,28 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("madflag: flag held at the madness point is recorded", r.madnessFlags.has("token"));
 }
 
+// --- imports-aware validateEpisode: carried flags are obtainable, not dead ---
+{
+  const ep = {
+    id: "carry", title: "C", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", onEnter: { sanity: -25 }, choices: [
+        { text: "remember the door code", to: "annex", requires: { flag: "prior_escape" }, locked: "you do not remember" },
+        { text: "pry the hatch", to: "out" },
+        { text: "slip", to: "d1" },
+        { text: "fall", to: "d2" },
+      ]},
+      annex: { text: "<p>a</p>", choices: [{ text: "back", to: "hub" }] },
+      out: escape(), d1: dead("// D1"), d2: dead("// D2"),
+    },
+  };
+  const bare = validateEpisode(ep);
+  check("carry: without imports the gate flag errors as never-set", hasErr(bare, 'requires flag "prior_escape"'));
+  const r = validateEpisode(ep, ep.id, { imports: ["prior_escape"] });
+  check("carry: with imports, ok", r.ok, r.errors.join("; "));
+  check("carry: no dead-choice warn for the import gate", !hasWarn(r, "choice[0]"), r.warnings.join("; "));
+  check("carry: no dead-flag warn for the import", !hasWarn(r, '"prior_escape"'), r.warnings.join("; "));
+}
+
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
 process.exit(failed ? 1 : 0);
