@@ -314,6 +314,36 @@ to canon, actual forced-loss number from the validator, and anything the next ch
 must honor. The next chapter's session reads THIS FILE ONLY -- never the prior
 chapter's full JSON.
 
+### Chapter 1 -- DELIVERY (shipped 2026-06-11, `episodes/tycho-delivery.json`)
+
+- Endings: `out` (escape), `end_complete` (dead, rule 4), `end_lockout` (dead, rule 2),
+  `end_mast` (dead, rule 1); madness reachable. 16 nodes; death ratio 75%.
+- Exports bound: all four -- `read_the_address` (archive record beat), `partial_handshake`
+  (spine junction receipt-query), `heard_it_refined` (node playback), `pulled_the_packet`
+  (extraction; also adds item `cartridge`, labeled "packet cartridge").
+- Forced loss on optimal escape: 62 (spine 8 + last stretch 10 + node entry 6 + pull 8 +
+  mast climb 14 + collar ladder 6 + deletion filing 10); best escape survives at 63%.
+- Geography added to canon: receipt-query comm panel at the spine junction; feed junction
+  box + collar ladder on the mast (array feed isolation = four quarter-turns on one bus
+  bar); decommission cradle at the docking berth; core room is one door aft of ops.
+  Deviations: branch B is 2 nodes (EVA lock + climb merged); ONE medgel only (archive),
+  not two -- review found 45-55 forced against +50 restores can never produce the
+  brief's "scraped" exit, so the med-bay gel was dropped and the deletion beat carries
+  a forced -10; med bay/crew quarters stay unvisited in ch1.
+- Ch2/ch3 must honor: the SOS's first four words are "This is Tycho-4 - " (only words
+  ever on the page); the attempt counter scale is ~11,400 over 31 years; the recipient
+  field syncs to the live personnel registry; the ops board faces the door; single
+  berth, clamp on first pass. Origin SOS: voice class, originator badge eight months
+  old, first address = sector rescue coordinator vessel, DECLARED LOST eleven months in.
+
+### As-built: tycho-delivery
+
+- Validator: PASS, solvable; 16 nodes (16 reachable); best escape survives 63% sanity in 14 steps; death ratio 75%; madness reachable.
+- Endings: `out` (escape), `end_complete` (dead), `end_lockout` (dead), `end_mast` (dead).
+- All four exports bound: `read_the_address` set at `archive` (choice to `address`); `partial_handshake` at `spine` (choice to `handshake`); `heard_it_refined` at `node_room` (choice to `node_listen`); `pulled_the_packet` at `node_room` (choice to `node_pull`).
+- Items in episode: `cartridge`, `medgel`; new label added to `engine/item-names.json`: `cartridge` = "packet cartridge" (medgel pre-existed).
+- Locations/terminology beyond the geography ledger: "Array junction box" node on the mast (feed isolation), receipt-query comm panel at the spine junction, collar ladder on the mast, decommission cradle at the docking berth.
+
 ## Register specimens (approved tone; redraft at authoring)
 
 DELIVERY, the spine corridor: "The lights come on ahead of you. Not behind - ahead.

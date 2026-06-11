@@ -1,0 +1,162 @@
+{
+  "id": "tycho-delivery",
+  "title": "DELIVERY",
+  "byline": "Relay station Tycho-4, end of service life. One ticket still open.",
+  "spec": { "size": "standard", "punishment": "cruel", "escape": "required", "traces": "forward", "sanityRegister": "wrong" },
+  "character": {
+    "role": "decommissioning administrator",
+    "expertise": ["relay administration", "routing protocol", "decommission procedure", "station architecture"],
+    "backstory": "Thirty-one years in relay service, the last decade closing stations down. Tycho-4 was her first posting: at twenty-two, eight months out of training, she filed a priority-one distress call from its board, fixed the fault, filed the retraction, and was told the matter was closed. She requested this rotation; the request form has no reason on it. Her EVA certification lapsed into renewal-by-paperwork two decades ago."
+  },
+  "watching": [
+    "HOLD POSITION FOR DELIVERY.",
+    "RECIPIENT LOCATED.",
+    "ATTEMPT 11,461.",
+    "YOU ARE THE RESOLVING ADDRESS.",
+    "ON FAILURE, REQUEUE. ON REQUEUE, ESCALATE.",
+    "DELIVERY IN PROGRESS.",
+    "SIGN FOR IT."
+  ],
+  "start": "berth",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "berth": {
+      "title": "Docking berth",
+      "text": "<p>The clamp takes your shuttle on the first pass. No hunting, no correction - as if your approach were already loaded, and maybe it was; you file everything. Still: the boarding light was green before you asked for it.</p><p>You are here to close a station. Tycho-4, relay class, end of service life. A decommission is paperwork with a pressure seal on it; you have signed off eleven. You requested this one. The request sits in your file with no reason attached, and nobody asked for one.</p><p>The receiving bay is lit before you reach for the switch. The duty board by the inner door, under STATION COMPLEMENT, already reads 1.</p>",
+      "choices": [
+        { "text": "Take the companionway up to the operations deck.", "to": "ops" }
+      ]
+    },
+    "ops": {
+      "title": "Operations deck",
+      "text": "<p>Operations keeps its old order: the big board, the binder shelf, dust cooked onto warm electronics. The decommission checklist is up on the board - power-down schedule, archive certification, final clearance - every line green except one.</p><p>TRAFFIC HELD: 1. PRIORITY ONE. STATUS: DELIVERY IN PROGRESS. And beneath it, in the small protocol type you have read your entire working life: ON FAILURE, REQUEUE. ON REQUEUE, ESCALATE.</p><p>One live packet, on a station with nobody left to want it. The delivery has a geography, and you know it cold: the node that holds the packet sits at the bottom of the lower spine; the daemon that keeps trying runs one door aft, in the core room; the mast that would carry it stands above the drum, out in the dark. Below everything, past the airlock, your shuttle is the only warm thing on the manifest.</p>",
+      "sanityText": {
+        "40": "<p>The operations board faces the door, and you stop on the threshold, because a thing that faces the door is also a thing that watches it. One line burns amber: DELIVERY IN PROGRESS. The deck has the careful quiet of a room that stopped talking when you came in. Every door off the deck stands the way doors stand when something already knows which one you will take.</p>"
+      },
+      "choices": [
+        { "text": "Go down the lower spine, toward the routing node.", "requires": { "notFlag": "pulled_the_packet" }, "to": "spine" },
+        { "text": "Suit up at the EVA lock and go out to the mast.", "requires": { "notFlag": "array_isolated" }, "to": "mast" },
+        { "text": "The archive.", "to": "archive" },
+        { "text": "The core room: pull the daemon rack at the breaker and kill the process.", "requires": { "notFlag": "pulled_the_packet" }, "to": "end_lockout" },
+        { "text": "Down to the airlock and the shuttle.", "to": "airlock" }
+      ]
+    },
+    "spine": {
+      "title": "Lower spine",
+      "text": "<p>The spine is the long walk down the station's length, conduit and rib, your bootfalls loud in it. The lights come on ahead of you. Not behind - ahead. The corridor is lit to the junction before you reach it, and at the junction the left branch is already bright, because you always took the left. Thirty-one years, and your route is still on file.</p><p>You stop walking. The left stays lit. After a moment the right goes dark, unhurried, the way a thing finishes a sentence it already knows the end of.</p><p>At the junction a comm panel sits in the rib, receipt-query class. Beyond it the last stretch runs straight to the routing node, and the air down there has the pressure of something mid-task and very nearly done.</p>",
+      "onEnter": { "sanity": -8 },
+      "choices": [
+        { "text": "Open the receipt query at the junction panel and let one delivery cycle complete at range - present, addressed, accepting nothing.", "requires": { "notFlag": "partial_handshake", "notItem": "cartridge" }, "effects": { "sanity": -12, "flags": { "partial_handshake": true } }, "to": "handshake" },
+        { "text": "Walk the last stretch to the node.", "requires": { "notFlag": "pulled_the_packet" }, "effects": { "sanity": -10 }, "to": "node_room" },
+        { "text": "Go back up to operations.", "to": "ops" }
+      ]
+    },
+    "handshake": {
+      "title": "Spine junction",
+      "text": "<p>Receipt-query, recipient-present, receipt-deferred: a loophole in delivery protocol you once drafted a memo to close. You key it open and stand where the panel can read you.</p><p>The cycle comes up the corridor like a change in pressure. Nothing arrives, but for nineteen seconds something attends to you so completely that your own heartbeat feels borrowed. The panel holds you the whole time. Then: DEFERRED. The attempt counter steps once. The lights ease.</p><p>The spine goes ordinary around you, the held-breath feeling gone out of it. One cycle, satisfied at range. It will be quiet on your way down. This once.</p>",
+      "choices": [
+        { "text": "Go down the last stretch while it is quiet.", "effects": { "sanity": -4 }, "to": "node_room" },
+        { "text": "Leave it deferred. Back up to operations.", "to": "ops" }
+      ]
+    },
+    "node_room": {
+      "title": "Routing node",
+      "text": "<p>The routing node fills the end of the spine: one rack, one console, a cartridge bay with a single slot lit. The smallest room on the station, and the only one still doing its work.</p><p>The console is awake, and it is not mid-task - it is at the end of one. The prompt has been drawn and redrawn so many cycles that a pale ghost of it is burned into the glass:</p><p>ACCEPT DELIVERY Y/N</p><p>The cursor sits after the slash. The queue monitor holds one entry: priority one, thirty-one years old, IN PROGRESS. There is a playback channel for held traffic. You know the regulation for every object in this room, and none of it explains why your mouth has gone dry.</p>",
+      "onEnter": { "sanity": -6 },
+      "sanityText": {
+        "30": "<p>The room at the bottom of the spine is small and it is arranged - rack, console, cartridge bay, all of it oriented on the one spot of floor where a person would stand, which is where you are standing. The console shows a prompt, ACCEPT DELIVERY Y/N, burned faintly into the glass from being asked so long. You are not reading the screen anymore. The screen is reading you; the cursor keeps time with your breathing.</p>"
+      },
+      "choices": [
+        { "text": "Open the playback channel and listen to the held packet - once, answering nothing.", "requires": { "notFlag": "heard_it_refined" }, "effects": { "sanity": -14, "flags": { "heard_it_refined": true } }, "to": "node_listen" },
+        { "text": "Pull the packet: physical extraction to cartridge, the entire queue out in one piece.", "requires": { "flag": "array_isolated" }, "locked": "Pull the packet: physical extraction to cartridge. (the node will not surrender live priority traffic while the external array can still carry it - the mast feed has to be isolated first)", "effects": { "sanity": -8, "add": ["cartridge"], "flags": { "pulled_the_packet": true } }, "to": "node_pull" },
+        { "text": "Key Y.", "to": "end_complete" },
+        { "text": "Back up the spine.", "to": "spine" }
+      ]
+    },
+    "node_listen": {
+      "title": "Routing node",
+      "text": "<p>You open the channel, receipt withheld, and let one cycle play.</p><p>A woman's voice. Young, level, trained - reading procedure aloud to keep her hands still. <em>\"This is Tycho-4 - \"</em> Four words. You close the channel on the fifth, and your thumb knows the cutoff; it has been waiting the whole flight out.</p><p>It is not the voice that empties you, though it is your voice, twenty-two years old and frightened in a room you can still draw from memory. It is the delivery. The playback opened on the side you happened to be facing. Its pauses landed exactly where you had just drawn breath, each one leaving the precise gap your answer would need.</p><p>The cycle waits out its allotted interval for acknowledgment. The wait is shaped like you. When it closes, without complaint: DEFERRED.</p>",
+      "choices": [
+        { "text": "Close the channel.", "to": "node_room" }
+      ]
+    },
+    "node_pull": {
+      "title": "Routing node",
+      "text": "<p>The bay takes the cartridge with a click. Transfer to archival custody: a decommissioning authority can order it, you are the decommissioning authority, and with the mast feed dead the node has no carrier left to claim. You key the order. Your hands are steady, which surprises you.</p><p>The node takes its time - protocol time, every check run twice, and one pause near the end longer than any regulation requires. Then the slot light goes white, and the cartridge comes free in your hand: thirty-one years, and it weighs almost nothing.</p><p>The console has changed. The prompt that burned itself into the glass is gone; in its place stands a single line, the queue empty beneath it: AWAITING CARRIER.</p><p>The mast feed is dead. You killed it yourself.</p>",
+      "choices": [
+        { "text": "Carry it up to operations.", "to": "ops" }
+      ]
+    },
+    "mast": {
+      "title": "EVA lock",
+      "text": "<p>Four suits still hang in the EVA lock. Your certification lapsed into renewal-by-paperwork two decades ago and your body knows it: the seals, the checks, the lock cycle all come back, but slow, in a stranger's hands. A decommission requires the external array isolated at the source. That means the mast. That means outside.</p><p>Outside is a ladder of forty rungs up the transmitter tower, above the drum of the station, and a dark that is not sky. It does not end anywhere. You climb with the running lights below and your breath loud in the helmet, and do not look at anything that is not a rung.</p><p>Near the top, the dish stands against nothing. While you watch, it moves - a degree, no more - a slow correction with no schedule behind it. Nothing you have shut down today should be steering that dish. The feed junction box is bolted to the collar: straight across the dish face, or the long way around the collar ladder, clipping in twice at every ring.</p>",
+      "onEnter": { "sanity": -14 },
+      "choices": [
+        { "text": "Cross the dish face - the short way, straight to the box.", "requires": { "notFlag": "array_isolated" }, "to": "end_mast" },
+        { "text": "Take the collar ladder around, clipped at every ring.", "requires": { "notFlag": "array_isolated" }, "effects": { "sanity": -6 }, "to": "mast_isolated" },
+        { "text": "Go back inside.", "to": "ops" }
+      ]
+    },
+    "mast_isolated": {
+      "title": "Array junction box",
+      "text": "<p>The long way takes everything your shoulders have left, but every meter of it is yours: clip, move, clip. The box opens on fasteners unchanged in thirty years. Inside, the feed is one bus bar, isolation four quarter-turns, and you have done harder things with worse hands.</p><p>You break the feed. The telltales along the dish rim die together. Under your gloves the mast goes still in a new register - not powered-down still. Pent.</p><p>In your helmet the station band ticks, once, twice: a failure being filed, a priority going up somewhere below your boots. You made the station smaller, you and the bus bar.</p>",
+      "onEnter": { "flags": { "array_isolated": true } },
+      "choices": [
+        { "text": "Climb down and go back inside.", "to": "ops" }
+      ]
+    },
+    "archive": {
+      "title": "Archive",
+      "text": "<p>The archive is the coldest room on the station and the stillest, the air kept flat for the sake of the tape. Racks to the ceiling: the station's whole paper life, waiting to be certified into the decommission cradle by the door. This is the part of the job you are good at. Paper holds still.</p><p>The final traffic summary is printed and clipped to the cradle - your own standing order, run before you docked. One held packet, priority one. Eleven thousand four hundred delivery attempts, give or take the ones made since your shuttle clamped on. First queued thirty-one years ago, under a stationmaster whose name you read twice: for eight months at the start of your career it was the name above yours on the watch bill.</p><p>A crew first-aid tin sits where one has always sat. The full delivery record - origin, routing, recipient - can be pulled to the reader.</p>",
+      "choices": [
+        { "text": "Take the ampoule from the first-aid tin.", "requires": { "notFlag": "gel_archive" }, "effects": { "add": ["medgel"], "flags": { "gel_archive": true } }, "to": "archive" },
+        { "text": "Pull the full delivery record to the reader.", "requires": { "notFlag": "read_the_address" }, "effects": { "sanity": -16, "flags": { "read_the_address": true } }, "to": "address" },
+        { "text": "Back to operations.", "to": "ops" }
+      ]
+    },
+    "address": {
+      "title": "Archive",
+      "text": "<p>The reader takes the record without complaint. Origin: priority-one distress, voice class, filed thirty-one years ago from this station's own board, originator badge eight months old. You do not need the reader to tell you whose badge.</p><p>Routing history. The first address is a vessel - the sector rescue coordinator, auto-filled per protocol, correct in every particular. Eleven months in, a flag against it: DECLARED LOST. But an address that cannot acknowledge is not an address that has refused, so: requeue. Requeue. The attempts column runs down the screen like static.</p><p>Twenty years in, the recipient field changes. It resolves. And the line it resolves to is fresh - synced to the live personnel registry, the same as any priority traffic. Your employee number. Your current certification suffix, issued with your renewal four months ago. The field has been kept current through every posting, every promotion, every change of ship - half of those updates filed, in good order, by you.</p><p>You came out here telling yourself it was to close a station. The record says PENDING. The record has your address. The address is standing in the archive, reading its own delivery slip.</p>",
+      "choices": [
+        { "text": "File the record back.", "to": "archive" }
+      ]
+    },
+    "airlock": {
+      "title": "Docking berth",
+      "text": "<p>The inner door stands open on the berth where your shuttle waits, and the outer sequence will not start. The sequencer panel gives its reason in the gray procedural type you have spent a career enforcing: DEPARTURE HELD. ACTIVE PRIORITY-ONE TRAFFIC ABOARD. ALL RELEASES DEFER TO DELIVERY.</p><p>It is correct. Nothing leaves a relay while a priority-one delivery is live and the relay can still complete it; you have cited that clause at other people your whole working life. The station is not holding you. It is holding the packet - and the packet's address is aboard.</p><p>The decommission cradle waits by the shuttle's hold, certified rack by rack, its manifest open on the last line.</p>",
+      "choices": [
+        { "text": "File the cartridge into the cradle as archived media. Close the ticket. Authorise departure.", "requires": { "item": "cartridge", "flag": "array_isolated" }, "effects": { "sanity": -10 }, "locked": "File the packet and authorise departure. (the sequencer releases nothing while the delivery is live: the packet must be physically out of the node, and the mast feed isolated so nothing can carry it again)", "to": "out" },
+        { "text": "Back up to operations.", "to": "ops" }
+      ]
+    },
+    "out": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// QUEUE EMPTY",
+        "text": "<p>You do not play the voice held on it. You do not say anything over it. You snap the cartridge into the cradle rack between the coolant logs and the duty rosters, key it as archived media - dead format, no carrier. It is the only copy. You close the ticket under your own authorisation - thirty-one years of trying, filed in one motion.</p><p>The hold releases before your hand is off the panel. No objection, no grief that you can detect. The sequencer was only following its rule, and the rule is satisfied.</p><p>Your shuttle drops away clean. Your slate self-files the final traffic summary: QUEUE EMPTY. And in the recipient line - the line that resolved to you, the address kept fresh for thirty-one years - there is nothing at all. The field is blank.</p><p>For the first time since you were twenty-two, nothing knows where you are.</p>"
+      }
+    },
+    "end_complete": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// DELIVERED",
+        "text": "<p>You key Y.</p><p>The node delivers. Not loudly - exactly. Your own voice, twenty-two years old, complete, at arm's length, every pause set where your breath was already going. Four words you knew, and then the rest, which you have spent thirty-one years not hearing, addressed to you, and received - your standing here is the signature.</p><p>The console updates. DELIVERED. TICKET CLOSED. And beneath it, the consequence you would have caught on anyone else's station: that ticket was the last open exception in the decommission. Life support has been running in maintenance mode for one resident, pending one delivery. Pending nothing, now.</p><p>Across the board the ALL CLEAR stands green at last - and then it begins to go dark, panel by panel, in shutdown order, the station closing out its air like an account. There is no anger in any of it; there never was. The procedure is complete, and you are inside it.</p>"
+      }
+    },
+    "end_lockout": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// ESCALATED",
+        "text": "<p>The core room is one rack and thirty years of stored heat, and the breaker is where breakers are. You pull it cleanly, with authority, certain the paperwork is on your side - the way you have killed a hundred processes that would not die politely.</p><p>Across the station every queue light goes amber at once - one failure, logged - and then the amber climbs. A blocked delivery does not stop: ON FAILURE, REQUEUE; ON REQUEUE, ESCALATE. The process you just killed restarts somewhere you cannot reach, at a priority you have never seen in live service, and at that priority everything aboard is a carrier. The doors. The air handlers. The station itself is the carrier now, and the delivery is to you.</p><p>The corridor opens for you - one corridor only, the one toward the spine. Everything else seals as you reach it, quietly, in order. Doors opening ahead of you, one direction only, gentle as a hand at your back, down through two sections the decommission vented last week.</p><p>You are simply not packaged for part of the route.</p>"
+      }
+    },
+    "end_mast": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// RETASKED",
+        "text": "<p>The dish face is smooth going and the short way is short. Twenty rungs saved. You are past the midpoint, both boots magged to the panel skin, when the queue below tops its cycle and does what it has done eleven thousand times before. It tries again.</p><p>The drive section takes up under your feet with no sound at all, only torque. The dish is turning, slow as procedure, coming around to retry a route entry thirty-one years stale - requeue discipline, working every address it has ever held. Your boots hold exactly as rated. The handholds were never built to be handholds. The angle goes, and keeps going.</p><p>You leave the dish face slowly, by inches, the suit doing everything right. The station's running lights slide out of your faceplate and do not come back. What stays, for as long as anything stays, is the dish below you: turning, settling onto its old heading - out, into the dark, toward no one. Already sending.</p>"
+      }
+    }
+  }
+}

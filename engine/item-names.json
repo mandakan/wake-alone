@@ -15,5 +15,6 @@
   "sealer": "cautery sealer",
   "scope": "transit scope",
   "seal": "EVA seal",
-  "isolation-key": "master isolation key"
+  "isolation-key": "master isolation key",
+  "cartridge": "packet cartridge"
 }
