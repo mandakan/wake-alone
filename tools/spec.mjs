@@ -6,7 +6,8 @@
 //   "spec": { "size": "standard", "punishment": "standard" }
 // build.mjs strips it before inlining -- it is authoring metadata, not runtime.
 
-// size -> node-count budget (hard) + advisory play-time minutes range.
+// size -> node-count budget (floor is hard, ceiling advisory - never cut
+// content to fit a number) + advisory play-time minutes range.
 export const SIZES = {
   short:    { minNodes: 6,  maxNodes: 10, minMinutes: 3,  maxMinutes: 8 },
   standard: { minNodes: 10, maxNodes: 16, minMinutes: 7,  maxMinutes: 16 },

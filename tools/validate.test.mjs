@@ -262,7 +262,27 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   const ep = { id: "toosmall", title: "T", spec: { size: "standard" }, start: "a", startSanity: 100,
     nodes: { a: { text: "<p>a</p>", choices: [{ text: "go", to: "x" }, { text: "die", to: "d" }] }, x: escape(), d: dead() } };
   const r = validateEpisode(ep);
-  check("toosmall: node-count error", hasErr(r, "nodes outside"), r.errors.join("; "));
+  check("toosmall: node-count error", hasErr(r, "nodes under"), r.errors.join("; "));
+}
+
+// --- spec: node count over the size ceiling is only an advisory warn ---
+{
+  // a valid short-size skeleton, padded past short's 10-node ceiling with a
+  // chain of one-shot rooms spliced in front of the exit
+  const resolved = resolveSpec({ size: "short", punishment: "gentle" });
+  const nodes = buildSkeleton(resolved);
+  const exitChoice = nodes.hub.choices.find((c) => c.requires && c.requires.item);
+  let prev = exitChoice.to;
+  for (let i = 0; Object.keys(nodes).length <= resolved.maxNodes; i++) {
+    nodes[`pad${i}`] = { text: `<p>room ${i}</p>`, choices: [{ text: "on", to: prev }] };
+    prev = `pad${i}`;
+  }
+  exitChoice.to = prev;
+  const ep = { id: "toobig", title: "T", spec: { size: "short", punishment: "gentle" },
+    start: "wake", startSanity: 100, startInventory: [], nodes };
+  const r = validateEpisode(ep);
+  check("toobig: over-ceiling is not an error", r.ok, r.errors.join("; "));
+  check("toobig: over-ceiling warns", hasWarn(r, `over the ${resolved.maxNodes}-node ceiling`), r.warnings.join("; "));
 }
 
 // --- spec: death ratio / dead floor below punishment is an ERROR ---

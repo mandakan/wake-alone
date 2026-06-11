@@ -39,9 +39,16 @@
       },
       "choices": [
         { "text": "Read the entries that came after yours.", "requires": { "notFlag": "readlog" }, "effects": { "sanity": -15, "flags": { "readlog": true } }, "to": "watchroom_log" },
-        { "text": "Take the watch key from its slot.", "requires": { "notItem": "watchkey", "flag": "readlog" }, "effects": { "add": ["watchkey"] }, "to": "watchroom" },
+        { "text": "Take the watch key from its slot.", "requires": { "notItem": "watchkey", "flag": "readlog" }, "effects": { "add": ["watchkey"] }, "to": "watchroom_key" },
         { "text": "Log yourself back on watch and sit.", "requires": { "flag": "tried" }, "to": "end_watch", "locked": "(not before the log is read to its end and the start board aft has had its chance)" },
         { "text": "Step out into the axial corridor.", "to": "axis" }
+      ]
+    },
+    "watchroom_key": {
+      "title": "Watch station",
+      "text": "<p>The slot gives the key up without ceremony. One arm's reach. You cross it now, nine days late, and it costs nothing at all - that is the worst of it, how light the key sits in your glove. A thousand drills taught your hand this exact reach, and your hand did every one of them awake.</p>",
+      "choices": [
+        { "text": "Pocket the key.", "to": "watchroom" }
       ]
     },
     "watchroom_log": {

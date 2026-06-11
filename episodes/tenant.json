@@ -22,7 +22,7 @@
   "start": "wake",
   "startSanity": 100,
   "startInventory": [],
-  "spec": { "size": "long", "punishment": "gentle" },
+  "spec": { "size": "standard", "punishment": "gentle" },
   "nodes": {
     "wake": {
       "title": "Galley",

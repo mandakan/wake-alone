@@ -146,7 +146,9 @@ An episode may declare `"spec": { "size", "punishment" }` to commit to a generat
 the validator then enforces. The dials and their thresholds live in `tools/spec.mjs`:
 
 - **size** — `short` (6–9 nodes), `standard` (10–16), `long` (16–24). Node count is a hard floor;
-  play-time (derived from word count + the solver's optimal path) is advisory per size.
+  the ceiling is an advisory warn (never cut real content to fit a number — if the story keeps
+  growing, declare the next size up). Play-time (derived from word count + the solver's optimal
+  path) is advisory per size.
 - **punishment** — `gentle` / `standard` / `cruel`. Sets the death-ratio floor (reachable `dead`
   endings ÷ all reachable endings) and the minimum count of nasty endings; `cruel` also expects
   madness to be reachable. Death ratio and dead-ending count are hard floors.

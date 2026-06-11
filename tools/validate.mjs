@@ -324,9 +324,13 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
 
   if (solver && !solver.truncated && resolved && !resolved.error) {
     const tag = [resolved.size && `size=${resolved.size}`, resolved.punishment && `punishment=${resolved.punishment}`].filter(Boolean).join(",");
-    // size -> node-count budget (hard)
-    if (resolved.minNodes != null && (nodeIds.length < resolved.minNodes || nodeIds.length > resolved.maxNodes)) {
-      E(`spec(${tag}): ${nodeIds.length} nodes outside the ${resolved.minNodes}-${resolved.maxNodes} range for size "${resolved.size}"`);
+    // size -> node-count budget: the floor is hard (an undersized episode broke its
+    // contract); the ceiling is advisory (never cut real content to fit a number).
+    if (resolved.minNodes != null && nodeIds.length > resolved.maxNodes) {
+      W(`spec(${tag}): ${nodeIds.length} nodes over the ${resolved.maxNodes}-node ceiling for size "${resolved.size}" (advisory - never cut content to fit; if it keeps growing, declare the next size up)`);
+    }
+    if (resolved.minNodes != null && nodeIds.length < resolved.minNodes) {
+      E(`spec(${tag}): ${nodeIds.length} nodes under the ${resolved.minNodes}-node floor for size "${resolved.size}"`);
     }
     // punishment -> dead-ending floor + death ratio (hard)
     if (resolved.deadMin != null && deadCount < resolved.deadMin) {
