@@ -564,6 +564,29 @@ function useGel(){
 /* ---- 02 INSTRUMENT FAILURE: the HUD mistypes and the readout lies ---- */
 const LOOKALIKE={I:"1",E:"3",A:"4",O:"0",T:"7",S:"5",G:"6",L:"1",R:"Я",N:"И"};
 function corruptLabel(str,intensity){ return str.split("").map(ch=>{ const up=ch.toUpperCase(); return (LOOKALIKE[up]&&Math.random()<intensity)?LOOKALIKE[up]:ch; }).join(""); }
+/* Menu-only "archive anomaly" corruption: heavier than the HUD's corruptLabel.
+   Per char: block/noise glyph (prob `block`), else lookalike swap (prob `look`),
+   else keep. Titles stay squint-legible; the noise line is mostly garbage. The
+   callers (anomTitle/anomNoise) raise both probabilities on their `heavy` flag --
+   the click-flinch burst. Block glyphs match the in-engine glyph set. */
+const ANOM_BLOCKS="█▓▒#";
+function corruptAnomaly(str,block,look){
+  return str.split("").map(ch=>{
+    if(ch===" ") return ch;
+    if(Math.random()<block) return ANOM_BLOCKS[Math.floor(Math.random()*ANOM_BLOCKS.length)];
+    const up=ch.toUpperCase();
+    return (LOOKALIKE[up]&&Math.random()<look)?LOOKALIKE[up]:ch;
+  }).join("");
+}
+const anomTitle=(s,heavy)=>corruptAnomaly(s, heavy?0.45:0.22, 0.70);
+const anomNoise=(s,heavy)=>corruptAnomaly(s, heavy?0.70:0.50, 0.60);
+function fillAnomaly(card,heavy){
+  const n=card.querySelector(".epn"), t=card.querySelector(".ept"), b=card.querySelector(".epb");
+  if(n) n.textContent="?? -- // "+anomNoise("########",heavy);
+  if(t) t.textContent="[ "+anomTitle(card.dataset.baseTitle||"",heavy)+" ]";
+  if(b) b.textContent=anomNoise(card.dataset.baseNoise||"",heavy);
+}
+function fillAllAnomalies(heavy){ root.querySelectorAll(".epcard.anomaly").forEach(c=>fillAnomaly(c,heavy)); }
 function badValue(v,tier){
   const r=Math.random();
   if(r<0.22) return "??%";
@@ -762,8 +785,12 @@ function titleScreen(){
   applyScreenFilter();
   const scars = FEAT.scars ? loadScars() : {};
   const words=(MANIFEST.title||"WAKE ALONE").split(" ");
-  const cards = EPISODES.map((ep,i)=>{
-    const n = "EP " + String(i+1).padStart(2,"0");
+  let epNo = 0;
+  const cards = EPISODES.map((ep)=>{
+    if(ep.anomaly) return `<div class="epcard anomaly" data-base-title="${esc(ep.title||"")}" data-base-noise="${esc(ep.byline||"")}" onclick="anomalyFlinch(this)">
+      <div class="epn"></div><div class="ept"></div><div class="epb"></div></div>`;
+    epNo++;
+    const n = "EP " + String(epNo).padStart(2,"0");
     if(ep.locked) return `<div class="epcard locked"><div class="epn">${n} // ENCRYPTED</div>
       <div class="ept">[ ${ep.title} ]</div><div class="epb">${ep.byline||""}</div></div>`;
     const o = scars[ep.id];
