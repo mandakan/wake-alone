@@ -38,6 +38,16 @@ export const ESCAPE_MODES = ["required", "forbidden"];
 //                offered to the player, an answer that poisons an earlier line
 export const TRACE_MODES = ["absent", "restrained", "forward"];
 
+// sanityRegister -> which grammar the sanityText degrade runs on (the L18 dial).
+// The enum is validated here; the guardrails (lucid cold read, one concrete
+// anchor, one delusional move, standalone + state-true) are judgment -- L18 in
+// docs/craft-lessons.md, checked by author-episode's final-read register pass.
+//   wrong     - default. The Gilman degrade: same objects, re-read as off, then
+//               wrong. What the episodes already do.
+//   psychotic - the interior-collapse ladder: reference (fires high), record
+//               (mid), command (low). Opt-in only, never the house default.
+export const SANITY_REGISTERS = ["wrong", "psychotic"];
+
 export const DEFAULT_SIZE = "standard";
 export const DEFAULT_PUNISHMENT = "standard";
 export const DEFAULT_ESCAPE = "required";
@@ -46,8 +56,8 @@ export const DEFAULT_ESCAPE = "required";
 // spec is declared, or { error } when a dial value is unknown.
 export function resolveSpec(spec) {
   if (!spec || typeof spec !== "object") return null;
-  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null, escape: spec.escape ?? null, traces: spec.traces ?? null };
-  if (out.size == null && out.punishment == null && out.escape == null && out.traces == null) return null;
+  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null, escape: spec.escape ?? null, traces: spec.traces ?? null, sanityRegister: spec.sanityRegister ?? null };
+  if (out.size == null && out.punishment == null && out.escape == null && out.traces == null && out.sanityRegister == null) return null;
   if (out.size != null) {
     if (!SIZES[out.size]) return { error: `unknown size "${out.size}" (use ${Object.keys(SIZES).join("/")})` };
     Object.assign(out, SIZES[out.size]);
@@ -61,6 +71,9 @@ export function resolveSpec(spec) {
   }
   if (out.traces != null && !TRACE_MODES.includes(out.traces)) {
     return { error: `unknown traces "${out.traces}" (use ${TRACE_MODES.join("/")})` };
+  }
+  if (out.sanityRegister != null && !SANITY_REGISTERS.includes(out.sanityRegister)) {
+    return { error: `unknown sanityRegister "${out.sanityRegister}" (use ${SANITY_REGISTERS.join("/")})` };
   }
   return out;
 }
@@ -81,5 +94,6 @@ export function describeBrief(resolved) {
   if (resolved.punishment) bits.push(`punishment=${resolved.punishment} (>=${resolved.deadMin} dead endings, death ratio >=${Math.round(resolved.deathRatioFloor * 100)}%${resolved.expectMadness ? ", madness reachable" : ""})`);
   if (resolved.escape === "forbidden") bits.push(`escape=forbidden (no way out -- every path ends in death)`);
   if (resolved.traces) bits.push(`traces=${resolved.traces} (death-evidence register, L17 - judgment-checked)`);
+  if (resolved.sanityRegister) bits.push(`sanityRegister=${resolved.sanityRegister} (sanityText register, L18 - judgment-checked)`);
   return bits.join("; ");
 }

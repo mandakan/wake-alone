@@ -197,6 +197,20 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("badspec: unknown dial error", hasErr(r, "spec: unknown size"), r.errors.join("; "));
 }
 
+// --- spec: unknown traces / sanityRegister values are errors; valid values pass ---
+{
+  const nodes = { a: { text: "<p>a</p>", choices: [{ text: "go", to: "x" }, { text: "die", to: "d" }] }, x: escape(), d: dead() };
+  let r = validateEpisode({ id: "badtraces", title: "B", spec: { traces: "loud" }, start: "a", nodes });
+  check("badtraces: unknown traces error", hasErr(r, "spec: unknown traces"), r.errors.join("; "));
+  r = validateEpisode({ id: "oktraces", title: "B", spec: { traces: "forward" }, start: "a", nodes });
+  check("oktraces: valid traces accepted", !hasErr(r, "spec:"), r.errors.join("; "));
+  r = validateEpisode({ id: "badreg", title: "B", spec: { sanityRegister: "lucid" }, start: "a", nodes });
+  check("badreg: unknown sanityRegister error", hasErr(r, "spec: unknown sanityRegister"), r.errors.join("; "));
+  r = validateEpisode({ id: "okreg", title: "B", spec: { sanityRegister: "psychotic" }, start: "a", nodes });
+  check("okreg: valid sanityRegister accepted", !hasErr(r, "spec:"), r.errors.join("; "));
+  check("okreg: register reported", r.report && r.report.spec && r.report.spec.sanityRegister === "psychotic");
+}
+
 // --- spec: node count below the size floor is an ERROR ---
 {
   const ep = { id: "toosmall", title: "T", spec: { size: "standard" }, start: "a", startSanity: 100,

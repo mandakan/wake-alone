@@ -361,7 +361,7 @@ export function validateEpisode(ep, name = ep && ep.id) {
     madnessReachable: solver ? solver.madnessReachable : null,
     statesExplored: solver ? solver.statesExplored : null,
     truncated: solver ? solver.truncated : null,
-    spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment, escape: resolved.escape } : null,
+    spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment, escape: resolved.escape, traces: resolved.traces, sanityRegister: resolved.sanityRegister } : null,
     character,
     escape: escapeMode,
     words: wordCount,
@@ -533,7 +533,7 @@ function printResult(r) {
           : `${C.red}UNWINNABLE${C.reset}`;
       console.log(`${C.dim}  solver: ${solv}${C.dim} · dead endings: ${rp.deadEndings} · madness reachable: ${rp.madnessReachable ? "yes" : "no"} · states: ${rp.statesExplored}${rp.truncated ? " (truncated)" : ""}${C.reset}`);
       const ratio = rp.deathRatio == null ? "?" : `${Math.round(rp.deathRatio * 100)}%`;
-      console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`, rp.spec.escape === "forbidden" && "escape=forbidden"].filter(Boolean).join(", ")}` : ""}${C.reset}`);
+      console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`, rp.spec.escape === "forbidden" && "escape=forbidden", rp.spec.traces && `traces=${rp.spec.traces}`, rp.spec.sanityRegister && `sanityRegister=${rp.spec.sanityRegister}`].filter(Boolean).join(", ")}` : ""}${C.reset}`);
       if (rp.character) console.log(`${C.dim}  character: ${rp.character.role || "(unspecified role)"}${rp.character.expertise.length ? ` · knows: ${rp.character.expertise.join(", ")}` : ""}${C.reset}`);
     }
   }
