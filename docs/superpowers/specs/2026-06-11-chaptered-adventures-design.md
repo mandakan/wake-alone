@@ -139,9 +139,8 @@ existing manifest-order check). Hard `ERROR`s:
 
 Advisory `warn`s:
 
-- a declared export no import ever reads (dead export);
-- a declared import no `requires`/`sanityText` gate ever reads (dead import);
-- an import that opens nothing the solver can see (dead carry-gate).
+- a declared export no downstream import or unlock ever reads (dead export);
+- a declared import no `requires` gate in the chapter ever reads (dead import).
 
 Mechanics needed in `validate.mjs`:
 
