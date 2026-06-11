@@ -872,7 +872,7 @@ function titleScreen(){
   }).join("");
   const sub = MANIFEST.subtitle||"";
   const typing = !menuTyped && !REDUCED && !!sub;
-  root.innerHTML = `<div class="title-screen">
+  root.innerHTML = `<div class="title-screen" data-screen="menu">
     <div class="bigtitle glitchable glow">${words.join("<br>")}</div>
     <div class="sub"><span id="subtype">${typing?"":sub}</span><span class="cursor"></span></div>
     <div class="eplist${typing?" eplist-hidden":""}">${cards}</div></div>` + footer();
@@ -1133,7 +1133,7 @@ function route(){
   const ep = hash && EPISODES.find(e=> (e.id||"").toLowerCase()===hash && !e.locked && e.nodes);
   if(ep){ if(!episode || episode.id!==ep.id) startEpisode(ep); return; }
   // empty / unknown / locked -> menu (guarded so a duplicate empty hashchange is a no-op)
-  if(episode || !root.querySelector(".title-screen")) titleScreen();
+  if(episode || !root.querySelector(".title-screen[data-screen='menu']")) titleScreen();
 }
 function returnToMenu(){
   if(advCtx){ const a=advCtx.adv.id; advCtx=null; location.hash=a; return; } // chapter ending -> chapter screen (the new unlock is the payoff)
