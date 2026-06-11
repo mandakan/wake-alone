@@ -374,7 +374,9 @@ export function validateEpisode(ep, name = ep && ep.id) {
 
 // ---- the solver: mirrors engine/template.html runtime exactly ----
 // useGel=false disables the med-gel free action (used by the L14 forced-loss measure).
-function solve(ep, useGel = true) {
+// seedFlags pre-sets flags before the run starts -- the engine does the same for a
+// chapter's imported carryover flags, so the solver must too (adventure contract).
+export function solve(ep, useGel = true, seedFlags = []) {
   const nodeHasOnEnter = (id) => !!(ep.nodes[id] && ep.nodes[id].onEnter);
 
   const meetsReq = (req, st) => {
@@ -407,7 +409,7 @@ function solve(ep, useGel = true) {
     cur: ep.start,
     sanity: clamp(ep.startSanity ?? 100, 0, 100),
     inv: new Set(ep.startInventory || []),
-    flags: new Set(),
+    flags: new Set(seedFlags),
     entered: new Set(),
   };
   const startNode = ep.nodes[ep.start];
@@ -418,7 +420,7 @@ function solve(ep, useGel = true) {
   if (init.sanity <= 0 && !startNode.ending) {
     return { startMadness: true, winnable: false, escapeEndings: new Set(), deadEndings: new Set(),
       madnessReachable: true, openableChoices: new Set(), bestEscape: null, statesExplored: 0, truncated: false,
-      nodeItems: new Map(), nodeMinSanity: new Map() };
+      nodeItems: new Map(), nodeMinSanity: new Map(), endingFlags: new Map(), madnessFlags: new Set(init.flags) };
   }
 
   const escapeEndings = new Set();
@@ -426,6 +428,8 @@ function solve(ep, useGel = true) {
   const openableChoices = new Set();
   const nodeItems = new Map();      // nodeId -> Set of items possibly held when at the node
   const nodeMinSanity = new Map();  // nodeId -> lowest sanity the node is ever rendered at
+  const endingFlags = new Map();    // endingNodeId -> union of flags held on arrival (carryover exportability)
+  const madnessFlags = new Set();   // union of flags held at any sanity-0 point (madness also records progress)
   let madnessReachable = false;
   let bestEscape = null; // {node, sanity, path}
 
@@ -464,6 +468,9 @@ function solve(ep, useGel = true) {
     nodeMinSanity.set(st.cur, prevMin === undefined ? st.sanity : Math.min(prevMin, st.sanity));
 
     if (node.ending) {
+      if (!endingFlags.has(st.cur)) endingFlags.set(st.cur, new Set());
+      const ef = endingFlags.get(st.cur);
+      for (const f of st.flags) ef.add(f);
       if (node.ending.type === "escape") {
         escapeEndings.add(st.cur);
         if (!bestEscape || st.sanity > bestEscape.sanity) bestEscape = { node: st.cur, sanity: st.sanity, path: pathTo(key) };
@@ -489,7 +496,7 @@ function solve(ep, useGel = true) {
       if (c.to === undefined || !ep.nodes[c.to]) return; // locked hint / dangling (dangling already an error)
 
       const afterChoice = applyEff(c.effects, st);
-      if (afterChoice.sanity <= 0) { madnessReachable = true; return; } // choose(): madness before goto
+      if (afterChoice.sanity <= 0) { madnessReachable = true; afterChoice.flags.forEach((f) => madnessFlags.add(f)); return; } // choose(): madness before goto
 
       // goto(c.to): apply target's onEnter once
       let sanity = afterChoice.sanity, inv = afterChoice.inv, flags = afterChoice.flags, entered = st.entered;
@@ -499,7 +506,7 @@ function solve(ep, useGel = true) {
         entered = new Set(st.entered); entered.add(c.to);
       }
       const target = ep.nodes[c.to];
-      if (sanity <= 0 && !target.ending) { madnessReachable = true; return; } // goto(): madness on entry
+      if (sanity <= 0 && !target.ending) { madnessReachable = true; flags.forEach((f) => madnessFlags.add(f)); return; } // goto(): madness on entry
 
       const label = `${st.cur} -> ${c.to}` + (c.text ? ` ("${String(c.text).slice(0, 40)}")` : "");
       enqueue({ cur: c.to, sanity, inv, flags, entered }, key, label);
@@ -511,7 +518,7 @@ function solve(ep, useGel = true) {
     winnable: escapeEndings.size > 0,
     escapeEndings, deadEndings, madnessReachable, openableChoices,
     bestEscape, statesExplored: visited.size, truncated,
-    nodeItems, nodeMinSanity,
+    nodeItems, nodeMinSanity, endingFlags, madnessFlags,
   };
 }
 
