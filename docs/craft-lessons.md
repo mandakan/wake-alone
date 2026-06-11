@@ -399,3 +399,59 @@ shown. Method: draft all traces at `restrained`, then amplify only the few that 
 mechanic by one rung; never amplify everywhere (L15 - a register used everywhere becomes a tic).
 To re-tune a shipped episode, declare the dial in its spec and run `/review-episode` - the gestalt
 lens reports rung mismatches as findings.
+
+## L18 - sanityText has a register, not just an intensity: the psychotic ladder is opt-in and stays lucid
+
+**Design intent (2026-06, register pass; not a playtest finding):** every other lesson in this
+ledger is feedback-driven; this one is forward design intent from the psychotic-register pass -
+rewrite it if playtest feedback supersedes it. The existing `sanityText` default is the Gilman
+mode - the same space re-read as subtly, then overtly, *wrong* (L7's "degraded"). That is one
+register. A second is available: the same space re-read as *psychotic* - referential, recorded,
+obeyed. The four interior-collapse style cards (Schreber, Beers, Perceval, Merivale - see
+`docs/style-cards.md`) distill its mechanics. This lesson is the guardrail set for writing it
+without tripping L6/L7/L9/L13/L15, and the dial that keeps it from becoming the house default.
+**Mechanic (the dial):** the optional per-episode spec field `"sanityRegister"` (enum, validated
+in `tools/spec.mjs`, stripped at build with the rest of `spec`):
+- `wrong` - **default.** The Gilman degrade: same objects, re-read as off, then wrong. What the
+  episodes already do; absence-mode (Mary Celeste) and body-horror episodes stay here.
+- `psychotic` - the ladder below. Opt-in only, so it remains ONE distinct mode among several (L5),
+  never the thing every episode drifts into.
+**Rule - the band ladder (escalate grammar across the thresholds you already use):**
+- **Reference (fires high, ~45-60).** Lowest intensity, most deniable. The space tilts toward
+  *meant*: a thing seems arranged, addressed, intended - at you. The narrator might still be wrong
+  about being watched. (Beers, low gain.)
+- **Record (fires mid, ~35-44, the `40` band).** The apparatus, stated from inside: you are being
+  taken down; a thought arrives already known, a half-beat late; a voice repeats one learned phrase,
+  by rote, the same phrase. The room re-reads as instrument. (Schreber's writing-down system.)
+- **Command (fires low, ~20-30).** The obeyed voice in the character's OWN register: an instruction
+  surfaces - reasonable, in-domain (L4), compelling - and complying feels like the only sane act;
+  the self-argument ("you know it isn't, you *know* it") loses. (Perceval; Schreber's
+  lucidity-toward-a-wrong-conclusion; Merivale's collapsing self-defence.)
+**Rule - the guardrails (all of these are existing lessons, applied to this register):**
+1. **Legibility is the hard floor (L6).** This is the project's highest word-salad risk. The power
+   of the source (Schreber above all) is lucidity: sane sentences reasoning correctly off a corrupt
+   premise. Every sentence must parse on a cold first read; only the *premise* is mad. A line that
+   reads as poetic noise has failed the register, not achieved it. "Sane voice, wrong world," never
+   "the whole has teeth."
+2. **One move per node (L15).** Reference / record / command do not stack inside one variant - pick
+   the single move the node's content pays. Across an episode, do not run the same move at every
+   threshold; the three rungs are the variety.
+3. **Standalone and state-true (L7/L13).** The delusion re-reads existing objects: re-introduce what
+   it names, assert no mutable fact. "The logs are addressed to you" (state-neutral) yes; "the panel
+   you opened is addressed to you" no.
+4. **One concrete anchor; never itemize the system (L8/L9).** The delusion fastens to a single
+   picturable thing - the dust, a readout, the voice's one phrase - not to free-floating concept.
+   Never lay out the whole delusional cosmology: that is Schreber's theology and L9's "bald
+   catalogue" in one move.
+5. **Second person; drop the period metaphysics.** Convert the first-person sources to "you." Take
+   the apparatus and the compulsion; leave the sources' God / unmanning / religiosity behind
+   (no-pastiche rule, `docs/inspiration.md`). The mechanic transfers; the 1900s cosmology does not.
+**Enforced by:** the `sanityRegister` enum is mechanical (`tools/spec.mjs`, self-tested in
+`tools/validate.test.mjs`); the rest is this rule + the `author-episode` skill's final-read, which
+gains a register pass when `sanityRegister: psychotic`: per variant - "(a) does it read as a lucid
+wrong belief that parses cold (L6); (b) does it attach to one concrete anchor (L8); (c) is it a
+single delusional move, not the whole system (L9/L15); (d) is it state-true and standalone
+(L7/L13)?" Plus the reviewer's gestalt and legibility lenses. The legibility half is already partly
+covered by L6's check; no new mechanical gate is required, though a future advisory heuristic could
+flag psychotic-mode variants with high abstract-noun density and no concrete noun (same shape as
+L8's mooted ending heuristic).

@@ -44,6 +44,17 @@ to avoid shipping a whole anthology). Get them from a clean PD source when neede
 - **M.R. James** -- the four collections (1904, 1911, 1919, 1925) are PD; EXCLUDE the three
   post-1930 stories ("The Experiment" 1931, "The Malice of Inanimate Objects" 1933, "A Vignette"
   1936).
+- **Daniel Paul Schreber, *Denkwurdigkeiten eines Nervenkranken* (1903)** -- German original
+  is PD by date; the only English translation (Macalpine & Hunter, 1955) is NOT PD. Mechanics
+  source only, never prose. (projekt-gutenberg.org, German.)
+- **Clifford Beers, *A Mind That Found Itself* (1908)** -- PD (US, pub. date). English.
+  Delusion of reference, persecutory framing. (Internet Archive / Gutenberg ebook 11962,
+  strip the PG header.)
+- **John Perceval, *A Narrative of the Treatment Experienced by a Gentleman...* (1838/1840)**
+  -- PD. English. Command hallucination, compulsion. Use the original two volumes, NOT the
+  1961 Bateson edition (copyright). (Internet Archive: anarrativetreat00percgoog.)
+- **Herman Merivale, *My Experiences in a Lunatic Asylum, by a Sane Patient* (1879)** -- PD.
+  English. The disbelieved-narrator frame. (Gutenberg / Wellcome PD Mark.)
 
 For visual mood (PD by age / publication): Gustave Dore's *Rime* engravings, Piranesi's *Carceri*,
 Caspar David Friedrich, Ernst Haeckel's *Kunstformen der Natur*, Goya's Black Paintings, Odilon

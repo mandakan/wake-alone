@@ -33,6 +33,69 @@ attention -- the sense of being watched, of a wrongness that waits.
   pronoun.
 - **Trap:** do not explain the madness. Let the narration enact it.
 
+---
+
+**The interior collapse (psychosis sources).** These four extend the Gilman card (the eroding
+mind). Gilman covers decay of a *narrator*; these cover the specific *grammars* a coming-apart
+mind runs on. The value is the logic, never the diction. Every one of these authors writes in a
+register that will pastiche instantly if echoed -- that is the whole reason they live here and
+not in gold-lines.
+
+## Memoirs of a Nervous Illness -- Schreber (1903)  ->  the recorded mind
+
+- **Technique:** a rational narrator documents an irrational system with total internal
+  consistency. The horror is not raving; it is lucidity applied to a wrong premise. Three
+  transferable mechanics: (1) the *writing-down system* -- the sense that every thought is
+  being transcribed by an external apparatus; (2) voices that repeat learned phrases
+  mechanically, by rote, never spontaneously; (3) the conviction that ordinary events
+  (weather, light) are contingent on the narrator's own thoughts.
+- **For WAKE ALONE:** the writing-down system IS your attention mechanic, stated from the
+  inside -- not "something watches" but "something is taking this down." Maps onto the
+  recorded/observed dread (vigil, derelict/listen). The by-rote voices give you a
+  non-human repetition that is scarier than a scream. Lucidity-toward-a-wrong-conclusion
+  is the fathom/repace move (the surveyor reasoning correctly off a corrupt floor).
+- **POV note:** source is first person and German. Convert structure only.
+- **Trap (acute):** there is NO public-domain English translation -- the standard one
+  (Macalpine & Hunter, 1955) is under copyright, and your own legal frame already forbids
+  modern translations as text. This source can ONLY ever be mechanics, never prose. Also
+  drop Schreber's specific theology (God, unmanning, the Order of the World); take the
+  apparatus and the lucidity, leave the cosmology.
+
+## A Mind That Found Itself -- Beers (1908)  ->  reference and the staged world
+
+- **Technique:** the delusion of reference -- ordinary signals are secretly addressed to
+  you. A newspaper carries coded messages meant for the narrator; strangers are detectives;
+  the institution is an elaborate staging mounted to test or deceive him. Everything means,
+  and it all means *at you*.
+- **For WAKE ALONE:** "the logs are addressed to you," "the crew were placed here," "this
+  room was arranged to be found." Pairs with the social-hallucination sanityText (vigil/ring
+  -- workstations attending to you). It weaponizes the player's pattern-finding against them.
+- **Trap:** Beers explains his states in retrospect, as reform argument. The house voice
+  enacts and never explains. Take the reference logic; bin the retrospective frame.
+
+## A Narrative ... during a State of Mental Derangement -- Perceval (1838/1840)  ->  the obeyed voice
+
+- **Technique:** command hallucination -- voices issue orders, often contradictory, that the
+  narrator feels compelled to obey against his own judgment; figurative commands taken
+  literally toward harm. The horror is the *compulsion*, the watching-yourself-comply.
+- **For WAKE ALONE:** this is the temptation/wrong-choice category (graft/rest, fathom/center)
+  given an internal driver. The voice that makes the fatal choice sound not just attractive
+  but *required*. Choice architecture where compliance feels like the only sane act.
+- **Trap:** dense early-Victorian religiosity and an asylum-abuse expose register. Abstract
+  the compulsion mechanic; discard the period idiom and the grievance.
+
+## My Experiences in a Lunatic Asylum, by a Sane Patient -- Merivale (1879)  ->  the disbelieved narrator
+
+- **Technique:** a narrator insisting on his own rationality while institutionalized -- the
+  paranoia of being disbelieved, the gaslit-from-inside texture, arguing for his own
+  reliability as it erodes.
+- **For WAKE ALONE:** the self-arguing degraded narration you already do (derelict/corridor
+  @40, "You know corridors don't, you *know* it"). The "am I the only one seeing this" frame
+  as a sanity state, not a plot reveal.
+- **Trap:** Victorian asylum-memoir self-justification. Keep the doubt; lose the indignation.
+
+---
+
 ## The Rime of the Ancient Mariner -- Coleridge (1798)  ->  the doomed-ship arc
 
 - **Technique:** calamity flows from one act; the ship is becalmed and powerless; the crew die one

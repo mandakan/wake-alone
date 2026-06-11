@@ -28,6 +28,14 @@ the validator enforces, defined in `tools/spec.mjs`:
   system still mid-task, a setting offered to the player). Never amplify everything: an
   everywhere-register is a tic (L15). Every rung passes the read-aloud test: innocent
   surface, horrific inference; effects, never wounds. `absent` must be a deliberate choice.
+- **sanityRegister** (optional): `wrong` (default) / `psychotic` - which grammar the
+  `sanityText` degrade runs on (L18's band ladder; see `docs/craft-lessons.md` and the
+  interior-collapse style cards). `wrong` is the Gilman mode: the same space re-read as
+  off, then wrong. `psychotic` re-reads it as *meant* - reference (fires high, ~45-60:
+  arranged, addressed, at you), record (mid, ~35-44: thoughts taken down, a half-beat
+  late), command (low, ~20-30: an obeyed voice in the character's own register, L4
+  in-domain). One move per variant, never the whole system; the narrator stays lucid
+  the whole way down. Opt-in only - never default to it.
 
 These are written into the episode as a top-level `"spec"`. With a spec, node count and death
 ratio become **hard errors** if missed; play-time is advisory. `build.mjs` strips `spec` from
@@ -141,6 +149,12 @@ output. The split:
    faculty, a body "taken in stages"), then scan every node's prose and choice text for any reference
    - "hands", "both", a named limb, an action needing two hands - that the constraint forbids, and
    rewrite it.
+
+   If the spec declares `sanityRegister: "psychotic"`, run the **register pass (L18)** on every
+   `sanityText` variant: (a) does it read as a lucid wrong belief that parses on a cold first
+   read (L6)? (b) does it attach to one concrete anchor (L8)? (c) is it a single delusional
+   move - reference, record, or command - never the whole system (L9+L15)? (d) is it standalone
+   and state-true (L7+L13)? Any variant failing a check gets rewritten before the build step.
 
 6. **Build:** run `npm run build`. Note the report metrics - node count, reachable endings, death
    ratio, estimated play-time, and the best escape's surviving sanity.

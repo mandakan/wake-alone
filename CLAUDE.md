@@ -155,6 +155,14 @@ the validator then enforces. The dials and their thresholds live in `tools/spec.
   systems still mid-task (a request pending, a setting offered to the player). Every rung must
   pass the read-aloud test: innocent surface, horrific inference - effects, never wounds. The
   enum is a hard `ERROR` if misspelled; conformance to the rung is judgment (author + reviewer).
+- **sanityRegister** — optional: `wrong` (default) / `psychotic`. Which grammar the `sanityText`
+  degrade runs on (lesson L18's band ladder). `wrong` is the Gilman mode every episode already
+  uses: the same space re-read as off, then wrong. `psychotic` re-reads it as *meant* — reference
+  (fires high: arranged, addressed, at you), record (mid: thoughts taken down, a half-beat late),
+  command (low: an obeyed voice in the character's own register). The narrator stays lucid the
+  whole way down — only the premise is corrupt; word salad fails the register. Opt-in only. The
+  enum is a hard `ERROR` if misspelled; the guardrails are judgment (L18's four checks, run by
+  the `author-episode` final read).
 
 With a `spec`, missing a hard floor is an `ERROR`. Without one, only the universal rules apply
 (solvable with at least one survivable escape, ≥2 nasty endings advised). The `author-episode`
