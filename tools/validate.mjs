@@ -35,6 +35,7 @@ import { resolveSpec, estimateMinutes } from "./spec.mjs";
 import { lintProse } from "./prose-lint.mjs";
 import { DIVERSITY } from "./diversity-config.mjs";
 import { checkDiversity, loadAllowlist } from "./diversity.mjs";
+import { validateAdventure } from "./adventure.mjs"; // safe cycle: only the CLI body calls it
 
 let ITEM_NAMES = {};
 try { ITEM_NAMES = JSON.parse(readFileSync(join(EPISODES_DIR, "..", "engine", "item-names.json"), "utf8")); } catch {}
@@ -65,7 +66,7 @@ function episodeWordCount(ep) {
   return n;
 }
 
-export function validateEpisode(ep, name = ep && ep.id) {
+export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
   const errors = [];
   const warnings = [];
   const E = (m) => errors.push(m);
@@ -117,6 +118,11 @@ export function validateEpisode(ep, name = ep && ep.id) {
     collect(n.onEnter);
     (n.choices || []).forEach((c) => collect(c.effects));
   }
+
+  // flags carried in from a previous chapter (adventure contract): obtainable
+  // here without being set here. adventure.mjs verifies the other side.
+  const imports = Array.isArray(opts.imports) ? opts.imports : [];
+  imports.forEach((f) => flags.add(f));
 
   // ---- references, for dead item/flag detection ----
   const reqItems = new Set();   // items read by a gate
@@ -220,6 +226,9 @@ export function validateEpisode(ep, name = ep && ep.id) {
   let solver = null;
   const danglingRefs = errors.some((m) => m.includes("non-existent node"));
   if (ep.nodes[ep.start] && !danglingRefs) {
+    // deliberately solved WITHOUT opts.imports: the baseline-solvability rule says
+    // imported flags may only gate optional beats, so the chapter must stay
+    // survivable when the previous run exported nothing (adventure contract).
     try { solver = solve(ep); }
     catch (err) { W(`solver could not run (internal: ${err.message}); solvability not verified`); }
   }
@@ -270,7 +279,8 @@ export function validateEpisode(ep, name = ep && ep.id) {
         if (openable && !toResolves) {
           E(`node "${id}" choice[${i}]: clickable (its requirements can be satisfied) but has no valid "to" -- the engine crashes on click. Give it a real destination, or write the locked state as the positive gate on the real choice (requires the thing + a "locked" hint), not an inverted gate with no "to".`);
         }
-        if (!solver.truncated && c.requires && reached.has(id) && !openable) {
+        const importGated = c.requires && c.requires.flag && imports.includes(c.requires.flag);
+        if (!solver.truncated && c.requires && reached.has(id) && !openable && !importGated) {
           W(`node "${id}" choice[${i}]: requires never met in any reachable state (dead choice)`);
         }
       });
@@ -334,6 +344,7 @@ export function validateEpisode(ep, name = ep && ep.id) {
     if (!reqItems.has(it) && !removedItems.has(it)) W(`item "${it}" is obtained but never required or consumed (dead item?)`);
   }
   for (const fl of flags) {
+    if (imports.includes(fl)) continue; // carried in; adventure.mjs warns about unread imports
     if (!reqFlags.has(fl)) W(`flag "${fl}" is set but never read by any gate (dead flag?)`);
   }
 
@@ -374,7 +385,9 @@ export function validateEpisode(ep, name = ep && ep.id) {
 
 // ---- the solver: mirrors engine/template.html runtime exactly ----
 // useGel=false disables the med-gel free action (used by the L14 forced-loss measure).
-function solve(ep, useGel = true) {
+// seedFlags pre-sets flags before the run starts -- the engine does the same for a
+// chapter's imported carryover flags, so the solver must too (adventure contract).
+export function solve(ep, useGel = true, seedFlags = []) {
   const nodeHasOnEnter = (id) => !!(ep.nodes[id] && ep.nodes[id].onEnter);
 
   const meetsReq = (req, st) => {
@@ -407,7 +420,7 @@ function solve(ep, useGel = true) {
     cur: ep.start,
     sanity: clamp(ep.startSanity ?? 100, 0, 100),
     inv: new Set(ep.startInventory || []),
-    flags: new Set(),
+    flags: new Set(seedFlags),
     entered: new Set(),
   };
   const startNode = ep.nodes[ep.start];
@@ -418,7 +431,7 @@ function solve(ep, useGel = true) {
   if (init.sanity <= 0 && !startNode.ending) {
     return { startMadness: true, winnable: false, escapeEndings: new Set(), deadEndings: new Set(),
       madnessReachable: true, openableChoices: new Set(), bestEscape: null, statesExplored: 0, truncated: false,
-      nodeItems: new Map(), nodeMinSanity: new Map() };
+      nodeItems: new Map(), nodeMinSanity: new Map(), endingFlags: new Map(), madnessFlags: new Set(init.flags) };
   }
 
   const escapeEndings = new Set();
@@ -426,6 +439,8 @@ function solve(ep, useGel = true) {
   const openableChoices = new Set();
   const nodeItems = new Map();      // nodeId -> Set of items possibly held when at the node
   const nodeMinSanity = new Map();  // nodeId -> lowest sanity the node is ever rendered at
+  const endingFlags = new Map();    // endingNodeId -> union of flags held on arrival (carryover exportability)
+  const madnessFlags = new Set();   // union of flags held at any sanity-0 point (madness also records progress)
   let madnessReachable = false;
   let bestEscape = null; // {node, sanity, path}
 
@@ -464,6 +479,9 @@ function solve(ep, useGel = true) {
     nodeMinSanity.set(st.cur, prevMin === undefined ? st.sanity : Math.min(prevMin, st.sanity));
 
     if (node.ending) {
+      if (!endingFlags.has(st.cur)) endingFlags.set(st.cur, new Set());
+      const ef = endingFlags.get(st.cur);
+      for (const f of st.flags) ef.add(f);
       if (node.ending.type === "escape") {
         escapeEndings.add(st.cur);
         if (!bestEscape || st.sanity > bestEscape.sanity) bestEscape = { node: st.cur, sanity: st.sanity, path: pathTo(key) };
@@ -489,7 +507,7 @@ function solve(ep, useGel = true) {
       if (c.to === undefined || !ep.nodes[c.to]) return; // locked hint / dangling (dangling already an error)
 
       const afterChoice = applyEff(c.effects, st);
-      if (afterChoice.sanity <= 0) { madnessReachable = true; return; } // choose(): madness before goto
+      if (afterChoice.sanity <= 0) { madnessReachable = true; afterChoice.flags.forEach((f) => madnessFlags.add(f)); return; } // choose(): madness before goto
 
       // goto(c.to): apply target's onEnter once
       let sanity = afterChoice.sanity, inv = afterChoice.inv, flags = afterChoice.flags, entered = st.entered;
@@ -499,7 +517,7 @@ function solve(ep, useGel = true) {
         entered = new Set(st.entered); entered.add(c.to);
       }
       const target = ep.nodes[c.to];
-      if (sanity <= 0 && !target.ending) { madnessReachable = true; return; } // goto(): madness on entry
+      if (sanity <= 0 && !target.ending) { madnessReachable = true; flags.forEach((f) => madnessFlags.add(f)); return; } // goto(): madness on entry
 
       const label = `${st.cur} -> ${c.to}` + (c.text ? ` ("${String(c.text).slice(0, 40)}")` : "");
       enqueue({ cur: c.to, sanity, inv, flags, entered }, key, label);
@@ -511,7 +529,7 @@ function solve(ep, useGel = true) {
     winnable: escapeEndings.size > 0,
     escapeEndings, deadEndings, madnessReachable, openableChoices,
     bestEscape, statesExplored: visited.size, truncated,
-    nodeItems, nodeMinSanity,
+    nodeItems, nodeMinSanity, endingFlags, madnessFlags,
   };
 }
 
@@ -543,9 +561,29 @@ function printResult(r) {
 
 function loadEpisodeFiles() {
   const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
-  const files = [];
-  for (const e of manifest.episodes) if (!e.locked && e.file) files.push(join(EPISODES_DIR, e.file));
-  return files;
+  const targets = [];
+  for (const e of manifest.episodes) {
+    if (e.adventure) {
+      for (const ch of e.chapters || []) if (ch.file) targets.push({ file: join(EPISODES_DIR, ch.file), imports: ch.imports || [] });
+      continue;
+    }
+    if (!e.locked && e.file) targets.push({ file: join(EPISODES_DIR, e.file), imports: [] });
+  }
+  return targets;
+}
+
+// A single-file run on an adventure chapter should still know its imports, or it
+// would emit false "flag never set" errors. Look the file up in the manifest.
+function importsFromManifest(file) {
+  try {
+    const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
+    const base = file.split(/[\\/]/).pop();
+    for (const e of manifest.episodes || []) {
+      if (!e.adventure) continue;
+      for (const ch of e.chapters || []) if (ch.file === base) return ch.imports || [];
+    }
+  } catch { /* no manifest (fixtures); imports stay empty */ }
+  return [];
 }
 
 // Anomaly placeholders are unnumbered and the menu derives "EP NN" from a counter
@@ -563,13 +601,47 @@ function checkManifestOrder() {
   return errors;
 }
 
+// Whole-manifest adventure pass: validate every adventure entry's cross-chapter
+// contract, and enforce id uniqueness across the whole bundle -- routing is by
+// id, so episode ids, adventure ids, and chapter ids share one namespace.
+function checkManifestAdventures() {
+  const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
+  const errors = [];
+  const warnings = [];
+  const ids = new Map(); // id -> where it was claimed
+  const claim = (id, where) => {
+    if (!id) return;
+    if (ids.has(id)) errors.push(`duplicate id "${id}" (${ids.get(id)} vs ${where}) -- routing is by id; every episode, adventure, and chapter id must be unique`);
+    else ids.set(id, where);
+  };
+  for (const e of manifest.episodes || []) {
+    if (e.anomaly) continue;
+    if (e.adventure) {
+      claim(e.adventure, `adventure entry`);
+      const chapters = (e.chapters || []).map((decl, i) => {
+        let ep = null;
+        if (decl.file) { try { ep = JSON.parse(readFileSync(join(EPISODES_DIR, decl.file), "utf8")); } catch { /* reported by validateAdventure */ } }
+        if (ep) claim(ep.id, `adventure "${e.adventure}" chapter ${i + 1}`);
+        return { decl, ep };
+      });
+      const r = validateAdventure(e, chapters);
+      errors.push(...r.errors);
+      warnings.push(...r.warnings);
+      continue;
+    }
+    if (e.locked) { claim(e.id, "locked placeholder"); continue; }
+    if (e.file) { try { claim(JSON.parse(readFileSync(join(EPISODES_DIR, e.file), "utf8")).id, e.file); } catch { /* invalid JSON reported per-episode */ } }
+  }
+  return { errors, warnings };
+}
+
 // ---- CLI ----
 const isCLI = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCLI) {
   const args = process.argv.slice(2);
   const jsonMode = args.includes("--json");
   const files = args.filter((a) => a !== "--json");
-  const targets = files.length ? files : loadEpisodeFiles();
+  const targets = files.length ? files.map((f) => ({ file: f, imports: importsFromManifest(f) })) : loadEpisodeFiles();
   if (!targets.length) {
     if (jsonMode) console.log("[]"); else console.log("no episodes to validate");
     process.exit(0);
@@ -577,18 +649,18 @@ if (isCLI) {
   let failed = 0;
   const results = [];
   const parsedEps = [];
-  for (const f of targets) {
+  for (const t of targets) {
     let ep;
-    try { ep = JSON.parse(readFileSync(f, "utf8")); }
+    try { ep = JSON.parse(readFileSync(t.file, "utf8")); }
     catch (err) {
       failed++;
-      const r = { name: f, errors: [`invalid JSON: ${err.message}`], warnings: [], report: null, ok: false };
+      const r = { name: t.file, errors: [`invalid JSON: ${err.message}`], warnings: [], report: null, ok: false };
       results.push(r);
       if (!jsonMode) printResult(r);
       continue;
     }
     parsedEps.push(ep);
-    const r = validateEpisode(ep, ep.id || f);
+    const r = validateEpisode(ep, ep.id || t.file, { imports: t.imports });
     results.push(r);
     if (!jsonMode) printResult(r);
     if (!r.ok) failed++;
@@ -601,7 +673,15 @@ if (isCLI) {
     manifestErrors = checkManifestOrder();
   }
 
-  // Corpus-level diversity check — advisory only, never gates the build. Runs only
+  let adventureErrors = [];
+  let adventureWarnings = [];
+  if (files.length === 0) {
+    const a = checkManifestAdventures();
+    adventureErrors = a.errors;
+    adventureWarnings = a.warnings;
+  }
+
+  // Corpus-level diversity check -- advisory only, never gates the build. Runs only
   // when validating the whole manifest (no file args) on 2+ episodes, and only when
   // enabled in diversity-config.mjs. Single-file runs skip it (it needs the full set).
   let diversityWarnings = [];
@@ -612,6 +692,8 @@ if (isCLI) {
   if (jsonMode) {
     if (manifestErrors.length)
       results.push({ name: "(manifest order)", errors: manifestErrors, warnings: [], report: null, ok: false });
+    if (adventureErrors.length || adventureWarnings.length)
+      results.push({ name: "(adventures)", errors: adventureErrors, warnings: adventureWarnings, report: null, ok: adventureErrors.length === 0 });
     if (diversityWarnings.length)
       results.push({ name: "(corpus diversity)", errors: [], warnings: diversityWarnings, report: null, ok: true });
     console.log(JSON.stringify(results, null, 2));
@@ -620,11 +702,16 @@ if (isCLI) {
       console.log(`\n${C.bold}manifest${C.reset}`);
       manifestErrors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));
     }
+    if (adventureErrors.length || adventureWarnings.length) {
+      console.log(`\n${C.bold}adventures${C.reset}`);
+      adventureErrors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));
+      adventureWarnings.forEach((m) => console.log(`  ${C.yellow}warn ${C.reset} ${m}`));
+    }
     if (diversityWarnings.length) {
       console.log(`\n${C.bold}diversity (corpus)${C.reset}  ${C.dim}advisory; tune or disable in tools/diversity-config.mjs${C.reset}`);
       diversityWarnings.forEach((m) => console.log(`  ${C.yellow}warn ${C.reset} ${m}`));
     }
     console.log(`\n${failed ? C.red : C.green}${targets.length - failed}/${targets.length} episodes valid${C.reset}\n`);
   }
-  process.exit((failed || manifestErrors.length) ? 1 : 0);
+  process.exit((failed || manifestErrors.length || adventureErrors.length) ? 1 : 0);
 }

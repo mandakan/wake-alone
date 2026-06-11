@@ -3,7 +3,7 @@
 // Each fixture is a tiny episode with a known verdict; we assert the validator
 // reaches it. Run: node tools/validate.test.mjs  (npm test). Exit 1 on failure.
 
-import { validateEpisode } from "./validate.mjs";
+import { validateEpisode, solve } from "./validate.mjs";
 import { resolveSpec } from "./spec.mjs";
 import { buildSkeleton } from "./new.mjs";
 import { lintProse } from "./prose-lint.mjs";
@@ -500,6 +500,89 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   const r = lintProse(ep);
   check("crossrep: cross-node phrase repetition still warns",
     r.warnings.some((w) => w.includes("repeats") && w.includes("3x")), r.warnings.join("; "));
+}
+
+// --- solver: seed flags + endingFlags (adventure carryover support) ---
+{
+  const ep = {
+    id: "seed", title: "S", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "use the code", to: "out", requires: { flag: "code" }, locked: "no code" },
+        { text: "mark the wall", to: "marked" },
+        { text: "give up", to: "gone" },
+      ]},
+      marked: { text: "<p>m</p>", onEnter: { flags: { marked: true } }, choices: [{ text: "back", to: "hub" }] },
+      out: { ending: { type: "escape", stamp: "// OUT", text: "<p>o</p>" } },
+      gone: { ending: { type: "dead", stamp: "// GONE", text: "<p>g</p>" } },
+    },
+  };
+  const dry = solve(ep);
+  check("seed: unwinnable without seeded flag", dry.winnable === false);
+  check("seed: endingFlags records the dead ending", dry.endingFlags instanceof Map && dry.endingFlags.has("gone"));
+  check("seed: earned flag observable at an ending", [...dry.endingFlags.values()].some((s) => s.has("marked")));
+  const wet = solve(ep, true, ["code"]);
+  check("seed: winnable with seeded flag", wet.winnable === true);
+  check("seed: seeded flag present at the escape ending", wet.endingFlags.has("out") && wet.endingFlags.get("out").has("code"));
+}
+
+// --- solver: madnessFlags records flags held when sanity hits 0 ---
+{
+  const ep = {
+    id: "madflag", title: "M", start: "hub", startSanity: 10,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "take the token", to: "taken" },
+        { text: "out", to: "out" },
+      ]},
+      taken: { text: "<p>t</p>", onEnter: { flags: { token: true } }, choices: [
+        { text: "stare into it", to: "hub", effects: { sanity: -50 } },
+      ]},
+      out: { ending: { type: "escape", stamp: "// OUT", text: "<p>o</p>" } },
+    },
+  };
+  const r = solve(ep);
+  check("madflag: madness reachable", r.madnessReachable === true);
+  check("madflag: flag held at the madness point is recorded", r.madnessFlags.has("token"));
+}
+
+// --- imports-aware validateEpisode: carried flags are obtainable, not dead ---
+{
+  const ep = {
+    id: "carry", title: "C", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", onEnter: { sanity: -25 }, choices: [
+        { text: "remember the door code", to: "annex", requires: { flag: "prior_escape" }, locked: "you do not remember" },
+        { text: "pry the hatch", to: "out" },
+        { text: "slip", to: "d1" },
+        { text: "fall", to: "d2" },
+      ]},
+      annex: { text: "<p>a</p>", choices: [{ text: "back", to: "hub" }] },
+      out: escape(), d1: dead("// D1"), d2: dead("// D2"),
+    },
+  };
+  const bare = validateEpisode(ep);
+  check("carry: without imports the gate flag errors as never-set", hasErr(bare, 'requires flag "prior_escape"'));
+  const r = validateEpisode(ep, ep.id, { imports: ["prior_escape"] });
+  check("carry: with imports, ok", r.ok, r.errors.join("; "));
+  check("carry: no dead-choice warn for the import gate", !hasWarn(r, "choice[0]"), r.warnings.join("; "));
+  check("carry: no dead-flag warn for the import", !hasWarn(r, '"prior_escape"'), r.warnings.join("; "));
+}
+
+// --- baseline-solvability: an import may not gate the only escape ---
+{
+  const ep = {
+    id: "hardgate", title: "H", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", onEnter: { sanity: -25 }, choices: [
+        { text: "use what you remember", to: "out", requires: { flag: "prior_escape" }, locked: "x you do not remember" },
+        { text: "wait", to: "d1" },
+      ]},
+      out: escape(), d1: dead(),
+    },
+  };
+  const r = validateEpisode(ep, ep.id, { imports: ["prior_escape"] });
+  check("hardgate: imports may only gate optional beats -- unwinnable without them", hasErr(r, "unwinnable"), r.errors.join("; "));
 }
 
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
