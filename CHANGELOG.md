@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.8.0](https://github.com/mandakan/wake-alone/compare/v0.7.0...v0.8.0) (2026-06-11)
+
+
+### Features
+
+* **build:** pass anomaly manifest entries through to runtime ([f6f8d1b](https://github.com/mandakan/wake-alone/commit/f6f8d1bf27530f557408f5553493d69134f1591c))
+* **menu:** add three archive-anomaly manifest entries ([5f91669](https://github.com/mandakan/wake-alone/commit/5f9166902f1ea487ab91dad4aef45d2e694d94de))
+* **menu:** render anomaly cards with corrupted text and unnumbered slot ([29c85f1](https://github.com/mandakan/wake-alone/commit/29c85f124ceaa079dd9bd304d514e3ff708914d5))
+* **menu:** slow-churn anomaly cards with reactive click flinch ([0534d75](https://github.com/mandakan/wake-alone/commit/0534d750fc120605c511b8177e813bae627acd54))
+* **menu:** style .epcard.anomaly cards ([835105e](https://github.com/mandakan/wake-alone/commit/835105e280908ac6373eb89ab20265c7fbdcf220))
+* **validate:** enforce anomaly placeholders come last in the manifest ([6912dbe](https://github.com/mandakan/wake-alone/commit/6912dbedef03757daecc218efb4df32dc87c28c7))
+
+
+### Bug Fixes
+
+* **engine:** cancel anomaly flinch burst on nav and lab-fallback churn leak ([3637f70](https://github.com/mandakan/wake-alone/commit/3637f70592a1decbfbc2770305ecaec2cb2f5627))
+* **engine:** esc() escapes double-quotes so anomaly titles survive data-attrs ([e08e670](https://github.com/mandakan/wake-alone/commit/e08e67023bb7ede490381e6da88111793df70ba4))
+
 ## [0.7.0](https://github.com/mandakan/wake-alone/compare/v0.6.0...v0.7.0) (2026-06-10)
 
 
