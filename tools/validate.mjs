@@ -225,6 +225,9 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
   let solver = null;
   const danglingRefs = errors.some((m) => m.includes("non-existent node"));
   if (ep.nodes[ep.start] && !danglingRefs) {
+    // deliberately solved WITHOUT opts.imports: the baseline-solvability rule says
+    // imported flags may only gate optional beats, so the chapter must stay
+    // survivable when the previous run exported nothing (adventure contract).
     try { solver = solve(ep); }
     catch (err) { W(`solver could not run (internal: ${err.message}); solvability not verified`); }
   }
@@ -275,7 +278,7 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
         if (openable && !toResolves) {
           E(`node "${id}" choice[${i}]: clickable (its requirements can be satisfied) but has no valid "to" -- the engine crashes on click. Give it a real destination, or write the locked state as the positive gate on the real choice (requires the thing + a "locked" hint), not an inverted gate with no "to".`);
         }
-        const importGated = c.requires && ((c.requires.flag && imports.includes(c.requires.flag)) || (c.requires.notFlag && imports.includes(c.requires.notFlag)));
+        const importGated = c.requires && c.requires.flag && imports.includes(c.requires.flag);
         if (!solver.truncated && c.requires && reached.has(id) && !openable && !importGated) {
           W(`node "${id}" choice[${i}]: requires never met in any reachable state (dead choice)`);
         }

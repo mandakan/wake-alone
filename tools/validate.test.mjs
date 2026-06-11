@@ -569,5 +569,21 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("carry: no dead-flag warn for the import", !hasWarn(r, '"prior_escape"'), r.warnings.join("; "));
 }
 
+// --- baseline-solvability: an import may not gate the only escape ---
+{
+  const ep = {
+    id: "hardgate", title: "H", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", onEnter: { sanity: -25 }, choices: [
+        { text: "use what you remember", to: "out", requires: { flag: "prior_escape" }, locked: "x you do not remember" },
+        { text: "wait", to: "d1" },
+      ]},
+      out: escape(), d1: dead(),
+    },
+  };
+  const r = validateEpisode(ep, ep.id, { imports: ["prior_escape"] });
+  check("hardgate: imports may only gate optional beats -- unwinnable without them", hasErr(r, "unwinnable"), r.errors.join("; "));
+}
+
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
 process.exit(failed ? 1 : 0);
