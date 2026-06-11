@@ -24,7 +24,7 @@ three career stages. Chapters 2 and 3 unlock on `{"type":"escape"}` -- canon is 
 | played | chapter id        | title      | story time          | she is                       | size     | punishment | traces  |
 |--------|-------------------|------------|---------------------|------------------------------|----------|------------|---------|
 | 1      | tycho-delivery    | DELIVERY   | now (end)           | decommissioning admin, 50s   | standard | cruel      | forward |
-| 2      | tycho-migration   | MIGRATION  | ~11 years ago       | fleet hardware tech, 30s     | standard | standard   | absent  |
+| 2      | tycho-migration   | MIGRATION  | ~11 years ago       | fleet hardware tech, early 40s | standard | standard   | absent  |
 | 3      | tycho-retraction  | RETRACTION | ~31 years ago (origin) | junior relay tech, 22     | short    | gentle     | absent  |
 
 sanityRegister: `wrong` for all three (the psychotic register is redundant here -- the
@@ -343,6 +343,19 @@ chapter's full JSON.
 - All four exports bound: `read_the_address` set at `archive` (choice to `address`); `partial_handshake` at `spine` (choice to `handshake`); `heard_it_refined` at `node_room` (choice to `node_listen`); `pulled_the_packet` at `node_room` (choice to `node_pull`).
 - Items in episode: `cartridge`, `medgel`; new label added to `engine/item-names.json`: `cartridge` = "packet cartridge" (medgel pre-existed).
 - Locations/terminology beyond the geography ledger: "Array junction box" node on the mast (feed isolation), receipt-query comm panel at the spine junction, collar ladder on the mast, decommission cradle at the docking berth.
+
+### As-built: tycho-migration (shipped 2026-06-11, `episodes/tycho-migration.json`)
+
+- Validator: PASS, solvable; 16 nodes (16 reachable); best escape survives 91% sanity; death ratio 67% (2 dead of 3 reachable endings); madness not reachable (standard does not require it).
+- Endings: `out` (escape; anchor: COMPLETE stamped over ANOMALY 20-1141), `end_pulled` (dead, rule 2), `end_held` (dead, rule 1; anchor: vents quiet mid-word).
+- Forced loss on optimal escape: 34 (speakers 16 + report 6 + pull 12); ONE medgel (archive first-aid tin). Answering the playback is a net cost (-2: +6 relief, -8 echo), not a discount.
+- All four exports bound: `heard_the_seams` + `core_live` set at `speakers` (onEnter); `anomaly_filed` at `report`; `kept_the_log` at `pull` (also adds item `sled`); `answered_it` on the answer choice into `answered`.
+- Imports bound: `read_the_address` gates the `manifest` beat (PRS-9 / PERSONNEL REGISTRY SYNC, REV 9 BASELINE); `partial_handshake` gates the `respond` beat (RESPOND Y/N, acknowledgment at range, never times out). `prior_escape` was dropped from the manifest imports: the `{"type":"escape"}` unlock makes it always-true, so no gate can read it meaningfully.
+- Correction to the table above: she is early 40s, not 30s (22 at origin + 20 years; episode backstory says "Twenty years in fleet service").
+- Items: `medgel`, `sled`; new label in `engine/item-names.json`: `sled` = log sled.
+- Geography/terminology added to canon: archive log bay by the door with a mirror lock (sled ejects only mid-cycle); formal channel terminal at the end of the binder shelf on ops; clearance terminal by the berth's inner hatch; first-aid tin screwed to the archive shelf, crew issue, older than her service (available to ch3).
+- Ch3 must honor: attempt counter at the 20-year mark is 7,348 ("once a cycle" is the station's own cycle, slightly under a day - do not equate to 365/year); the anomaly number is 20-1141; the ops board faces the door; the SOS's first four words stay "This is Tycho-4 - ".
+- Known pre-merge issue: `kept_the_log` and `answered_it` are not in ch3's planned imports; bind them in ch3 or drop them from the ch2 export list before the arc merges (dead-export warns until then are expected).
 
 ## Register specimens (approved tone; redraft at authoring)
 

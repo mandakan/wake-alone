@@ -16,5 +16,6 @@
   "scope": "transit scope",
   "seal": "EVA seal",
   "isolation-key": "master isolation key",
-  "cartridge": "packet cartridge"
+  "cartridge": "packet cartridge",
+  "sled": "log sled"
 }
