@@ -595,15 +595,18 @@ function startAnomalyChurn(){
   if(REDUCED) return;                   // reduced-motion: corrupt once, never animate
   anomTimer=setInterval(()=>fillAllAnomalies(false), 2500);
 }
-function stopAnomalyChurn(){ if(anomTimer){ clearInterval(anomTimer); anomTimer=null; } }
+function stopAnomalyChurn(){
+  if(anomTimer){ clearInterval(anomTimer); anomTimer=null; }
+  // cancel any in-flight click-flinch bursts before their cards are detached
+  root.querySelectorAll(".epcard.anomaly").forEach(c=>{ if(c._burst){ clearInterval(c._burst); c._burst=null; } });
+}
 /* Click does not navigate: a short intensified garble burst that settles, plus a
    denied blip. Under reduced-motion, a single static re-garble (no animation). */
 function anomalyFlinch(card){
-  if(card.dataset.flinching) return;          // ignore re-clicks until the burst settles
+  if(card._burst) return;                       // ignore re-clicks until the burst settles
   if(AUDIO) AUDIO.blip("punct");
   if(REDUCED){ fillAnomaly(card,true); return; }
-  card.dataset.flinching="1";
-  let n=0; const burst=setInterval(()=>{ fillAnomaly(card,true); if(++n>=6){ clearInterval(burst); fillAnomaly(card,false); delete card.dataset.flinching; } }, 70);
+  let n=0; card._burst=setInterval(()=>{ fillAnomaly(card,true); if(++n>=6){ clearInterval(card._burst); card._burst=null; fillAnomaly(card,false); } }, 70);
 }
 function badValue(v,tier){
   const r=Math.random();
@@ -890,7 +893,7 @@ function labSanity(v){
 function lab(){
   if(labOn) return; labOn=true;
   const eps=labEpisodes();
-  if(!eps.length){ titleScreen(); return; }
+  if(!eps.length){ labOn=false; titleScreen(); return; } // no lab corpus: fall back to a normal menu (so churn is managed by routing)
   const opts=eps.map((e,i)=>`<option value="${i}">${esc(e.title)}</option>`).join("");
   const panel=document.createElement("div"); panel.className="lab"; panel.id="lab";
   panel.innerHTML=`<button class="lab-toggle" id="lab-toggle">// SKEIN LAB <span class="lab-caret">[-]</span></button>
