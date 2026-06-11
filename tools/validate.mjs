@@ -35,6 +35,7 @@ import { resolveSpec, estimateMinutes } from "./spec.mjs";
 import { lintProse } from "./prose-lint.mjs";
 import { DIVERSITY } from "./diversity-config.mjs";
 import { checkDiversity, loadAllowlist } from "./diversity.mjs";
+import { validateAdventure } from "./adventure.mjs"; // safe cycle: only the CLI body calls it
 
 let ITEM_NAMES = {};
 try { ITEM_NAMES = JSON.parse(readFileSync(join(EPISODES_DIR, "..", "engine", "item-names.json"), "utf8")); } catch {}
@@ -560,9 +561,29 @@ function printResult(r) {
 
 function loadEpisodeFiles() {
   const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
-  const files = [];
-  for (const e of manifest.episodes) if (!e.locked && e.file) files.push(join(EPISODES_DIR, e.file));
-  return files;
+  const targets = [];
+  for (const e of manifest.episodes) {
+    if (e.adventure) {
+      for (const ch of e.chapters || []) if (ch.file) targets.push({ file: join(EPISODES_DIR, ch.file), imports: ch.imports || [] });
+      continue;
+    }
+    if (!e.locked && e.file) targets.push({ file: join(EPISODES_DIR, e.file), imports: [] });
+  }
+  return targets;
+}
+
+// A single-file run on an adventure chapter should still know its imports, or it
+// would emit false "flag never set" errors. Look the file up in the manifest.
+function importsFromManifest(file) {
+  try {
+    const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
+    const base = file.split(/[\\/]/).pop();
+    for (const e of manifest.episodes || []) {
+      if (!e.adventure) continue;
+      for (const ch of e.chapters || []) if (ch.file === base) return ch.imports || [];
+    }
+  } catch { /* no manifest (fixtures); imports stay empty */ }
+  return [];
 }
 
 // Anomaly placeholders are unnumbered and the menu derives "EP NN" from a counter
@@ -580,13 +601,47 @@ function checkManifestOrder() {
   return errors;
 }
 
+// Whole-manifest adventure pass: validate every adventure entry's cross-chapter
+// contract, and enforce id uniqueness across the whole bundle -- routing is by
+// id, so episode ids, adventure ids, and chapter ids share one namespace.
+function checkManifestAdventures() {
+  const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
+  const errors = [];
+  const warnings = [];
+  const ids = new Map(); // id -> where it was claimed
+  const claim = (id, where) => {
+    if (!id) return;
+    if (ids.has(id)) errors.push(`duplicate id "${id}" (${ids.get(id)} vs ${where}) -- routing is by id; every episode, adventure, and chapter id must be unique`);
+    else ids.set(id, where);
+  };
+  for (const e of manifest.episodes || []) {
+    if (e.anomaly) continue;
+    if (e.adventure) {
+      claim(e.adventure, `adventure entry`);
+      const chapters = (e.chapters || []).map((decl, i) => {
+        let ep = null;
+        if (decl.file) { try { ep = JSON.parse(readFileSync(join(EPISODES_DIR, decl.file), "utf8")); } catch { /* reported by validateAdventure */ } }
+        if (ep) claim(ep.id, `adventure "${e.adventure}" chapter ${i + 1}`);
+        return { decl, ep };
+      });
+      const r = validateAdventure(e, chapters);
+      errors.push(...r.errors);
+      warnings.push(...r.warnings);
+      continue;
+    }
+    if (e.locked) { claim(e.id, "locked placeholder"); continue; }
+    if (e.file) { try { claim(JSON.parse(readFileSync(join(EPISODES_DIR, e.file), "utf8")).id, e.file); } catch { /* invalid JSON reported per-episode */ } }
+  }
+  return { errors, warnings };
+}
+
 // ---- CLI ----
 const isCLI = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCLI) {
   const args = process.argv.slice(2);
   const jsonMode = args.includes("--json");
   const files = args.filter((a) => a !== "--json");
-  const targets = files.length ? files : loadEpisodeFiles();
+  const targets = files.length ? files.map((f) => ({ file: f, imports: importsFromManifest(f) })) : loadEpisodeFiles();
   if (!targets.length) {
     if (jsonMode) console.log("[]"); else console.log("no episodes to validate");
     process.exit(0);
@@ -594,18 +649,18 @@ if (isCLI) {
   let failed = 0;
   const results = [];
   const parsedEps = [];
-  for (const f of targets) {
+  for (const t of targets) {
     let ep;
-    try { ep = JSON.parse(readFileSync(f, "utf8")); }
+    try { ep = JSON.parse(readFileSync(t.file, "utf8")); }
     catch (err) {
       failed++;
-      const r = { name: f, errors: [`invalid JSON: ${err.message}`], warnings: [], report: null, ok: false };
+      const r = { name: t.file, errors: [`invalid JSON: ${err.message}`], warnings: [], report: null, ok: false };
       results.push(r);
       if (!jsonMode) printResult(r);
       continue;
     }
     parsedEps.push(ep);
-    const r = validateEpisode(ep, ep.id || f);
+    const r = validateEpisode(ep, ep.id || t.file, { imports: t.imports });
     results.push(r);
     if (!jsonMode) printResult(r);
     if (!r.ok) failed++;
@@ -618,7 +673,15 @@ if (isCLI) {
     manifestErrors = checkManifestOrder();
   }
 
-  // Corpus-level diversity check — advisory only, never gates the build. Runs only
+  let adventureErrors = [];
+  let adventureWarnings = [];
+  if (files.length === 0) {
+    const a = checkManifestAdventures();
+    adventureErrors = a.errors;
+    adventureWarnings = a.warnings;
+  }
+
+  // Corpus-level diversity check -- advisory only, never gates the build. Runs only
   // when validating the whole manifest (no file args) on 2+ episodes, and only when
   // enabled in diversity-config.mjs. Single-file runs skip it (it needs the full set).
   let diversityWarnings = [];
@@ -629,6 +692,8 @@ if (isCLI) {
   if (jsonMode) {
     if (manifestErrors.length)
       results.push({ name: "(manifest order)", errors: manifestErrors, warnings: [], report: null, ok: false });
+    if (adventureErrors.length || adventureWarnings.length)
+      results.push({ name: "(adventures)", errors: adventureErrors, warnings: adventureWarnings, report: null, ok: adventureErrors.length === 0 });
     if (diversityWarnings.length)
       results.push({ name: "(corpus diversity)", errors: [], warnings: diversityWarnings, report: null, ok: true });
     console.log(JSON.stringify(results, null, 2));
@@ -637,11 +702,16 @@ if (isCLI) {
       console.log(`\n${C.bold}manifest${C.reset}`);
       manifestErrors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));
     }
+    if (adventureErrors.length || adventureWarnings.length) {
+      console.log(`\n${C.bold}adventures${C.reset}`);
+      adventureErrors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));
+      adventureWarnings.forEach((m) => console.log(`  ${C.yellow}warn ${C.reset} ${m}`));
+    }
     if (diversityWarnings.length) {
       console.log(`\n${C.bold}diversity (corpus)${C.reset}  ${C.dim}advisory; tune or disable in tools/diversity-config.mjs${C.reset}`);
       diversityWarnings.forEach((m) => console.log(`  ${C.yellow}warn ${C.reset} ${m}`));
     }
     console.log(`\n${failed ? C.red : C.green}${targets.length - failed}/${targets.length} episodes valid${C.reset}\n`);
   }
-  process.exit((failed || manifestErrors.length) ? 1 : 0);
+  process.exit((failed || manifestErrors.length || adventureErrors.length) ? 1 : 0);
 }
