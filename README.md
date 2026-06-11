@@ -16,7 +16,7 @@ Every branch, item, and ending is pre-written.
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/menu.png" alt="The WAKE ALONE salvage menu: amber-on-black terminal, episodes listed as EP 01..06" width="440">
+  <img src="docs/screenshots/menu.png" alt="The WAKE ALONE salvage menu: amber-on-black terminal, episodes listed as numbered EP entries" width="440">
 </p>
 
 <table>
@@ -46,15 +46,21 @@ Episodes so far:
 | 02 | **VIGIL** | Listening station VIGIL. The crew didn't leave. They're just not here. |
 | 03 | **TENANT** | Bulk freighter *Amaranth*. The crew left their dinner warm. |
 | 04 | **BECALMED** | Generation ship *Long Patience*. Reactor cold. No one left but you. |
-| 05 | **WARD** | Recovery berth, freighter *Anodyne*. The voice says you are healing. The frost disagrees. |
-| 06 | **GRAFT** | Auto-surgery, clinic-ship *Halcyon*. You signed for one repair. It is still working. |
+| 05 | **SIGNAL LOST** *(encrypted)* | Relay station Tycho-4. The distress call is in your own voice. |
+| 06 | **WARD** | Recovery berth, freighter *Anodyne*. The voice says you are healing. The frost disagrees. |
+| 07 | **GRAFT** | Auto-surgery, clinic-ship *Halcyon*. You signed for one repair. It is still working. |
+| 08 | **FATHOM** | An object that returns no bearing. You were sent to measure it. |
+| 09 | **FAULT** | Survey frigate *Auster*. Seven crew accounted for. The ship has never told you no. |
 
-(*SIGNAL LOST* is encrypted on the menu - locked until it is written.)
+*SIGNAL LOST* (EP 05) is encrypted on the menu - a locked placeholder until it is written. Below the
+written episodes sit three permanent **archive anomalies**: unnumbered, corrupted entries whose text
+quietly churns. They are not playable - they mark the anthology as still growing, more signal waiting
+to be recovered.
 
 ## Quickstart (Node 18+, no dependencies)
 
 ```bash
-npm run new -- --id tycho --title "Signal Lost"   # scaffold a valid episode
+npm run new -- --id orrery --title "Orrery"       # scaffold a valid episode
 npm run validate                                  # check every episode
 npm run build                                     # -> dist/index.html (standalone)
 open dist/index.html                              # play
@@ -76,8 +82,12 @@ repo only if a second anthology ever needs the engine.
 - **`tools/prose-lint.mjs`** - flags the mechanical tells of generated slop (non-ASCII punctuation,
   essay register, robotic cadence) so episodes read like prose, not output.
 - **`tools/build.mjs`** - validates, then inlines episodes into `engine/template.html` -> `dist/`.
-- **`engine/`** - the runtime (amber-phosphor CRT/terminal aesthetic; sanity degrades the screen)
-  and the inventory label map.
+- **`engine/`** - the runtime. Amber-phosphor CRT/terminal aesthetic; it opens on a boot screen
+  ("press any key to wake") that doubles as the gesture unlocking audio, then sanity degrades the
+  screen as you play (glitch, vignette, the prose itself going wrong). Ships with `skein-audio.js` -
+  a procedural, sanity-coupled soundtrack synthesised live with Tone.js, no audio files - and the
+  inventory label map.
+- **`vendor/tone.min.js`** - pinned Tone.js, inlined into `dist/` at build so the bundle stays one file.
 
 ## Handing authoring to Claude Code
 
@@ -86,7 +96,11 @@ This repo is set up so Claude Code can write new episodes in a closed loop:
 1. Put the repo on your box and `git init` it.
 2. `CLAUDE.md` (repo root) is read automatically as project memory - it holds the schema, the
    creative bible, and the rule *"not done until `npm run validate` exits 0"*.
-3. `.claude/skills/author-episode/SKILL.md` is the invocable procedure for "write a new episode".
+3. Three invocable skills under `.claude/skills/` cover the loop: `ideate-episode` (brainstorm and
+   judge a premise), `author-episode` (write the JSON against the schema and creative bible), and
+   `review-episode` (an adversarial craft re-read of a finished episode). An episode can also commit
+   to a generation contract via an optional `spec` block (size / punishment / escape / traces) that
+   the validator then enforces.
 4. Because the validator is a plain command, Claude Code runs it itself and iterates
    (generate -> validate -> fix -> build) without you in the loop.
 
