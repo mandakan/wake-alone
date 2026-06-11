@@ -548,6 +548,21 @@ function loadEpisodeFiles() {
   return files;
 }
 
+// Anomaly placeholders are unnumbered and the menu derives "EP NN" from a counter
+// that skips them; a real/locked entry placed AFTER an anomaly would silently
+// misnumber every following card. Enforce that anomalies are last.
+function checkManifestOrder() {
+  const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
+  const errors = [];
+  let seenAnomaly = false;
+  (manifest.episodes || []).forEach((e, i) => {
+    if (e.anomaly) seenAnomaly = true;
+    else if (seenAnomaly)
+      errors.push(`manifest episode[${i}] (${e.file || e.title || e.id || "?"}) is a real/locked entry placed after an anomaly placeholder; anomaly entries must come last (they are unnumbered, so a non-anomaly after them misnumbers the menu).`);
+  });
+  return errors;
+}
+
 // ---- CLI ----
 const isCLI = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCLI) {
@@ -579,6 +594,13 @@ if (isCLI) {
     if (!r.ok) failed++;
   }
 
+  // Manifest-structure check — hard error, gates the build. Whole-manifest runs only
+  // (single-file runs don't see the ordering). Anomaly placeholders must come last.
+  let manifestErrors = [];
+  if (files.length === 0) {
+    manifestErrors = checkManifestOrder();
+  }
+
   // Corpus-level diversity check — advisory only, never gates the build. Runs only
   // when validating the whole manifest (no file args) on 2+ episodes, and only when
   // enabled in diversity-config.mjs. Single-file runs skip it (it needs the full set).
@@ -588,15 +610,21 @@ if (isCLI) {
   }
 
   if (jsonMode) {
+    if (manifestErrors.length)
+      results.push({ name: "(manifest order)", errors: manifestErrors, warnings: [], report: null, ok: false });
     if (diversityWarnings.length)
       results.push({ name: "(corpus diversity)", errors: [], warnings: diversityWarnings, report: null, ok: true });
     console.log(JSON.stringify(results, null, 2));
   } else {
+    if (manifestErrors.length) {
+      console.log(`\n${C.bold}manifest${C.reset}`);
+      manifestErrors.forEach((m) => console.log(`  ${C.red}ERROR${C.reset} ${m}`));
+    }
     if (diversityWarnings.length) {
       console.log(`\n${C.bold}diversity (corpus)${C.reset}  ${C.dim}advisory; tune or disable in tools/diversity-config.mjs${C.reset}`);
       diversityWarnings.forEach((m) => console.log(`  ${C.yellow}warn ${C.reset} ${m}`));
     }
     console.log(`\n${failed ? C.red : C.green}${targets.length - failed}/${targets.length} episodes valid${C.reset}\n`);
   }
-  process.exit(failed ? 1 : 0);
+  process.exit((failed || manifestErrors.length) ? 1 : 0);
 }
