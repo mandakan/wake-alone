@@ -907,15 +907,15 @@ function adventureScreen(adv){
     <div class="eplist">${cards}
       <div style="margin-top:24px">
         <button class="choice" onclick="returnToMenu()">Return to salvage menu</button>
-        <button class="choice" onclick="purgeAdventure(this,'${esc(adv.id)}')">PURGE LOCAL RECORD</button>
+        <button class="choice" data-adv="${esc(adv.id)}" onclick="purgeAdventure(this)">PURGE LOCAL RECORD</button>
       </div>
     </div></div>` + footer();
   scrollTop(false);
 }
-function purgeAdventure(btn, advId){
+function purgeAdventure(btn){
   if(btn.dataset.armed!=="1"){ btn.dataset.armed="1"; btn.textContent="CONFIRM PURGE -- this forgets every segment"; return; }
-  try{ const p=loadProgress(); delete p[advId]; localStorage.setItem(PROG_KEY, JSON.stringify(p)); }catch(e){}
-  const adv=EPISODES.find(e=>e.adventure && e.id===advId);
+  try{ const p=loadProgress(); delete p[btn.dataset.adv]; localStorage.setItem(PROG_KEY, JSON.stringify(p)); }catch(e){}
+  const adv=EPISODES.find(e=>e.adventure && e.id===btn.dataset.adv);
   if(adv) adventureScreen(adv);
 }
 /* One-time tagline type-out on the first menu after boot: char-by-char with
