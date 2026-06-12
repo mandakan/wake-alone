@@ -1,0 +1,106 @@
+{
+  "id": "tycho-retraction",
+  "title": "RETRACTION",
+  "byline": "Relay station Tycho-4, first year of service. One fault, one call, a quiet morning after.",
+  "spec": { "size": "short", "punishment": "gentle", "escape": "required", "traces": "absent", "sanityRegister": "wrong" },
+  "character": {
+    "role": "junior relay technician",
+    "expertise": ["basic relay operation", "coolant systems", "routing procedure"],
+    "backstory": "Twenty-two, eight months out of training, eight months into a first posting that was supposed to be two-handed. The stationmaster rotated out on schedule six weeks ago and the relief is late, so she holds the watch alone. Coolant systems are her certification and her confidence; the comms board she knows from a simulator - two modules, one afternoon on retractions. Help is twenty-two light-minutes away at lightspeed and twelve hours away in practice, and she has decided that being alone is the same as being trusted."
+  },
+  "watching": [
+    "RETRACTION QUEUED BEHIND PARENT.",
+    "CONFIRMED.",
+    "AWAITING ACKNOWLEDGMENT."
+  ],
+  "start": "watch",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "watch": {
+      "title": "Operations deck",
+      "text": "<p>Third watch, and the deck is yours: the big board facing the door, the binder shelf, the watch bill by the light switch with two names on it. The top name rotated out six weeks ago, on schedule; the relief is two boards behind, which is what relief is. Eight months into your first posting, and for the last six the station's whole complement has been you.</p><p>You are twenty-two and good at this. Night traffic is acknowledgments, mostly - you say copy into this board a dozen times a shift and mean it. At 0341 the board says something else.</p><p>COOLANT DELTA. SECONDARY LOOP. RATE ALARM. Not a flutter - the rate is real and climbing, and the secondary loop runs the reactor jacket. You are standing before the chair finishes moving. The card for this is the first card in the watch deck, and you run it top to bottom, because a lone watch declares before it fights. A watch that loses without declaring is a watch nobody comes looking for.</p><p>Priority one. The board builds the call around you. The address line fills itself - SRV CORMORANT, sector rescue coordinator, twenty-two light-minutes out. Twenty-two minutes before anyone so much as hears, twelve hours before anything answers. The channel opens. You say it as the card says to - <em>\"This is Tycho-4 - \"</em> - and the rest the way the card gives it, your voice level, because the card tells you what comes next and you say exactly that.</p><p>STATE YOUR NAME FOR THE RECORD, says the board. You say your name, plainly, the way you would to a person. The call closes, files, queues. SENT. The first card is done. The second card is the fault.</p>",
+      "onEnter": { "sanity": -10 },
+      "choices": [
+        { "text": "Take the second card and turn to the fault.", "to": "ops" }
+      ]
+    },
+    "ops": {
+      "title": "Operations deck",
+      "text": "<p>The operations deck keeps its shape around you: the board set to face the door, the binder, the watch bill with two names and one of you. One door aft, the core room hums to itself. Aft again, the workshop, and past it the crawl runs along the reactor jacket. Forward there is nothing until morning.</p><p>The plant page carries the secondary loop's trace; the traffic page carries the night's, and the queue beneath it. The watch deck sits in reach of the chair, in order. Whatever the night is doing, the order of work from this chair does not change: plant first, paper second, and no inventing in between.</p>",
+      "choices": [
+        { "text": "Aft to the workshop: the bleed kit, the crawl, the fault.", "requires": { "notFlag": "fault_fixed" }, "to": "workshop" },
+        { "text": "Stay at the board and work out the retraction now - pull the call back inside the response window, then see to the fault.", "requires": { "notFlag": "fault_fixed" }, "to": "end_cascade" },
+        { "text": "Run the transmit loopback and make sure the call went out clean.", "requires": { "flag": "heard_the_seams", "notFlag": "seen_loop" }, "to": "loopback" },
+        { "text": "Play the authentication tag back. Make sure the record holds your name.", "requires": { "flag": "answered_it", "notFlag": "seen_record" }, "to": "record" },
+        { "text": "Pull the binder. Somewhere in it there must be a form for a night like this.", "requires": { "flag": "anomaly_filed", "notFlag": "seen_rounds" }, "to": "rounds" },
+        { "text": "Close out the watch: log the handoff and give the station back its morning.", "requires": { "item": "bleedkey", "flag": "retraction_filed" }, "locked": "Close out the watch. (the log will not close with the fault open and the call still out - the fault wants the bleed valve key from the workshop kit, and the call wants its retraction filed at the board)", "to": "out" }
+      ]
+    },
+    "workshop": {
+      "title": "Workshop",
+      "text": "<p>The workshop is the one room on station that answers to you alone, and it is in order: bench, lockout board, the coolant kit in its red case under the bench. You have the case open before the lights finish waking. Gauge block, jumper hoses, every tool the school drilled you on, packed by somebody who had met a crawlspace before.</p><p>You prop the plant manual open on the bench at the bleed procedure, as trained, and the trainer's voice comes with it: <em>the plate outranks the rote.</em> Every station is plumbed to the same card and no two of them are plumbed the same, and the run plate in the antechamber says which way this one goes. The rote is faster. The plate is right.</p><p>The crawl hatch stands aft of the bench. Its frame seal is weeping at the lower corner - a thread of dried residue, original fit, years from mattering. You light it, read it, and file it where it belongs: the wear log, next cycle. It will hold. Past the hatch, the crawl runs hot along the reactor jacket to the bleed valve antechamber, and the work in there is the half of the job they certified you for.</p>",
+      "choices": [
+        { "text": "Take the bleed valve key from its slot.", "requires": { "notItem": "bleedkey" }, "effects": { "add": ["bleedkey"] }, "to": "workshop" },
+        { "text": "Pocket the med-gel ampoule from the kit lid.", "requires": { "notFlag": "gel_taken" }, "effects": { "add": ["medgel"], "flags": { "gel_taken": true } }, "to": "workshop" },
+        { "text": "Crawl in and run the bleed by the rote - the order your hands know, fast.", "requires": { "item": "bleedkey" }, "to": "end_spike" },
+        { "text": "Crawl in, read the run plate, and walk the bleed in the station's own order.", "requires": { "item": "bleedkey" }, "effects": { "sanity": -8 }, "to": "board" },
+        { "text": "Back forward to the operations deck.", "to": "ops" }
+      ]
+    },
+    "board": {
+      "title": "Operations deck",
+      "text": "<p>Jacket side first on this build - the plate said so, bolted where the card cannot argue with it - then the standpipe, then crack and count. You walked the bleed in the jacket heat with the hand-light in your teeth, four quarter-turns of the key, counting out loud because the count likes company. The trace answered before you were out of the crawl. Rate falling. Then flat. Then nominal, as if the night had been a drill after all.</p><p>One more card. A closed fault does not close its own distress call: the retraction is yours to file, and the part of you that has been composing an apology since 0341 is glad of the work. The comms manual comes down from the binder: RETRACTIONS, six pages, which the simulator gave one afternoon, two years ago.</p><p>You build it the way the manual says. The board kicks it back once - PARENT REFERENCE REQUIRED - and the manual, read slower, says the parent is the call itself, its own queue line, the one wearing your name on the tag. You key the reference in and send it again.</p><p>The board takes the retraction on the second try. CONFIRMED, says the screen.</p><p>You are twenty-two, and you read CONFIRMED, and you let your shoulders down, because you do not yet know the difference between confirmed and delivered.</p>",
+      "onEnter": { "sanity": -4, "flags": { "fault_fixed": true, "retraction_filed": true } },
+      "choices": [
+        { "text": "Put the manual back and stand up from the board.", "to": "ops" }
+      ]
+    },
+    "loopback": {
+      "title": "Operations deck",
+      "text": "<p>The transmit loopback is a checkbox the card recommends after any priority send: the board plays back what actually left the mast, so the watch knows the call carried. You key it and the deck speaker opens.</p><p>Your own voice comes back to you a half-beat late - four words, and the rest behind them, level as you hoped you had sounded. The lag is the monitor path, buffer in and buffer out, a station's width of wiring; the manual calls it nominal and it is. Still, for the length of the playback there are two voices on the deck, where the whole eight months there has been one.</p><p>It carried. You key the channel shut, and the deck is one voice again.</p>",
+      "onEnter": { "sanity": -2, "flags": { "seen_loop": true } },
+      "choices": [
+        { "text": "Tick the box on the card and step back from the speaker.", "to": "ops" }
+      ]
+    },
+    "record": {
+      "title": "Operations deck",
+      "text": "<p>The authentication tag has its own playback, one line long, because a name is the part of a call that has to be right. You key it more carefully than the job strictly needs. If the record is going to carry your name for twelve hours, it can carry it said properly.</p><p>It does. Your name comes off the board whole, stress on the right half, plain as you gave it. The tag files clean against the call.</p><p>A good recording. You put the speaker back to sleep.</p>",
+      "onEnter": { "sanity": -2, "flags": { "seen_record": true } },
+      "choices": [
+        { "text": "Let the record stand.", "to": "ops" }
+      ]
+    },
+    "rounds": {
+      "title": "Operations deck",
+      "text": "<p>The binder knows every night the station is supposed to have. Watch handoff. Plant exceptions. Stores count. A tab near the back says ANOMALY REPORT, and the template behind it is blank and has always been blank - anomalies are for things the station does that the manual cannot explain, and tonight the station has done nothing but what it was built to do. The fault was real, the call was real, the procedure held. You flip past the empty form to the sections that are actually yours.</p><p>The stores page is current. Last line of the count: ROUTING LOG SLED, SPARE, ONE - still in its factory wrap in the archive cradle, initialed by you on the quarterly. Some things a station keeps just in case.</p><p>There is no form for tonight, because tonight, by every column the binder owns, went right.</p>",
+      "onEnter": { "flags": { "seen_rounds": true } },
+      "choices": [
+        { "text": "Initial the count against the sled in its wrap, and close the binder.", "requires": { "flag": "kept_the_log" }, "to": "ops" },
+        { "text": "Close the binder.", "to": "ops" }
+      ]
+    },
+    "out": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// QUEUE: 1",
+        "text": "<p>Morning on a relay is a lighting change and a tone, and you are at the board to meet it. The watch log wants the night in order, and the night is in order: one plant casualty, found, fought, closed by the book; one priority call, filed correct, retracted correct; one hatch seal flagged to the wear log. The relief is still two boards behind, so you do what the lone watch does and read the handoff aloud, voice tag and all. The board takes your voice and files it with the rest of the night.</p><p>The queue page holds one entry: the call and its retraction folded together, AWAITING ACKNOWLEDGMENT - which is what the manual says it should say until the far end answers. Twenty-two light-minutes out. Twelve hours back, at best.</p><p>You rack the cards and give the deck its morning. Behind you the queue keeps its one entry, patient.</p>"
+      }
+    },
+    "end_spike": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// PRESSURE HELD",
+        "text": "<p>The rote is six steps and your hands know it dry. Standpipe first, then jacket - the order the card teaches, the order the simulator drilled, the order you could run with your eyes shut, which in the crawl heat is nearly what you do.</p><p>Tycho-4 came out of a yard that mirrored the run. The plate in the antechamber says so, white letters on green, two meters from where you crack the standpipe and send the surge the wrong way around the loop.</p><p>The spike is secondary-side and brief, and the interlock does exactly what an interlock is for: it finds the nearest pressure boundary and holds it. The boundary is the antechamber door. It seats while you are still turning toward it - you on the wrong side, one door short of the bleed valve, with the surge arriving and nowhere left to send it.</p><p>The interlock is not angry. It is holding, which is its whole life. On the workshop bench the plant manual lies where you propped it, open to the bleed procedure, general issue - the page that is true on every station except the one it is on. The station amendment is two tabs further. It stays two tabs further.</p>"
+      }
+    },
+    "end_cascade": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// STEADY",
+        "text": "<p>The call is the part that can still be taken back. That is the argument, and at 0349 it sounds like procedure: a retraction that lands inside the response window cancels the sortie, the report, the whole grown-up machinery your own voice just set moving. The fault has held for eight minutes. The bleed takes twenty. The manual is right here.</p><p>The manual is six pages, and the board wants the retraction built against its parent, and the parent wants a reference from a page the simulator skipped. You build it wrong once. You build it wrong again, slower, being careful. Behind you the rate alarm steps up a register, and you tell it what you told it the first time: that it is next.</p><p>The secondary loop does not negotiate. Somewhere aft a run lets go at a fitting, and the station does everything right - scram, seal, vent - in an order ranked years ago by people who assumed the watch would be aft by then, fighting it. The heat comes forward through the deck plating, into a room rated for people.</p><p>The last thing the board gives you is the plant page. The trace you talked over is steady at last. Flat.</p>"
+      }
+    }
+  }
+}

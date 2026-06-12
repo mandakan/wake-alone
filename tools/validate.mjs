@@ -123,6 +123,9 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
   // here without being set here. adventure.mjs verifies the other side.
   const imports = Array.isArray(opts.imports) ? opts.imports : [];
   imports.forEach((f) => flags.add(f));
+  // flags carried OUT to the next chapter (declared exports): read by a gate
+  // there, not here. adventure.mjs errors/warns if nothing downstream reads them.
+  const exportsOut = Array.isArray(opts.exports) ? opts.exports : [];
 
   // ---- references, for dead item/flag detection ----
   const reqItems = new Set();   // items read by a gate
@@ -356,6 +359,7 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
   }
   for (const fl of flags) {
     if (imports.includes(fl)) continue; // carried in; adventure.mjs warns about unread imports
+    if (exportsOut.includes(fl)) continue; // carried out; adventure.mjs warns about unread exports
     if (!reqFlags.has(fl)) W(`flag "${fl}" is set but never read by any gate (dead flag?)`);
   }
 
@@ -576,7 +580,7 @@ function loadEpisodeFiles() {
   const targets = [];
   for (const e of manifest.episodes) {
     if (e.adventure) {
-      for (const ch of e.chapters || []) if (ch.file) targets.push({ file: join(EPISODES_DIR, ch.file), imports: ch.imports || [] });
+      for (const ch of e.chapters || []) if (ch.file) targets.push({ file: join(EPISODES_DIR, ch.file), imports: ch.imports || [], exports: ch.exports || [] });
       continue;
     }
     if (!e.locked && e.file) targets.push({ file: join(EPISODES_DIR, e.file), imports: [] });
@@ -584,18 +588,19 @@ function loadEpisodeFiles() {
   return targets;
 }
 
-// A single-file run on an adventure chapter should still know its imports, or it
-// would emit false "flag never set" errors. Look the file up in the manifest.
-function importsFromManifest(file) {
+// A single-file run on an adventure chapter should still know its imports (or it
+// would emit false "flag never set" errors) and its exports (or it would emit
+// false dead-flag warns). Look the file up in the manifest.
+function carriedFromManifest(file) {
   try {
     const manifest = JSON.parse(readFileSync(join(EPISODES_DIR, "manifest.json"), "utf8"));
     const base = file.split(/[\\/]/).pop();
     for (const e of manifest.episodes || []) {
       if (!e.adventure) continue;
-      for (const ch of e.chapters || []) if (ch.file === base) return ch.imports || [];
+      for (const ch of e.chapters || []) if (ch.file === base) return { imports: ch.imports || [], exports: ch.exports || [] };
     }
-  } catch { /* no manifest (fixtures); imports stay empty */ }
-  return [];
+  } catch { /* no manifest (fixtures); carryover stays empty */ }
+  return { imports: [], exports: [] };
 }
 
 // Anomaly placeholders are unnumbered and the menu derives "EP NN" from a counter
@@ -653,7 +658,7 @@ if (isCLI) {
   const args = process.argv.slice(2);
   const jsonMode = args.includes("--json");
   const files = args.filter((a) => a !== "--json");
-  const targets = files.length ? files.map((f) => ({ file: f, imports: importsFromManifest(f) })) : loadEpisodeFiles();
+  const targets = files.length ? files.map((f) => ({ file: f, ...carriedFromManifest(f) })) : loadEpisodeFiles();
   if (!targets.length) {
     if (jsonMode) console.log("[]"); else console.log("no episodes to validate");
     process.exit(0);
@@ -672,7 +677,7 @@ if (isCLI) {
       continue;
     }
     parsedEps.push(ep);
-    const r = validateEpisode(ep, ep.id || t.file, { imports: t.imports });
+    const r = validateEpisode(ep, ep.id || t.file, { imports: t.imports, exports: t.exports });
     results.push(r);
     if (!jsonMode) printResult(r);
     if (!r.ok) failed++;

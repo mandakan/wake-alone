@@ -1,0 +1,159 @@
+{
+  "id": "tycho-migration",
+  "title": "MIGRATION",
+  "byline": "Relay station Tycho-4, twenty years in service. One core swap, one shift, in and out.",
+  "spec": { "size": "standard", "punishment": "standard", "escape": "required", "traces": "absent", "sanityRegister": "wrong" },
+  "character": {
+    "role": "fleet hardware technician",
+    "expertise": ["routing core hardware", "rack migration", "power and breakers", "diagnostics"],
+    "backstory": "Twenty years in fleet service, the last twelve as a traveling hardware grade swapping cores across the sector. Tycho-4 was her first posting: at twenty-two, eight months out of training, she filed a priority-one distress call from its operations board, fixed the fault, filed the retraction, and was told the matter was closed. She took this work order without trading it away and has not examined why. The software layer is sealed above her clearance; she installs what she cannot read."
+  },
+  "watching": [
+    "RETRANSMITTING.",
+    "SAY AGAIN. SAY AGAIN.",
+    "RECIPIENT IN RANGE. RECIPIENT IN RANGE.",
+    "CONFIRM RECEIPT. CONFIRM."
+  ],
+  "start": "berth",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "berth": {
+      "title": "Docking berth",
+      "text": "<p>Standard approach, standard clamp: the berth takes your shuttle without comment, and you are on the clock. One work order: routing core migration, revision nine. Fleet-wide this quarter - every relay in the sector gets the same swap, from a tech no different from you. Pull the old core, seat the new one, run commissioning, file the disposition, take your clearance, go. This is your sixth this year.</p><p>Tycho-4. You knew the name when the rota came out, and you did not trade the job away. You have decided not to examine that. You were posted here once, twenty years ago, eight months out of training. The receiving bay smells the same. That is all you let it say.</p><p>The crate with the new core rides the dolly ahead of you. The station is quiet the way automated relays are quiet: nobody to greet you, nothing wrong.</p>",
+      "choices": [
+        { "text": "Wheel the dolly up to the core room.", "to": "core" }
+      ]
+    },
+    "core": {
+      "title": "Core room",
+      "text": "<p>Aft of operations by one door, the core room: the routing core in its seat, the daemon rack beside it, the speakers up in the corners where every machine room keeps them, for pages nobody sends anymore.</p><p>Your slate holds the shift in five lines: pull, seat, commission, disposition, clearance. The hardware is yours, all of it, down to the last torque value. The software layer is not - sealed, signed, a clearance above your grade riding on racks you could strip blind. You carry the box; what runs on it is somebody else's signature.</p>",
+      "sanityText": {
+        "60": "<p>The core room again: the seat, the daemon rack, the speakers up in their corners. You have worked under machine-room speakers your whole career and never once thought about where they point, which is down, which is at you, which is at anyone standing where the work is. There is no spot in this room the corners do not cover. You stand with your back to the rack anyway. It does not help, and you knew it would not.</p>"
+      },
+      "choices": [
+        { "text": "Walk the crate against the migration manifest before the seal breaks.", "requires": { "flag": "read_the_address", "notFlag": "core_live" }, "to": "manifest" },
+        { "text": "Crack the crate and start the migration.", "requires": { "notFlag": "core_live" }, "to": "swap" },
+        { "text": "One door forward, to the operations deck.", "requires": { "flag": "core_live" }, "to": "ops" },
+        { "text": "Aft to the archive.", "requires": { "flag": "core_live" }, "to": "archive" },
+        { "text": "Pull the sync module back off the live core. Barehanded. End this tonight.", "requires": { "flag": "core_live" }, "to": "end_pulled" },
+        { "text": "Down to the berth: clearance, clamp, home.", "requires": { "flag": "core_live" }, "to": "clamp" }
+      ]
+    },
+    "manifest": {
+      "title": "Core room",
+      "text": "<p>Habit: before the seal breaks, the crate gets walked against the manifest, line by line. Core, riser kit, retainer spares - and a module line you read twice, only because the description runs longer than most. PRS-9. PERSONNEL REGISTRY SYNC, REV 9 BASELINE. Keeps recipient data on held traffic current against the live fleet registry, so an address never goes stale, however long a delivery waits.</p><p>To you it is a part number and a torque value. You will seat it tonight with the rest, sign the seal, and it will do its quiet, correct work for years without you.</p><p>Nothing missing, nothing extra. The job is exactly what it says it is.</p>",
+      "choices": [
+        { "text": "Break the seal and get to work.", "to": "swap" }
+      ]
+    },
+    "swap": {
+      "title": "Rack bay",
+      "text": "<p>The old core comes out the way old cores come out: retainers off in reverse order, riser eased, both arms under it, lift with the knees. Twenty years of service heat have baked the rail grease amber. It ran two decades without failing anybody, and you strap it to the dolly with the respect that earns; it rides home with you, per the order.</p><p>The new core seats true on the first pull of the torque bar. Risers, retainers, the sync module home in its slot, your signature across the seal. Commissioning runs green, line by line: power, buses, clocks, queue remount. HELD TRAFFIC: 1 ENTRY, RESTORED. ROUTE TABLES: REBUILT.</p><p>Green across the board. Honest work, done well, in the clean smell of new electronics. You kneel to your tool roll and start counting drivers back into their loops.</p>",
+      "choices": [
+        { "text": "Wrap the last cable.", "to": "speakers" }
+      ]
+    },
+    "speakers": {
+      "title": "Rack bay",
+      "text": "<p>Every speaker in the room opens at once, full gain, all four corners talking together.</p><p>Your own voice. Not as it is - as it was, twenty years lighter, and cut: four words you said once into the board one door forward - <em>\"This is Tycho-4 - \"</em> - then a join you can hear, a splice with the breath caught on the far side of the cut, then a word you used to say a dozen times a shift, the whole eight months you lived here. Then your name. Almost. The stress sits on the wrong half - a seam down the middle of your own name.</p><p>Twenty years you have not played that night for anyone. The station has it on file. In pieces. At volume.</p><p>It is not talking to the room; the room has been empty for years and the speakers never minded. And then it stops. Not at the end of anything - mid-splice, the cut hanging open. It found you. Past that, there is nothing on the reel. The silence it leaves has a shape. The shape is waiting.</p>",
+      "onEnter": { "sanity": -16, "flags": { "heard_the_seams": true, "core_live": true } },
+      "choices": [
+        { "text": "Answer it. The name is yours - say it right, and end that silence.", "effects": { "sanity": 6, "flags": { "answered_it": true } }, "to": "answered" },
+        { "text": "Stay in the bay and record it. The report will want more than your word.", "to": "end_held" },
+        { "text": "Leave it the empty room it started with. Take your tools and go.", "to": "core" }
+      ]
+    },
+    "answered": {
+      "title": "Rack bay",
+      "text": "<p>\"Here,\" you say. To a ceiling. And because the wrongness of your own name in that mouth is not a thing you can leave standing, you say the name too - the right way, stress where it lives.</p><p>The room takes it without a sound. The waiting shape goes out of the silence; the speakers close; the deck is just a deck again, and the relief comes down so hard your knees notice. Quiet, bought and paid.</p><p>You have the tool roll half tied when every speaker opens for one second more. Your name - in your voice, your voice now, not the light young one, played straight back at full gain with the room's own echo still in it. Then the join, raw as ever, and the old four words behind it.</p><p>Then nothing, all shift. Your hands take longer with the roll than the job has ever needed.</p>",
+      "onEnter": { "sanity": -8 },
+      "choices": [
+        { "text": "Tie off the roll and get to the paperwork.", "to": "core" }
+      ]
+    },
+    "ops": {
+      "title": "Operations deck",
+      "text": "<p>The operations deck is one door forward, and the big board is set facing the door, so you are its first sight and it is yours. Held traffic: one entry. Priority one. STATUS: DELIVERY IN PROGRESS. RECIPIENT: RESOLVED - refresh stamp tonight, inside the hour you torqued the new core down.</p><p>You are a hardware grade. You can read every status this board will show and open none of them; the traffic itself is sealed, signed, somebody else's. What the manual gives a tech who meets anomalous behavior on a fresh migration is one verb: file. The formal channel is the terminal at the end of the binder shelf - slow, correct, and the only thing on this deck that is yours to touch.</p>",
+      "sanityText": {
+        "60": "<p>On the big board facing the door, one held entry: priority one, RECIPIENT: RESOLVED. Under the deck's hum there is a rhythm you have started counting without meaning to: the queue runs its cycle, fails, waits, runs. The deck has the quiet of a thing between attempts. Not stopped. Between.</p>"
+      },
+      "choices": [
+        { "text": "Pull the held-traffic summary: counters and dates, as far as your clearance reaches.", "requires": { "notFlag": "seen_board" }, "to": "board" },
+        { "text": "Open the dialog blinking under the held entry.", "requires": { "flag": "partial_handshake", "notFlag": "seen_respond" }, "to": "respond" },
+        { "text": "Sit down at the formal channel and file it.", "requires": { "notFlag": "anomaly_filed" }, "to": "report" },
+        { "text": "Back aft to the core room.", "to": "core" }
+      ]
+    },
+    "board": {
+      "title": "Operations deck",
+      "text": "<p>The summary is counters and dates, exactly as far as your clearance reaches, and it reaches far enough.</p><p>FIRST QUEUED: a date twenty years old. You do not have to count back. You wrote the entry it counts from - twenty-two years old, eight months out of training, reading procedure into this same board to keep your voice level. You fixed the fault. You filed the retraction. They told you the matter was closed, and you believed them, twenty years on the strength of a word.</p><p>DELIVERY ATTEMPTS: 7,348. Twenty years of once a cycle, never missed, never doubled - the patience of error recovery. And a second counter for tonight, on its own line, already at two digits.</p><p>LAST RECIPIENT REFRESH: tonight. Timestamped inside your shift.</p><p>You file reports, not theories. But you know wrong thread when it bites: something on this station has spent twenty years failing to deliver, and tonight, under your torque bar, the address came good.</p>",
+      "onEnter": { "sanity": -10, "flags": { "seen_board": true } },
+      "choices": [
+        { "text": "Put the summary down.", "to": "ops" }
+      ]
+    },
+    "respond": {
+      "title": "Operations deck",
+      "text": "<p>Under the held entry a dialog is blinking, plain protocol type, the kind of screen the software layer never shows a hardware grade. It is showing you anyway.</p><p>RECIPIENT PRESENT. RESPOND Y/N.</p><p>Beneath, in the small print that runs under everything in fleet service: response may be deferred; protocol accepts acknowledgment at range. You are not authorized to touch this screen, and for once the regulation and your gut agree to the letter. You copy the dialog code into your report notes and step back. The cursor goes on blinking. You watch it long enough to be sure: it does not time out.</p>",
+      "onEnter": { "sanity": -4, "flags": { "seen_respond": true } },
+      "choices": [
+        { "text": "Step away from the board.", "to": "ops" }
+      ]
+    },
+    "report": {
+      "title": "Operations deck",
+      "text": "<p>The formal channel does not care that your hands want to be elsewhere. It wants the work order number. The revision baseline. The serials, old core and new. ANOMALY CLASS, from a list written by someone who never stood in a room with one: POWER. THERMAL. TIMING. OTHER. You key OTHER. The field that opens says DESCRIBE, and the cursor waits. Politely. The only polite wait you have been given tonight.</p><p>You describe it. Dry, in order, as trained: held traffic remounted post-migration; recipient field refreshed; unsolicited playback on local speakers, source unverified; content - you stop, and type VOICE TRAFFIC, ARCHIVED ORIGIN, and do not type whose.</p><p>The channel takes it all and gives you a number. ANOMALY 20-1141. LOGGED. DISPOSITION: REFER TO TRAFFIC AUTHORITY. EVIDENCE: ROUTING LOG, PHYSICAL COPY, TO ACCOMPANY TECHNICIAN. And the line the whole form exists for: WORK ORDER MAY CLOSE AGAINST THIS NUMBER.</p>",
+      "onEnter": { "sanity": -6, "flags": { "anomaly_filed": true } },
+      "choices": [
+        { "text": "Stand up from the terminal.", "to": "ops" }
+      ]
+    },
+    "archive": {
+      "title": "Archive",
+      "text": "<p>Cold, in the archive - the air dead flat, held that way for the tape: the station's recorded life in cans, racked floor to ceiling. Your trade touches one corner of it, the log bay by the door, where the routing record mirrors down to removable sleds. Hardware grade. No clearance needed to hold what you will never be cleared to read.</p><p>The bay will not release a sled mid-write; the mirror lock steps off only while the queue is busy sending, and reseats the moment the attempt closes. After each attempt the record recommits, and the version with tonight in it folds into the next, and the next, until your shift is gone from it. If the report is going to travel with proof, the log comes out during a cycle. While it sends. Or not at all.</p><p>A first-aid tin is screwed to the shelf by the door, crew issue, older than your service.</p>",
+      "choices": [
+        { "text": "Take the ampoule from the first-aid tin.", "requires": { "notFlag": "gel_taken" }, "effects": { "add": ["medgel"], "flags": { "gel_taken": true } }, "to": "archive" },
+        { "text": "Stand at the bay, thumb on the eject, and wait for the cycle.", "requires": { "notFlag": "kept_the_log" }, "to": "pull" },
+        { "text": "Back to the core room.", "to": "core" }
+      ]
+    },
+    "pull": {
+      "title": "Archive",
+      "text": "<p>You wait with your thumb on the eject and your eyes on the lock light. When the cycle opens, it opens everywhere: every speaker the archive owns, full gain, your young voice with the splices showing, going out at the dark and falling into this cold room at the same time, every speaker on the bus wide open, because the local repeat does not pick its rooms.</p><p>The lock light goes out. You pull.</p><p>The sled comes out slow, on rails colder than your hands, while the splices and your almost-name pour down from above. Near the end of the attempt the playback crosses a splice and your own voice inhales in the middle of a word, where no breath ever went, and your arms answer it with gooseflesh before your head can file an objection.</p><p>The cycle closes. The speakers let the room go. In your hands: the only copy of tonight that nothing aboard can fold away. It is heavier than tape should be, and you do not put it down.</p>",
+      "onEnter": { "sanity": -12, "add": ["sled"], "flags": { "kept_the_log": true } },
+      "choices": [
+        { "text": "Take the sled and go.", "to": "core" }
+      ]
+    },
+    "clamp": {
+      "title": "Docking berth",
+      "text": "<p>The berth is as you left it. The old core rides the dolly down with you and waits by the shuttle door. The clearance terminal by the inner hatch wants what clearance terminals want: work order status, disposition reference, evidence manifest. It will tell the clamp nothing until it has all three.</p><p>Through the port your shuttle's running lights are patient. Somewhere aft the queue is counting toward its next attempt; the deck is quiet in the meantime.</p>",
+      "choices": [
+        { "text": "Close the work order against the anomaly number, log the evidence, take your release.", "requires": { "item": "sled", "flag": "anomaly_filed" }, "locked": "Close the work order and take your release. (the terminal releases the clamp only against a closed order: a filed anomaly disposition, and the physical routing log the disposition cites, in hand)", "to": "out" },
+        { "text": "Back up to the core room.", "to": "core" }
+      ]
+    },
+    "out": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// REFERRED",
+        "text": "<p>The terminal takes the disposition number. It takes the sled's serial. Then it asks the only question on tonight's form that is actually about you: WORK COMPLETE Y/N.</p><p>The work is a green board, a clean torque sheet, and a voice in the ceiling wearing twenty years of your life. Every line on the order is done. The form has no field for the rest. You key Y.</p><p>The clamp lets go like it was never holding anything. You lift away with the old core lashed in the hold and the sled on the copilot seat, where you can see it.</p><p>Clearing the drum, your slate prints the closed order: TYCHO-4, CORE MIGRATION, REV 9. COMPLETE - the big procedural stamp square across the page, and under it, small, on the reference line: ANOMALY 20-1141, REFERRED. Filed. Attached. Somebody else's problem, says the stamp, in the exact voice of every stamp you have ever trusted.</p>"
+      }
+    },
+    "end_pulled": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// REQUEUED",
+        "text": "<p>It is one module. You seated it; you can unseat it. No breaker dance, no lockout tags - thumbs on the retainers, a move you would drum out of an apprentice, and the sync module comes off the live core into your bare hands, warm as something fed.</p><p>Every light on the daemon rack goes red together. Not dark. Red. You have read the small type your whole career and never once watched it mean something: ON FAILURE, REQUEUE. ON REQUEUE, ESCALATE. The module was never the delivery. It was one road in, and a blocked road multiplies the priority, and at the new priority everything aboard that can open or close or carry is a road in.</p><p>The pressure doors begin to cycle, station-wide - close, seat, prove, open - every route shaken at once for one that still completes. You are two frames up the corridor when the door ahead of you closes out of order. The one behind matches it. Over each frame the light goes amber, green, amber, faster each time, the doors arguing in a priority you cannot read, and you in the section between.</p><p>Both lights settle on green together. Green is sealed. Sealed is proven. A section proves it can hold vacuum by holding one.</p>"
+      }
+    },
+    "end_held": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// ADDRESSED",
+        "text": "<p>You stay. On paper it is the right call: the report wants more than your word, and the slate's recorder is rated for exactly this. You plant yourself in the bay, arm up, capturing.</p><p>The playback does not steady and does not tire. The same four words, the same raw join, your almost-name with the stress on the wrong half - the identical splice, end to end, full gain into a room with one person in it. Behind you, on its own schedule, the bay door swings to and seats.</p><p>You are at the door with the manual release half stripped - hardware, yours, you know its insides - when the bay starts stepping down around you, system by system, in an order somebody ranked a long time ago: the light, the heat, the air.</p><p>The vents go quiet in the middle of a word. The word goes on.</p>"
+      }
+    }
+  }
+}
