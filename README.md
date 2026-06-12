@@ -114,3 +114,7 @@ runs automatically after edits.
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the episode workflow, the
 [Conventional Commits](https://www.conventionalcommits.org) convention that drives
 releases, and how staging/production deploys work.
+
+---
+
+[![Buy Me A Coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&slug=thias&button_colour=ffb000&font_colour=000000&font_family=Cookie&outline_colour=000000)](https://buymeacoffee.com/thias)
