@@ -37,6 +37,8 @@
   const NODE_RAMP = 4.0;         // seconds to crossfade tonal centre between rooms
   const MASTER_CEIL = 0.85;      // hard cap on output gain
   const MENU_LEVEL = 0.33;       // menu-scene master scale: same ship, heard from outside
+  const PAGE_FADE_OUT = 0.4;     // seconds to duck before suspending a hidden page's context
+  const PAGE_FADE_IN = 1.5;      // seconds to restore after the page returns
   const BLIP = { charHz: 780, punctHz: 520, driftCents: 30, volDb: -18 }; // typed-tagline telemetry voice
 
   // A dark, mostly-minor set of roots the per-room retune can pick from, in
@@ -64,6 +66,8 @@
       this._scene = 'off';        // 'off' (boot screen) | 'menu' (distant calm drone) | 'play' (full ambience)
       this._userVolume = opts.volume != null ? opts.volume : 0.9;
       this._nodes = {};
+      this._visGen = 0;           // invalidates a pending hidden-page suspend
+      this._visBound = false;
     }
 
     // Build the whole graph. Idempotent; safe to await more than once.
@@ -142,6 +146,7 @@
 
       this.isReady = true;
       this._initing = false;
+      this._bindVisibility();
 
       // fade in to the current state
       this._applyMaster(0.0);
@@ -303,6 +308,33 @@
       n.lfo.frequency.rampTo(lerp(0.06, 0.02, d), time);
       n.lfo.min = lerp(400, 200, d);
       n.lfo.max = lerp(760, 520, d);
+    }
+
+    // A hidden page keeps rendering audio at background priority, which
+    // crackles on phones, drains battery, and keeps the tab's audio indicator
+    // lit. Duck, then suspend the context while hidden; resume and restore on
+    // return. Visibility only - window blur is twitchy on desktop, and
+    // visibilitychange already covers tab switch, app switch, and screen lock.
+    _bindVisibility() {
+      if (this._visBound || typeof document === 'undefined') return;
+      this._visBound = true;
+      document.addEventListener('visibilitychange', () => {
+        if (!this.isReady) return;
+        const gen = ++this._visGen; // any flip back invalidates the pending suspend
+        const ctx = Tone.getContext().rawContext;
+        if (document.hidden) {
+          this._nodes.master.gain.rampTo(0, PAGE_FADE_OUT);
+          setTimeout(() => {
+            if (gen !== this._visGen || !document.hidden) return;
+            try { ctx.suspend().catch(() => {}); } catch (_) {}
+          }, PAGE_FADE_OUT * 1000 + 100); // background throttling may stretch this; fine
+        } else {
+          // resume() also recovers iOS's "interrupted" state; the ramp is
+          // scheduled against the un-frozen clock, so order matters.
+          try { ctx.resume().catch(() => {}); } catch (_) {}
+          this._applyMaster(PAGE_FADE_IN);
+        }
+      });
     }
 
     _disposeLater(arr, ms) { setTimeout(() => arr.forEach((x) => { try { x.dispose(); } catch (_) {} }), ms); }
