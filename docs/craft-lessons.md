@@ -455,3 +455,48 @@ single delusional move, not the whole system (L9/L15); (d) is it state-true and 
 covered by L6's check; no new mechanical gate is required, though a future advisory heuristic could
 flag psychotic-mode variants with high abstract-noun density and no concrete noun (same shape as
 L8's mooted ending heuristic).
+
+## L19 - Reverse chronology: the origin's escape must be the seeding act
+
+**Design intent (2026-06, SIGNAL LOST arc; authoring findings, not a playtest):** distilled from
+authoring the first chaptered adventure (tycho-delivery / tycho-migration / tycho-retraction;
+brief and as-builts in `docs/proposals/2026-06-11-signal-lost-arc-brief.md`). In a
+reverse-chronology adventure the played order is the reverse of story order, so by the time the
+player reaches the origin chapter, the chapters already played are canon. Everything below
+follows from that one fact.
+**Rule - the origin's escape must BE the seeding act.** An origin escape that *prevents* the
+later-played chapters - the redemptive ending: refuse the act, file the honest report -
+contradicts the story the player just lived. The origin chapter's escape must be the seeding act
+itself, or the seed must lie on every escape path (RETRACTION: every route out files the
+retraction behind the unacknowledged SOS). Guilt-driven pitches break this instinctively - they
+reach for redemption; catch it at ideation, before any prose exists.
+**Rule - canonical-escape unlocks are the cleanest coherence tool.** `{"type":"escape"}` unlocks
+make canon always "she survived": deaths become non-canon retries and the timeline can never
+contradict itself. The consequence cuts both ways - the chronological end is canonically
+survived, so the arc cannot depend on the protagonist dying, and death endings must be worth
+reading as *texts*, not outcomes (each tycho death pays one of the horror's rules; none carries
+arc plot).
+**Rule - the dread ladder: three registers, not one register at three volumes.** The same menace
+met at three ages needs three REGISTERS. SIGNAL LOST: refined (patient, expected) -> newborn
+(loud, mis-joined, unashamed of its seams) -> absent (the station innocent; the player carries
+all the horror). The origin chapter with no menace at all is the strongest rung if the player
+arrives knowing everything - this is L5's distinctness rule applied inside one arc.
+**Rule - carryover is dramatic irony, mechanically.** An import means "the player knows the
+future". Import-gated beats must read innocent to the character and loaded to the player -
+effects, never winks; the narration must not tip it (the innocent register IS the design).
+RETRACTION's auth tag: she states her name for the record, plainly; the player who answered the
+thing in MIGRATION is hearing the original of the sample it said back to her.
+**Rule - author in played order, and keep canon OUTSIDE the chapters.** Exports must exist before
+imports bind, and each rung of the ladder is calibrated against what the player has already
+seen. Canon lives in the brief, not in the chapter JSONs: a geography ledger (same rooms,
+decades apart; wear may change, the bones may not) plus a per-chapter as-built appendix - the
+next chapter's session reads that file only, never a prior chapter's full JSON. Later-played
+chapters must PLANT what earlier-played chapters already referenced (the unrepaired seal fault,
+the voice sample's origin, counter arithmetic at a fixed rate), and every planted fact gets
+verified by a continuity lens reading all prior chapters.
+**Enforced by:** the unlock/import contract is mechanical (`tools/adventure.mjs` + the solver:
+each chapter validates standalone, reaches a survivable escape with zero imports, no dead
+carryover). The rest is judgment: the seeding-act check belongs at ideation (`ideate-episode`,
+before a brief is approved); the register-ladder and innocent-read checks to the skill's final
+read; the planted facts to the reviewer's continuity lens run against the arc brief's ledger
+and as-builts.
