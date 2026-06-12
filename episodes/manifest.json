@@ -21,7 +21,7 @@
     {
       "adventure": "tycho",
       "title": "SIGNAL LOST",
-      "byline": "Relay station Tycho-4. The distress call is in your own voice.",
+      "byline": "Relay station Tycho-4. One distress call, thirty-one years undelivered.",
       "chapters": [
         {
           "file": "tycho-delivery.json",

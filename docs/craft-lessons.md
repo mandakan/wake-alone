@@ -506,3 +506,36 @@ carryover). The rest is judgment: the seeding-act check belongs at ideation (`id
 before a brief is approved); the register-ladder and innocent-read checks to the skill's final
 read; the planted facts to the reviewer's continuity lens run against the arc brief's ledger
 and as-builts.
+
+## L20 - Menu copy teases the premise, never the twist
+
+**Feedback (2026-06, SIGNAL LOST):** "Mentioning her own voice in the subtitle is too revealing."
+The adventure byline ("The distress call is in your own voice") pre-spoiled the reveal the first
+chapter exists to dramatize - the player read the twist on the menu before pressing play.
+**Rule:** Bylines (menu cards, chapter cards) and locked-placeholder copy are spoiler surfaces -
+they are read before any node. They may sell place, situation, and dread (the premise); they must
+never state a reveal a chapter dramatizes (an identity twist, the mechanic's secret, the origin's
+meaning). Test: if a line would lose its power in-episode because the menu already said it, the
+menu may not say it. Shipped placeholder copy is a draft promise, not a contract - when the real
+content lands, rewrite the copy against this rule (SIGNAL LOST's byline became "One distress
+call, thirty-one years undelivered" - the number teases; the voice reveal stays in-chapter).
+**Enforced by:** judgment - `ideate-episode` (bylines drafted at brief time are checked against
+the pitch's reveal list) and the `author-episode`/reviewer final read.
+
+## L21 - The meter is the echo: a major sanity cost must land in the body
+
+**Feedback (2026-06, SIGNAL LOST ch.1):** "Everything is left up to the reader a little too much
+... except the sanity meter going down, but that does not convey the emotion. For example when
+she realizes it's her own voice." The chapter's restraint armored the protagonist along with the
+menace: at the biggest reveal (-16, her own address on the packet) the prose stayed pure
+procedure and the only signal of impact was the HUD number.
+**Rule:** Gestalt restraint applies to the menace, never to the protagonist's interior. At every
+beat costing roughly -12 or more, and at every reveal, the page must carry at least one concrete
+INVOLUNTARY reaction - breath, hands, posture, a procedure fumbled or done too carefully - placed
+before any analysis or composure. A competent character may rationalize after the body reacts,
+never instead of it (tycho-delivery: "your body is back in that room without being asked ... The
+knowing does not reach your hands"). The HUD number is the echo of what the prose already did;
+if the page is calm, the cost reads as bookkeeping and the emotion is outsourced to the reader.
+This is the bible's "reaction over object" made mandatory at cost beats.
+**Enforced by:** judgment - the `author-episode` final read and the reviewer's register lens
+check every choice/onEnter with sanity <= -12 against its node's prose for an embodied beat.
