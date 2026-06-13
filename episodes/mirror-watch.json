@@ -29,14 +29,14 @@
   "nodes": {
     "wake": {
       "title": "Crew berth, Lumen",
-      "text": "<p>You surface from a sleep you do not remember choosing. The Lumen hums around you, low and patient - a hauler three months into a thirty-month run, talking to itself in the dark. Your mouth tastes of old filtered air. Down the spine, a scrubber ticks over and catches.</p><p>By the hatch, already turned toward you, someone has been waiting for you to come round. \"Awake at last,\" she says, like she has been up for hours. \"Easy. Plenty of time out here. I will walk you through it.\"</p><p>You do not remember her name, and you are too slow with sleep to find that strange. After the long quiet, it is good not to wake up alone.</p>",
+      "text": "<p>You surface from a sleep you do not remember choosing. The Lumen hums around you, low and patient - a hauler three months into a thirty-month run, creaking and settling in the dark. Your mouth tastes of old filtered air. Down the spine, a scrubber ticks over and catches.</p><p>By the hatch, already turned toward you, someone has been waiting for you to come round. \"Awake at last,\" she says, like she has been up for hours. \"Easy. Plenty of time out here. I will walk you through it.\"</p><p>You do not remember her name, and you are too slow with sleep to find that strange. After the long quiet, it is good not to wake up alone.</p>",
       "choices": [
         { "text": "Sit up and get your bearings.", "to": "junction" }
       ]
     },
     "junction": {
       "title": "Spine junction",
-      "text": "<p>The Lumen narrows to a single spinal corridor here, three hatches off it: the cargo bay forward, the atmosphere plant aft, the crew cabins to port. The transmitter array waits in its alcove at the corridor's end, dark, keeping its own counsel.</p><p>Here too: she keeps pace with you and arrives when you arrive, leaning by the array as if she had picked the spot before you got there, ready with whatever comes next. \"Where to?\" she says. \"Lead and I follow.\"</p>",
+      "text": "<p>The Lumen narrows to a single spinal corridor here, three hatches off it: the cargo bay forward, the atmosphere plant aft, the crew cabins to port. At the corridor's end the transmitter array waits in its alcove, dark. Three months out and no one due to hear from you for years: whatever is wrong here, the sane first move is to get a distress call out on that rig, and you know it.</p><p>Here too: she keeps pace with you and arrives when you arrive, leaning by the array as if she had picked the spot before you got there, ready with whatever comes next. \"Where to?\" she says. \"Lead and I follow.\"</p>",
       "choices": [
         { "text": "Cargo bay (forward).", "to": "cargo" },
         { "text": "Atmosphere plant (aft).", "to": "atmos-access" },
@@ -114,7 +114,7 @@
       "ending": {
         "type": "dead",
         "stamp": "// CONSERVING",
-        "text": "<p>For a while now she has been saying it, gentle and reasonable. No one is in range, and no one is coming for a hauler this far out - not in time to matter. Every hour on the locator is air spent to be disappointed. Better to rest. Better to be still. Save what is left of you.</p><p>Somewhere in it you stop arguing back. It is easier. You sit down with your spine against the cold wall and let your breathing go slow and shallow, like she tells you, to make it last.</p><p>It lasts a long time. Long enough to understand, near the end, that the voice talking you down only ever lived on your side of the air - and that you did every last thing it asked.</p>"
+        "text": "<p>For a while now she has been saying it, gentle and reasonable. No one is in range, and no one is coming for a hauler this far out - not in time to matter. Every hour on the call is air spent to be disappointed. Better to rest. Better to be still. Save what is left of you.</p><p>Somewhere in it you stop arguing back. It is easier. You sit down with your spine against the cold wall and let your breathing go slow and shallow, like she tells you, to make it last.</p><p>It lasts a long time. Long enough to understand, near the end, that the voice talking you down only ever lived on your side of the air - and that you did every last thing it asked.</p>"
       }
     },
     "tell-node": {
