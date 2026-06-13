@@ -25,18 +25,38 @@
       "chapters": [
         {
           "file": "tycho-delivery.json",
-          "exports": ["read_the_address", "partial_handshake"]
+          "exports": [
+            "read_the_address",
+            "partial_handshake"
+          ]
         },
         {
           "file": "tycho-migration.json",
-          "unlock": { "type": "escape" },
-          "imports": ["read_the_address", "partial_handshake"],
-          "exports": ["heard_the_seams", "anomaly_filed", "kept_the_log", "answered_it"]
+          "unlock": {
+            "type": "escape"
+          },
+          "imports": [
+            "read_the_address",
+            "partial_handshake"
+          ],
+          "exports": [
+            "heard_the_seams",
+            "anomaly_filed",
+            "kept_the_log",
+            "answered_it"
+          ]
         },
         {
           "file": "tycho-retraction.json",
-          "unlock": { "type": "escape" },
-          "imports": ["heard_the_seams", "anomaly_filed", "kept_the_log", "answered_it"]
+          "unlock": {
+            "type": "escape"
+          },
+          "imports": [
+            "heard_the_seams",
+            "anomaly_filed",
+            "kept_the_log",
+            "answered_it"
+          ]
         }
       ]
     },
@@ -54,6 +74,10 @@
     },
     {
       "file": "fault.json",
+      "locked": false
+    },
+    {
+      "file": "mirror-watch.json",
       "locked": false
     },
     {

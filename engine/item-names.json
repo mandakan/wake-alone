@@ -18,5 +18,6 @@
   "isolation-key": "master isolation key",
   "cartridge": "packet cartridge",
   "sled": "log sled",
-  "bleedkey": "bleed valve key"
+  "bleedkey": "bleed valve key",
+  "emergency_locator": "emergency locator"
 }

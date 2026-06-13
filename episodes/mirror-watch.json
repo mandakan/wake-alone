@@ -1,0 +1,168 @@
+{
+  "id": "mirror-watch",
+  "title": "MIRROR WATCH",
+  "byline": "Cargo hauler Lumen. Three months out. You are not alone.",
+  "spec": {
+    "size": "standard",
+    "punishment": "cruel"
+  },
+  "character": {
+    "role": "cargo compliance officer",
+    "expertise": ["freight manifests", "cargo seal inspection", "transit regulations", "atmospheric systems"],
+    "backstory": "Eleven runs as the lone compliance officer on long-haul haulers. You sign for the cargo, you keep the air legal, you file the manifests no one reads. You are good with seals and scrubbers and paperwork. You have never been good at being alone, and that is the one part of the job no one tests for."
+  },
+  "watching": [
+    "SHE WAS NEVER AHEAD OF YOU.",
+    "YOU BROUGHT HER ABOARD.",
+    "THE MANIFEST READS: CREW, ONE.",
+    "SHE HAS NO BUNK.",
+    "YOU ARE TALKING TO THE AIR.",
+    "WHEREVER YOU GO. ONLY THERE.",
+    "STOP LOOKING AND SHE STOPS.",
+    "SHE HAS NOT SPENT ONE BREATH.",
+    "ASK HER TO LEAVE FIRST.",
+    "SHE CANNOT GO ON WITHOUT YOU."
+  ],
+  "start": "wake",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "wake": {
+      "title": "Crew berth, Lumen",
+      "text": "<p>You surface from a sleep you do not remember choosing. The Lumen hums around you, low and patient - a hauler three months into a thirty-month run, talking to itself in the dark. Your mouth tastes of old filtered air. Down the spine, a scrubber ticks over and catches.</p><p>By the hatch, already turned toward you, someone has been waiting for you to come round. \"Awake at last,\" she says, like she has been up for hours. \"Easy. Plenty of time out here. I will walk you through it.\"</p><p>You do not remember her name, and you are too slow with sleep to find that strange. After the long quiet, it is good not to wake up alone.</p>",
+      "choices": [
+        { "text": "Sit up and get your bearings.", "to": "junction" }
+      ]
+    },
+    "junction": {
+      "title": "Spine junction",
+      "text": "<p>The Lumen narrows to a single spinal corridor here, three hatches off it: the cargo bay forward, the atmosphere plant aft, the crew cabins to port. The transmitter array waits in its alcove at the corridor's end, dark, keeping its own counsel.</p><p>Here too: she keeps pace with you and arrives when you arrive, leaning by the array as if she had picked the spot before you got there, ready with whatever comes next. \"Where to?\" she says. \"Lead and I follow.\"</p>",
+      "choices": [
+        { "text": "Cargo bay (forward).", "to": "cargo" },
+        { "text": "Atmosphere plant (aft).", "to": "atmos-access" },
+        { "text": "Crew cabins (port).", "to": "crew-cabin" },
+        { "text": "Go to the transmitter array.", "requires": { "item": "emergency_locator" }, "to": "transmitter", "locked": "The array will not key without the emergency locator. It is sealed in the cargo bay locker." },
+        { "text": "Go to a compartment without telling her you are going.", "requires": { "flag": "seed", "notFlag": "knows_the_rule" }, "to": "tell-node" },
+        { "text": "Slip out without a word and run to beat her to the next compartment.", "requires": { "flag": "knows_the_rule" }, "effects": { "sanity": -12 }, "to": "retest" }
+      ]
+    },
+    "cargo": {
+      "title": "Cargo bay",
+      "text": "<p>The cargo bay runs the height of two decks, containers racked and webbed against the long burn. Your manifest says general freight, sealed at origin, nothing flagged, and you have inspected enough seals to know these are honest ones. The cold in here is the ordinary cold of a hold, not the other kind.</p><p>Set into the forward bulkhead is the emergency locker, behind a safety seal that samples the bay atmosphere before it will release. At your elbow she reads the panel with you. \"That seal is sulking about the air,\" she says. \"It will not give until the plant aft runs clean. You know this room better than I do.\"</p>",
+      "sanityText": {
+        "40": "<p>The racks have not moved. You have. Every container sits exactly where the manifest swears it sits, honest and sealed and undisturbed, and that has become the unbearable part - nothing in here is wrong, nothing at all. Behind its seal, the emergency locker waits. At your elbow she reads the panel, close enough to touch, breathing in air you have never once heard her spend.</p>"
+      },
+      "choices": [
+        { "text": "Open the locker and take the emergency locator.", "requires": { "flag": "atmos_clear", "notItem": "emergency_locator" }, "to": "cargo-take", "locked": "The seal will not release until the bay atmosphere reads clean. Clear the scrubber fault in the plant aft first." },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "cargo-take": {
+      "title": "Cargo bay",
+      "text": "<p>The seal clicks and the locker breathes open. Inside, cradled in foam, sits a stubby hardened thing built to outlive whoever needs it. You have signed for a dozen and keyed none. You take it. Heavier than it looks, and very cold.</p><p>\"Good,\" she says, warm, almost proud of you. \"Knew you had it in you. Want me to carry it? Free up your hands for the climb back.\"</p><p>Something in the offer sits wrong, and you cannot say what, so you keep it in your own grip and tell her you have it.</p>",
+      "onEnter": { "add": ["emergency_locator"] },
+      "choices": [
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "atmos-access": {
+      "title": "Atmosphere plant",
+      "text": "<p>The plant is the loudest room on the ship: scrubber stacks, the regulator manifold, the slow churn of recyclers keeping thirty months of air honest. This is your trade as much as the paperwork is, and your eyes find the fault before you have finished stepping in - a scrubber regulator drifted out of band, amber on the board. A walk-through fix, except it wants two sets of hands on the manifold, or one person with a clear run at the stack alone.</p><p>\"Talk it through with me from here,\" she says, already at the manifold, already knowing which valve. \"Stay close and we do it together, quick. Or go on ahead into the stack and clear it the long way, on your own. Your call.\"</p>",
+      "choices": [
+        { "text": "Let her talk you through the regulator reset together.", "to": "atmos-guided" },
+        { "text": "Go on ahead into the stack and clear it yourself.", "to": "atmos-solo" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "atmos-solo": {
+      "title": "Scrubber stack",
+      "text": "<p>You go on ahead, into the stack, alone, the way the fix wants doing. It is a five-minute job for a compliance officer who has done it eleven runs running. You brace the bypass, ease the regulator back into band, and the boards settle to green. The bay atmosphere will read clean inside the hour, and the locker seal forward will let go.</p><p>You stepped through ahead of her, and for one breath the stack was empty around you - no elbow at your side, no easy voice, only machinery and your own held breath. Then you turn, and she is right behind you, settled in. She could not have followed. One set of footsteps crossed that grating, and you counted them without meaning to.</p><p>A wall medkit hangs open by the hatch, mostly stripped.</p>",
+      "onEnter": { "sanity": -10, "flags": { "atmos_clear": true, "seed": true } },
+      "choices": [
+        { "text": "Take the field stim-gel from the medkit.", "requires": { "notFlag": "tookgel1" }, "effects": { "add": ["medgel"], "flags": { "tookgel1": true } }, "to": "atmos-solo" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "atmos-guided": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// SEAL FAILURE",
+        "text": "<p>Calm and exact, she talks you through it, right about every step as she has been right about everything since you woke. Hold the bypass open. Regulator, a quarter turn, no more. \"Good. You are doing fine. Almost there.\"</p><p>The next step needs a second pair of hands on the opposite valve, the same instant you hold the bypass. You commit to it anyway, because she is right there, because she promised she had the valve. The seal lets go with a sound like a held breath finally given up, and the bay answers with cold, and then with nothing.</p><p>Her voice is still telling you it is going well when the air leaves. Nobody held the opposite valve - nobody was ever there to hold it. You did a two-person job alone, while a voice you made for the loneliness told you it was almost done.</p>"
+      }
+    },
+    "crew-cabin": {
+      "title": "Crew cabins (port)",
+      "text": "<p>Four cabins to port, three of them stripped and sealed for the long run. The fourth is yours: bunk slept in, jacket on the hook, kit squared away under the bunk just so. Your hand has stopped on the door frame without your asking it to, and it takes a moment to remember what you came in for.</p><p>There is no second bunk made up, no jacket but yours, no kit but yours - nothing of hers in any of the cabins. From the hatch behind you, not stepping in, she says, gentle, \"You should rest. You have been pushing it. I will keep watch.\"</p>",
+      "choices": [
+        { "text": "Take the med-gel from the kit under your bunk.", "requires": { "notFlag": "tookgel2" }, "effects": { "add": ["medgel"], "flags": { "tookgel2": true } }, "to": "crew-cabin" },
+        { "text": "Check the crew log on the cabin terminal.", "to": "log-terminal" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "log-terminal": {
+      "title": "Cabin terminal",
+      "text": "<p>The terminal wakes to your touch. The crew manifest is the first thing up, because you filed it yourself at origin and you read it every week out of habit, hunting the error that gets you fined.</p><p>Complement: one. Compliance officer - you, signed and stamped. Below it, the clean white nothing where a second name would sit if there were one to put there. Your finger keeps scrolling past the end of the list, up and down, after the reading is done, while she leans over your shoulder, close enough to touch, telling you the manifest is wrong - that a form does not count people like her, that you should trust your eyes over a stamp.</p>",
+      "sanityText": {
+        "35": "<p>Complement: one. You read the line again. Your name sits there, signed and stamped, and under it the clean white nothing where a second name would go if you had one to put. Her voice is very close and very reasonable at your ear, explaining why the document is the thing that lies, and you notice the explanation is working on you, and you scroll anyway, up and down, over a list with one name on it.</p>"
+      },
+      "choices": [
+        { "text": "Sit down. She is right - rest, save the air, stop spending it on a signal no one will answer.", "to": "surrendered" },
+        { "text": "Close the manifest. Back to the junction.", "to": "junction" }
+      ]
+    },
+    "surrendered": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// CONSERVING",
+        "text": "<p>For a while now she has been saying it, gentle and reasonable. No one is in range, and no one is coming for a hauler this far out - not in time to matter. Every hour on the locator is air spent to be disappointed. Better to rest. Better to be still. Save what is left of you.</p><p>Somewhere in it you stop arguing back. It is easier. You sit down with your spine against the cold wall and let your breathing go slow and shallow, like she tells you, to make it last.</p><p>It lasts a long time. Long enough to understand, near the end, that the voice talking you down only ever lived on your side of the air - and that you did every last thing it asked.</p>"
+      }
+    },
+    "tell-node": {
+      "title": "The test",
+      "text": "<p>You wait until she is mid-sentence and just go - out the hatch, down the spine, fast and quiet, through the dark stretch where the corridor lights died and never got fixed. You do not tell her. You do not look back. You pick the furthest hatch and take the turns at a dead run, lungs burning, boots loud on the grating, alone.</p><p>You come through the far hatch, and she is already inside, settled against the bulkhead, turned toward the door, waiting for you to arrive. A single corridor, a single set of footsteps in it, and you the fastest thing moving - yet here she is, the way she is always already here, wherever you decide to be.</p><p>You understand it now, standing in the cold with your hands shaking and refusing to stop: you did not wake to a crewmate. You carried her aboard behind your own eyes, into every room you have entered since you opened them, and she has never once been anywhere that you were not.</p>",
+      "onEnter": { "sanity": -15, "flags": { "knows_the_rule": true } },
+      "choices": [
+        { "text": "Keep moving. Get the locator keyed. Do not let her talk.", "to": "junction" }
+      ]
+    },
+    "retest": {
+      "title": "Again",
+      "text": "<p>You do it again, because knowing has not helped. You leave without a word, take a route chosen at random, and she is there when you arrive. You do it again, faster and crueler, picking the worst ground - the dark stretch, the cold side of the hold - and every time she is there, settled and patient and glad of you, only ever already arrived.</p><p>Each run takes something you do not get back. Your hands shake between the sprints now and will not settle, and your breath does not come back down. You are not learning anything new. You are proving, over and over, the one fact you cannot change, and the proving is the last thing you have left to spend.</p>",
+      "choices": [
+        { "text": "Stop. Stop testing. Just go where she already is.", "to": "confirmed" },
+        { "text": "Enough. This is killing you. Back to the junction and key the locator.", "to": "junction" }
+      ]
+    },
+    "confirmed": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// FOLLOWED",
+        "text": "<p>You go faster each time, and each time she is waiting where you arrive, settled, pleased to see you. The question stops mattering. You are not catching her out anymore; you are following her, because following is easier than proving what you cannot undo, and the testing has worn through whatever in you could still choose otherwise.</p><p>The last door you open is the outer lock. On the far side of it she waits, in the cold and the black where no body can stand, easy and patient, for you to come and join her. You have stopped asking how she got there first. You cycle the door and step out to where she is.</p>"
+      }
+    },
+    "transmitter": {
+      "title": "Transmitter array",
+      "text": "<p>The array sits in the alcove at the spine's end, a directional rig you have keyed in drills and never once in earnest. You set the locator in the cradle and start the prep: align the dish, spin up the carrier, load your position and your distress onto a loop that will run long after you cannot. Your hands know the sequence even with the cold in them and the fear under that.</p><p>Close at your shoulder, she tells you softly that there is no one in range, that you are spending the last of yourself on a call that will outlive you unanswered, that it would be gentler to stop. Both her hands open for the locator, to help.</p>",
+      "onEnter": { "sanity": -10 },
+      "choices": [
+        { "text": "Key the transmission yourself. Keep the locator in your own hands.", "requires": { "flag": "knows_the_rule" }, "to": "end_escape" },
+        { "text": "Let her hold the locator while you work - faster together.", "requires": { "notFlag": "knows_the_rule" }, "to": "handed-over" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "handed-over": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// NOT TRANSMITTED",
+        "text": "<p>\"Here,\" she says, hands open. \"You set up the array, I will hold this so you have both hands free. Together, it goes faster.\"</p><p>Such a small, sensible thing. You give her the locator and turn to the panel, and for a few good minutes you work quickly and light, trusting that the one object that matters is safe behind you.</p><p>When the array is ready and you turn to key it in, her hands are empty, and they were always going to be. The locator is wherever you set it down without watching - because she could never have held it, because nothing she ever offered to carry was carried. You do not find it again before the cold finishes its slow work, and the array stays dark.</p>"
+      }
+    },
+    "end_escape": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// CARRIER GREEN",
+        "text": "<p>You key it yourself. You do not hand her the locator, you do not let her set you at a valve you cannot reach alone, and when she tells you again, softly, that no one is coming, you start the transmission anyway and let it scream your position into the dark.</p><p>The carrier light goes green. Far off, a relay catches the loop and answers - automated, indifferent, real. Help is days out. It is enough.</p><p>You turn to tell her, and the alcove is empty, the way it has been empty since you woke. No one was ever turned toward the hatch, and no one walked you through a single step of it. You said all of it to yourself, in a voice kind enough to nearly get you killed, and you are alive only because you stopped listening to it in time.</p><p>Thirty more days, alone, with the company you brought aboard. You settle in to wait for the relay, and when the quiet starts talking again, you let it, and you do not answer.</p>"
+      }
+    }
+  }
+}
