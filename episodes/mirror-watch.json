@@ -3,7 +3,7 @@
   "title": "MIRROR WATCH",
   "byline": "Cargo hauler Lumen. Three months out. You are not alone.",
   "spec": {
-    "size": "standard",
+    "size": "long",
     "punishment": "cruel"
   },
   "character": {
@@ -106,7 +106,7 @@
         "35": "<p>Complement: one. You read the line again. Your name sits there, signed and stamped, and under it the clean white nothing where a second name would go if you had one to put. Her voice is very close and very reasonable at your ear, explaining why the document is the thing that lies, and you notice the explanation is working on you, and you scroll anyway, up and down, over a list with one name on it.</p>"
       },
       "choices": [
-        { "text": "Sit down. She is right - rest, save the air, stop spending it on a signal no one will answer.", "to": "surrendered" },
+        { "text": "Sink into the chair. Stop fighting her on it.", "to": "adrift" },
         { "text": "Close the manifest. Back to the junction.", "to": "junction" }
       ]
     },
@@ -116,6 +116,26 @@
         "stamp": "// CONSERVING",
         "text": "<p>For a while now she has been saying it, gentle and reasonable. No one is in range, and no one is coming for a hauler this far out - not in time to matter. Every hour on the call is air spent to be disappointed. Better to rest. Better to be still. Save what is left of you.</p><p>Somewhere in it you stop arguing back. It is easier. You sit down with your spine against the cold wall and let your breathing go slow and shallow, like she tells you, to make it last.</p><p>It lasts a long time. Long enough to understand, near the end, that the voice talking you down only ever lived on your side of the air - and that you did every last thing it asked.</p>"
       }
+    },
+    "adrift": {
+      "title": "Cabin terminal",
+      "text": "<p>You do not get up. Her voice stays low and even at your shoulder, offering the same small sensible thing every little while - dim a panel here, let one more system sleep so the air goes further. None of it is wrong. That is what makes it easy to say yes.</p>",
+      "sanityText": {
+        "35": "<p>You do not get up. Her voice has folded in with your own somewhere back there, so the next thing to give up arrives already sounding like you thought of it. Spend nothing. Wait for nothing. You keep nodding, and each yes costs you less than the one before.</p>"
+      },
+      "choices": [
+        { "text": "Agree. Put another system to sleep.", "effects": { "sanity": -10 }, "to": "drift-deeper" },
+        { "text": "Stop spending anything at all. Let it go.", "to": "surrendered" },
+        { "text": "Push the chair back and stand.", "to": "junction" }
+      ]
+    },
+    "drift-deeper": {
+      "title": "Cabin terminal",
+      "text": "<p>A panel dies under your hand and the cabin loses a light. The air does go further this way; you can feel it in how slow and how far off everything has drifted. At your shoulder she has not moved, and she tells you that was the right call - the warmth of being told so is most of what you have left.</p>",
+      "choices": [
+        { "text": "Settle back. There is always one more thing to shut down.", "to": "adrift" },
+        { "text": "Catch yourself. Make your legs take the weight.", "to": "junction" }
+      ]
     },
     "tell-node": {
       "title": "The test",
