@@ -109,7 +109,7 @@
         "35": "<p>Complement: one. You read the line again. Your name sits there, signed and stamped, and under it the clean white nothing where a second name would go if you had one to put. Her voice is very close and very reasonable at your ear, explaining why the document is the thing that lies, and you notice the explanation is working on you, and you scroll anyway, up and down, over a list with one name on it.</p>"
       },
       "choices": [
-        { "text": "Sink into the chair. Stop fighting her on it.", "to": "adrift" },
+        { "text": "Sit down. No one will answer in time - maybe the sane thing is to rest and make what is left last.", "to": "adrift" },
         { "text": "Close the manifest. Back to the junction.", "to": "junction" }
       ]
     },
@@ -122,12 +122,12 @@
     },
     "adrift": {
       "title": "Cabin terminal",
-      "text": "<p>You do not get up. Her voice stays low and even at your shoulder, offering the same small sensible thing every little while - dim a panel here, let one more system sleep so the air goes further. None of it is wrong. That is what makes it easy to say yes.</p>",
+      "text": "<p>You stop fighting the arithmetic of it. No one is in range, no one is close enough to matter, and every hour spent awake and signalling is air and power burned for nothing. So you start spending less. The voice at your shoulder stays low and even, naming the next small economy each time the quiet gets too loud - dim a panel here, let one more system sleep so the air stretches further. None of it is wrong. That is what makes it easy to say yes.</p>",
       "sanityText": {
-        "35": "<p>You do not get up. Her voice has folded in with your own somewhere back there, so the next thing to give up arrives already sounding like you thought of it. Spend nothing. Wait for nothing. You keep nodding, and each yes costs you less than the one before.</p>"
+        "35": "<p>You are not deciding anymore, only agreeing. The arithmetic settled a while back - nothing in range, nothing coming - and now each thing you give up arrives already sounding like your own idea. Spend nothing. Wait for nothing. You keep nodding, and each yes costs you less than the one before.</p>"
       },
       "choices": [
-        { "text": "Agree. Put another system to sleep.", "effects": { "sanity": -10 }, "to": "drift-deeper" },
+        { "text": "Agree. Let another system sleep to stretch the air.", "effects": { "sanity": -10 }, "to": "drift-deeper" },
         { "text": "Stop spending anything at all. Let it go.", "to": "surrendered" },
         { "text": "Push the chair back and stand.", "to": "junction" }
       ]
