@@ -41,11 +41,20 @@ Read these before dispatching any lens (they are the rubric):
 ## The four lenses
 
 Dispatch all four as **parallel sub-agents in a single message** (Agent tool, one block,
-multiple calls), each with **`model: "sonnet"`**. Each sub-agent gets: the full episode
-JSON, `CLAUDE.md`, `docs/craft-lessons.md`, the lens prompt below, and the findings schema.
-Each returns a findings array (JSON) and nothing else. Tell each lens explicitly: "the
-validator already owns structure and mechanical slop - do not report anything it catches;
-report only what your lens judges."
+multiple calls), each with **`model: "sonnet"`**. Each sub-agent gets: the **path** to the
+target episode (`episodes/<id>.json`) plus the paths to `CLAUDE.md` and
+`docs/craft-lessons.md`, the lens prompt below, and the findings schema. Each returns a
+findings array (JSON) and nothing else. Tell each lens explicitly: "the validator already
+owns structure and mechanical slop - do not report anything it catches; report only what
+your lens judges."
+
+**Never paste episode content into a lens prompt - hand it the path and have the lens `Read`
+the file itself.** A reviewer must judge the shipped text verbatim. Pasting risks an
+abridged, paraphrased, or stale copy: a reviewer reading anything other than the real file
+produces false positives on text you invented and, worse, blind spots on routing/coherence
+the abridgement flattened. (This is not hypothetical - a paraphrased paste once fed a lens
+fake choice labels and hid an L12 gap the real file contained.) The same rule holds for the
+rubric docs: give paths, not excerpts.
 
 **Why sonnet:** each lens applies a written rubric to a fixed text, and the merged findings
 are triaged by the stronger main-loop model, which owns final judgment - a missed nit costs

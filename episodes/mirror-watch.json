@@ -36,7 +36,7 @@
     },
     "junction": {
       "title": "Spine junction",
-      "text": "<p>The Lumen narrows to a single spinal corridor here, three hatches off it: the cargo bay forward, the atmosphere plant aft, the crew cabins to port. At the corridor's end the transmitter array waits in its alcove, dark. Three months out and no one due to hear from you for years: whatever is wrong here, the sane first move is to get a distress call out on that rig, and you know it.</p><p>Here too: she keeps pace with you and arrives when you arrive, leaning by the array as if she had picked the spot before you got there, ready with whatever comes next. \"Where to?\" she says. \"Lead and I follow.\"</p>",
+      "text": "<p>The Lumen narrows to a single spinal corridor here, three hatches off it: the cargo bay forward, the atmosphere plant aft, the crew cabins to port. At the corridor's end the transmitter array waits in its alcove, dark. The scrubber down the spine is catching, you woke groggy and wrong, and routine contact is years off - this far out, a ship starting to fail and a crew of one is how people die quietly between check-ins. The sane first move is a distress call on that rig, the kind that brings help in days instead of years. You know it.</p><p>Here too: she keeps pace with you and arrives when you arrive, leaning by the array as if she had picked the spot before you got there, ready with whatever comes next. \"Where to?\" she says. \"Lead and I follow.\"</p>",
       "choices": [
         { "text": "Cargo bay (forward).", "to": "cargo" },
         { "text": "Atmosphere plant (aft).", "to": "atmos-access" },
