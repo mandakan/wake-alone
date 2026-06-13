@@ -37,6 +37,9 @@
     "junction": {
       "title": "Spine junction",
       "text": "<p>The Lumen narrows to a single spinal corridor here, three hatches off it: the cargo bay forward, the atmosphere plant aft, the crew cabins to port. At the corridor's end the transmitter array waits in its alcove, dark. The scrubber down the spine is catching, you woke groggy and wrong, and routine contact is years off - this far out, a ship starting to fail and a crew of one is how people die quietly between check-ins. The sane first move is a distress call on that rig, the kind that brings help in days instead of years. You know it.</p><p>Here too: she keeps pace with you and arrives when you arrive, leaning by the array as if she had picked the spot before you got there, ready with whatever comes next. \"Where to?\" she says. \"Lead and I follow.\"</p>",
+      "sanityText": {
+        "40": "<p>The Lumen narrows to a single spinal corridor here, three hatches off it: the cargo bay forward, the atmosphere plant aft, the crew cabins to port. At the corridor's end the transmitter array waits in its alcove, dark. The scrubber down the spine is catching, you woke groggy and wrong, and routine contact is years off - this far out, a ship starting to fail and a crew of one is how people die quietly between check-ins. The sane first move is a distress call on that rig, the kind that brings help in days instead of years. You know it. You have known it for a while now and not done it.</p><p>Here too, of course - settled by the array before you rounded the corner, because there is no corner you round without her. The eagerness has thinned out of her. \"Where to,\" she says, and it is not quite a question now. \"Wherever you land, that is where I will be. I am not going anywhere you are not - could not, even if you wanted me to.\"</p>"
+      },
       "choices": [
         { "text": "Cargo bay (forward).", "to": "cargo" },
         { "text": "Atmosphere plant (aft).", "to": "atmos-access" },
@@ -163,6 +166,9 @@
     "transmitter": {
       "title": "Transmitter array",
       "text": "<p>The array sits in the alcove at the spine's end, a directional rig you have keyed in drills and never once in earnest. You set the locator in the cradle and start the prep: align the dish, spin up the carrier, load your position and your distress onto a loop that will run long after you cannot. Your hands know the sequence even with the cold in them and the fear under that.</p><p>Close at your shoulder, she tells you softly that there is no one in range, that you are spending the last of yourself on a call that will outlive you unanswered, that it would be gentler to stop. Both her hands open for the locator, to help.</p>",
+      "sanityText": {
+        "40": "<p>The array sits in the alcove at the spine's end, a directional rig you have keyed in drills and never once in earnest. You set the locator in the cradle and start the prep: align the dish, spin up the carrier, load your position and your distress onto a loop that will run long after you cannot. Your hands know the sequence even with the cold in them and the fear under that.</p><p>Close at your shoulder, closer than that - her voice is most of what is left in your head, and it is not arguing anymore. \"You are so tired,\" she says, like it costs her to watch. \"Let me. Just this one thing - let me hold it for you, and you can stop.\" Both her hands are already open for the locator, and your own hands, cold and slow and not entirely yours anymore, want to set it down.</p>"
+      },
       "onEnter": { "sanity": -10 },
       "choices": [
         { "text": "Key the transmission yourself. Keep the locator in your own hands.", "requires": { "flag": "knows_the_rule" }, "to": "end_escape" },
