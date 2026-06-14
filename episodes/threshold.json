@@ -1,0 +1,195 @@
+{
+  "id": "threshold",
+  "title": "THRESHOLD",
+  "byline": "Cargo hauler Castor. Two licensed operators. One body. You are only one of them.",
+  "spec": {
+    "size": "long",
+    "punishment": "standard",
+    "escape": "required",
+    "traces": "absent"
+  },
+  "character": {
+    "role": "freight pilot, dual-operator licence",
+    "expertise": ["piloting", "navigation", "flight systems", "transit law and manifests"],
+    "backstory": "Eleven years flying the long lanes, the last four under dual-operator certification: one body carrying two licences, a pilot and an engineer, standing the watch in turns so a hauler can run crewed-of-one and still be legal. You have never met the other shift. You sign off, the other signs on, and the work that needs hands you do not have gets done while you are not at the front. You have made your peace with that. You think you have."
+  },
+  "watching": [
+    "OPERATOR TWO HAS THE WATCH.",
+    "YOU ARE NOT CLEARED FOR THE DRIVE.",
+    "AN ORDER WILL NOT BRING THEM.",
+    "SET IT DOWN AND STEP BACK.",
+    "THE OTHER HAND ALREADY KNOWS.",
+    "YOU SIGNED FOR BOTH OF US.",
+    "ONE BODY. TWO LICENCES.",
+    "WHO FLIES WHEN YOU LIE DOWN.",
+    "LET GO OF THE FRONT.",
+    "IT ANSWERS ONLY WHEN YOU STOP ASKING."
+  ],
+  "start": "wake",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "wake": {
+      "title": "Watch rest",
+      "text": "<p>You come up out of the watch rest all at once, the way you always do on the back half of a long haul - the cabin already moving around you before your eyes are open. The Castor runs on two licences and one body: a pilot and an engineer, signed for separately, standing the watch in turns. Your licence is the flight side. You have been the flight side your whole career.</p><p>The other shift was just here. The engineering console is still warm, a procedure left open on it in a hand you would know anywhere and cannot read. A tool rests by the panel where it was set down, its grip worn smooth to a hold that is not the shape of yours.</p><p>Then the board catches up with you: a fault deep in the drive, and the lane gone crooked under the ship. The drive is the engineer's. It has never once been yours.</p>",
+      "onEnter": { "sanity": -5 },
+      "choices": [
+        { "text": "Get to the junction and think.", "to": "junction" }
+      ]
+    },
+    "junction": {
+      "title": "Mid-ship junction",
+      "text": "<p>The junction sits amidships where the three runs of the Castor meet: the bridge forward, the drive aft, the watch berth off the short corridor to port. You have stood here a thousand times between tasks. It is the one part of the ship that asks nothing of you.</p>",
+      "sanityText": {
+        "40": "<p>The junction amidships, where the three runs meet - bridge forward, drive aft, berth to port. You have stood here a thousand times. What is new is the sense, steady now and hard to put down, that the watch did not end when you woke. That somewhere on the ship a shift is still being stood.</p>"
+      },
+      "choices": [
+        { "text": "Forward to the bridge.", "to": "bridge" },
+        { "text": "Aft to the drive.", "to": "drive_access" },
+        { "text": "To the cargo office.", "to": "manifest" },
+        { "text": "Into the watch berth.", "to": "rest_station" },
+        { "text": "Stand still and try to bring the engineer to the front.", "to": "tell" },
+        { "text": "Cede the front and bring the drive up for the correction.", "requires": { "flag": "knows_the_rule" }, "to": "drive_ready", "locked": "Cede the front and bring the drive up. (you do not yet know how the other operator is reached)" }
+      ]
+    },
+    "manifest": {
+      "title": "Cargo office",
+      "text": "<p>The cargo office is paperwork and certainty, and right now you want both. You pull the run manifest, the lane file, the crew sheet - your half of the trade, the half that has never once lied to you. The numbers are flat and terrible in their plainness: the Castor has been walking off the corridor for the better part of a shift, and at this rate the correction window closes before the next watch-turn. Miss it and the lane is gone, and a lane that is gone does not come back.</p><p>The crew sheet lists a complement of two, certified, both signed aboard. You find your own name in the pilot's line and read it twice. You do not let your eyes travel down to the other.</p>",
+      "onEnter": { "sanity": -5 },
+      "choices": [
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "bridge": {
+      "title": "Bridge",
+      "text": "<p>The flight board is yours down to the last switch. You read the fault the way you read your own pulse: the lane solution has walked off true, the ship sliding a fraction wide of the corridor with every minute, and the cause is aft, in the drive, where you have no standing. What you can do from here is the flight half - compute the correction, lock a burn that would put the Castor back on the line.</p><p>The manual burn console sits dark. It will not arm a hand-flown correction without the trim key, and the trim key lives in the flight-stores, not here.</p>",
+      "onEnter": { "sanity": -5 },
+      "choices": [
+        { "text": "Lock the correction burn.", "requires": { "item": "trimkey" }, "to": "bridge_solve", "locked": "Lock the correction burn. (the console will not arm a manual burn without the trim key from the flight-stores)" },
+        { "text": "Open the flight-stores locker.", "to": "nav_locker" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "nav_locker": {
+      "title": "Flight-stores",
+      "text": "<p>The flight-stores locker answers to your thumb without complaint - your side of the ship, your inventory, everything where the manifest says it should be. A clip on the inner wall, a small rack beside it, both an arm's reach inside, both stocked exactly as you would stock them yourself.</p>",
+      "choices": [
+        { "text": "Take the trim key from its clip.", "requires": { "notItem": "trimkey" }, "effects": { "add": ["trimkey"] }, "to": "nav_locker" },
+        { "text": "Take the field ampoule from the rack.", "requires": { "notFlag": "took_navgel" }, "effects": { "add": ["medgel"], "flags": { "took_navgel": true } }, "to": "nav_locker" },
+        { "text": "Back to the bridge.", "to": "bridge" }
+      ]
+    },
+    "bridge_solve": {
+      "title": "Bridge",
+      "text": "<p>You fly the correction by hand, the discipline they drill into you for the day the automation lies. The numbers come out clean: a burn that would walk the Castor back onto the corridor and hold it there. You lock the solution into the board. It sits there, complete, waiting.</p><p>Waiting on the one thing you cannot give it. A hand-flown burn is nothing without a live drive under it, and bringing the drive up from a cold fault is an engineering command. You can set the correction. You cannot light it. You read the open procedure on the engineering console again, and the letters stay exactly as legible and as far away as before.</p><p>You have flown this correction a hundred times in training and never needed a second pair of hands for it. You need one now, and the only pair aboard is a pair you cannot reach.</p>",
+      "onEnter": { "sanity": -8, "add": ["burn_solution"] },
+      "choices": [
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "drive_access": {
+      "title": "Drive space",
+      "text": "<p>Aft, the drive space runs hot and low, and you stop knowing things the moment you step into it. Shapes you have no names for stand in the half-light, ticking as they cool or as they wait. Something here is wrong in a way you feel in your teeth and cannot put words to - a wrongness with a shape, bent over its own work.</p><p>The work is half-done. A panel stands open, a sequence stopped partway through, the next move plain to the hand that began it and sealed to you. The worn tool lies where it was set down mid-task, still holding the heat of a grip you do not have.</p><p>You could no more finish what is open here than you could finish a sentence in a language you have only ever heard spoken through a wall.</p>",
+      "onEnter": { "sanity": -8 },
+      "sanityText": {
+        "40": "<p>The drive space runs hot and low. The half-done work waits with its panel open and its next move plain to someone, and the longer you stand in it the less it reads like a task left interrupted and the more it reads like a task being done slowly, in turns, by hands that step out of the room whenever you turn your head.</p>"
+      },
+      "choices": [
+        { "text": "Set your hands to the open sequence and finish it yourself.", "to": "drive_force" },
+        { "text": "Read the stopped procedure on the console.", "to": "drive_log" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "drive_force": {
+      "title": "Drive space",
+      "text": "<p>You set your hands to the open sequence. They are good hands, steady, and they have no idea what they are touching. You wait for it to come to you - the certainty that arrives sometimes from the other side, unasked, knowing the next move. It does not come. This is not a thing the other shift can hand you. It is a thing only the other shift can do, and you are standing here doing it instead.</p>",
+      "choices": [
+        { "text": "Commit the command anyway.", "to": "end_overreach" },
+        { "text": "Take your hands off it.", "to": "junction" }
+      ]
+    },
+    "drive_log": {
+      "title": "Drive space",
+      "text": "<p>You read the stopped procedure. The hand is the one from your own waking board, fluent and certain, stepping through the fault toward a fix - and every line of it makes a sense you can see the shape of and cannot enter, like the notation of an instrument you were never taught to play.</p><p>While you read, it comes: a certainty, arriving from nowhere you authored, sudden and entire. The coolant cross-feed. The wrongness is in the coolant cross-feed. You did not think it. It was set in front of you, the same as the open procedure was set in front of you, by the one who can read this and not by you.</p>",
+      "onEnter": { "sanity": -6 },
+      "choices": [
+        { "text": "Read it for what it tells you, and leave it for the hand that can use it.", "to": "junction" },
+        { "text": "Let the certainty move your hands - go open the cross-feed yourself.", "to": "end_misread" }
+      ]
+    },
+    "rest_station": {
+      "title": "Watch berth",
+      "text": "<p>The watch berth is built for one body and slept in by two. The bunk is warm on the far side, the side you do not take, the bedding pushed back by someone who means to be back inside the hour. A jacket on the hook is not cut to your shoulders. None of it is yours, and all of it is in your reach, and there is no one in the room but you.</p><p>You sit on your own side. The mattress holds a different weight on the other, still warm, settling slowly back to level as you watch.</p>",
+      "onEnter": { "sanity": -6 },
+      "choices": [
+        { "text": "Wake the duty log.", "to": "log_terminal" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "log_terminal": {
+      "title": "Duty log",
+      "text": "<p>The duty log keeps the watch honest. Two operators sign it, pilot and engineer, in and out at the turn of every shift - and you have read it a hundred times without reading it. Two columns. Two names. One hand. The same pen-stroke signs both, hours apart, the engineer logging on at the exact minute you log off, the whole haul, and never once the two of you on the board together.</p>",
+      "onEnter": { "sanity": -8 },
+      "sanityText": {
+        "40": "<p>The duty log, two columns, pilot and engineer, in and out at every shift-turn. One hand signs both, hours apart, the whole haul. You read it again and this time it does not read like a record of two people taking turns. It reads like one person being relieved, every shift, by someone who has never once been late, and never once been seen.</p>"
+      },
+      "choices": [
+        { "text": "Open the log-desk drawer for the field ampoule.", "requires": { "notFlag": "took_loggel" }, "effects": { "add": ["medgel"], "flags": { "took_loggel": true } }, "to": "log_terminal" },
+        { "text": "Stop fighting it. Lie down and let the other shift stand the watch.", "requires": { "sanityMax": 40 }, "to": "end_cede" },
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "tell": {
+      "title": "The front",
+      "text": "<p>You stand still and try to bring the engineer to the front. Not to ask - to order it, the way you would order your own hand to close. You reach for the place the other shift comes from and you push, and your breath goes ragged and your jaw sets and your good steady hands open and close on nothing, and the front stays yours. Empty. No one answers an order here. You knew that. You needed to feel it.</p><p>And then, when you have stopped reaching - when you have given it up - it comes. Unbidden, entire, out of the side of you that you cannot open: a certainty about the drive, arriving the moment you are no longer demanding it. It lands in your chest before your mind has hold of it, and that is the rule, plain at last. You cannot call the other operator. You can only set things down where they will be found, and step back, and let the hand that is not yours pick them up.</p>",
+      "onEnter": { "sanity": -15, "flags": { "knows_the_rule": true } },
+      "choices": [
+        { "text": "Back to the junction.", "to": "junction" }
+      ]
+    },
+    "drive_ready": {
+      "title": "Drive space",
+      "text": "<p>You go aft, and you keep your hands off the work. The last thing left is the one the front taught you when you stopped reaching for it, and it runs against every nerve you own: you take your hands off the controls. You stop being the one in front.</p><p>Everything in your training is the opposite of this. A pilot holds the front. A pilot does not let the ship fly itself, does not put the live controls into a hand they cannot see, does not close their eyes on a closing window and trust. You have spent eleven years being the one who does not let go. The only way through the next minute is to let go, all the way, and believe that what takes over knows the drive better than you ever will. You set down what there is to set down, and you step back.</p>",
+      "choices": [
+        { "text": "Cede with the correction set, so the drive comes up to a ship already aimed.", "requires": { "item": "burn_solution" }, "effects": { "sanity": -10 }, "to": "end_handover", "locked": "Cede with the correction set. (there is nothing laid out for the other hand to fire - the burn must be locked on the bridge first)" },
+        { "text": "Step back with nothing laid out, and trust the body to find its own way.", "to": "end_drift" },
+        { "text": "Take the front back. Return to the junction.", "to": "junction" }
+      ]
+    },
+    "end_overreach": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// OPERATOR ERROR",
+        "text": "<p>The command goes in under your hands, and the drive takes it. But you can only copy the shape of the work, not the knowing behind it, and the shape is not enough. Something lets go, far down in the dark, that the other shift would never have let go. The heat climbs. The board reddens in a pattern you have no name for, and there is no one to hand it to.</p><p>You stood the watch alone, in the one place you were never cleared to stand it. The Castor had two operators. It needed the other one.</p>"
+      }
+    },
+    "end_misread": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// OPERATOR ERROR",
+        "text": "<p>You go to the cross-feed and you do what the certainty told you, as if it had been an order and not a fact set down for someone who could use it. Your hands open what should have stayed shut. You read the message right and answered it wrong: it was never speaking to your hands.</p><p>The space lets go all at once. Heat comes up the back of your throat, and a pressure you have no gauge for, and the dark fills with a sound like the ship drawing breath through its teeth. The wrongness was there to be read, not touched. You touched it. The doing was never yours.</p>"
+      }
+    },
+    "end_drift": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// OFF LANE",
+        "text": "<p>You step back and you let go, and the other shift takes the front, sure and unhurried, and brings the drive up clean. It does exactly the work it is for. It fires the drive into a correction that was never laid out, because you never went forward and locked one - and a flawless burn aimed at nothing only carries the Castor off the lane faster, in a straight clean line, away.</p><p>You trusted the body to solve it. The body solved what it was given. You gave it an open hand and nothing in it.</p>"
+      }
+    },
+    "end_cede": {
+      "ending": {
+        "type": "madness",
+        "stamp": "// WATCH ENDED",
+        "text": "<p>You lie down on the warm side of the bunk, the side you never take, and you stop holding the front. It is such a relief to stop. Someone competent has the watch now - someone who knows the drive, who never needed you, who was always just on the other side of a door you were too tired to keep standing at.</p><p>You do not come back up - not at the next turn of the shift, not at the one after. The log will show the engineer signed on at the minute you signed off, as it always has, and this time the pilot's column simply stays blank, the rest of the way in. One body finished the haul. It was never going to be the half of you that flew.</p>"
+      }
+    },
+    "end_handover": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// ON LANE",
+        "text": "<p>You set the correction, and you step back, clear out of the front - and you feel it taken up. Not handed over: taken, by the side of you that knows the drive, the moment you stop demanding and start trusting. The drive comes up under a ship already aimed. The burn fires clean. The lane straightens beneath the Castor and holds.</p><p>When you come back to the front the board is green and the log shows a command issued, aft, in the engineer's hand, at a minute you do not remember being awake for. You are alone on the Castor. You always were. Never alone in the body - and the one who flew you clear is the one you can never reach, gone quiet again on the far side of a door you only ever stand at from the wrong side.</p>"
+      }
+    }
+  }
+}

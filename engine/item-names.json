@@ -19,5 +19,7 @@
   "cartridge": "packet cartridge",
   "sled": "log sled",
   "bleedkey": "bleed valve key",
-  "emergency_locator": "emergency locator"
+  "emergency_locator": "emergency locator",
+  "trimkey": "flight trim key",
+  "burn_solution": "correction solution"
 }
