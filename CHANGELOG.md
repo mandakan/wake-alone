@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.0](https://github.com/mandakan/wake-alone/compare/v0.9.0...v0.10.0) (2026-06-14)
+
+
+### Features
+
+* **still:** STILL - a radiation outpost where every move spends dose ([d8fc54d](https://github.com/mandakan/wake-alone/commit/d8fc54df58470433e5e227f3a6037139bcd80e2e))
+* THRESHOLD - two operators, one body, the one you can't reach ([108abcd](https://github.com/mandakan/wake-alone/commit/108abcd8e0a347f7749228113853bdfdb3b3c230))
+
 ## [0.9.0](https://github.com/mandakan/wake-alone/compare/v0.8.0...v0.9.0) (2026-06-14)
 
 
