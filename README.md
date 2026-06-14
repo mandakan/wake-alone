@@ -46,28 +46,18 @@ Episodes so far:
 | 02 | **VIGIL** | Listening station VIGIL. The crew didn't leave. They're just not here. |
 | 03 | **TENANT** | Bulk freighter *Amaranth*. The crew left their dinner warm. |
 | 04 | **BECALMED** | Generation ship *Long Patience*. Reactor cold. No one left but you. |
-| 05 | **SIGNAL LOST** *(encrypted)* | Relay station Tycho-4. The distress call is in your own voice. |
+| 05 | **SIGNAL LOST** *(adventure)* | Relay station *Tycho-4*. One distress call, thirty-one years undelivered. |
 | 06 | **WARD** | Recovery berth, freighter *Anodyne*. The voice says you are healing. The frost disagrees. |
 | 07 | **GRAFT** | Auto-surgery, clinic-ship *Halcyon*. You signed for one repair. It is still working. |
 | 08 | **FATHOM** | An object that returns no bearing. You were sent to measure it. |
 | 09 | **FAULT** | Survey frigate *Auster*. Seven crew accounted for. The ship has never told you no. |
+| 10 | **MIRROR WATCH** | Cargo hauler *Lumen*. Three months out. You are not alone. |
 
-*SIGNAL LOST* (EP 05) is encrypted on the menu - a locked placeholder until it is written. Below the
-written episodes sit three permanent **archive anomalies**: unnumbered, corrupted entries whose text
-quietly churns. They are not playable - they mark the anthology as still growing, more signal waiting
-to be recovered.
-
-## Quickstart (Node 18+, no dependencies)
-
-```bash
-npm run new -- --id orrery --title "Orrery"       # scaffold a valid episode
-npm run validate                                  # check every episode
-npm run build                                     # -> dist/index.html (standalone)
-open dist/index.html                              # play
-```
-
-`dist/index.html` is fully self-contained (episodes inlined, fonts via CDN) - host it as a static
-file anywhere, or open it directly.
+*SIGNAL LOST* (EP 05) is a multi-chapter **adventure**: its first chapter plays straight from the
+menu, and each later chapter stays encrypted until you finish the one before it, carrying a little
+state forward. Below the episodes sit three permanent **archive anomalies** - unnumbered, corrupted
+entries whose text quietly churns. They are not playable; they mark the anthology as still growing,
+more signal waiting to be recovered.
 
 ## How it fits together
 
@@ -75,7 +65,7 @@ file anywhere, or open it directly.
 built on it. They live in one repo for now; extract `engine/` + `tools/` into a standalone `skein`
 repo only if a second anthology ever needs the engine.
 
-- **`episodes/*.json`** - the content. One file per adventure. Schema and creative bible in `CLAUDE.md`.
+- **`episodes/*.json`** - the content. One file per episode (a chaptered adventure is several, grouped in `manifest.json`). Schema and creative bible in `CLAUDE.md`.
 - **`tools/validate.mjs`** - the guardrail. A sanity-aware solver proves at least one *survivable*
   path reaches an escape, and it catches dangling pointers, orphans, dead ends, soft-locks (a
   required item/flag never obtainable), and misspelled gate keys. Exits non-zero on any error.
@@ -89,6 +79,18 @@ repo only if a second anthology ever needs the engine.
   a procedural, sanity-coupled soundtrack synthesised live with Tone.js, no audio files - and the
   inventory label map.
 - **`vendor/tone.min.js`** - pinned Tone.js, inlined into `dist/` at build so the bundle stays one file.
+
+## Quickstart (Node 18+, no dependencies)
+
+```bash
+npm run new -- --id orrery --title "Orrery"       # scaffold a valid episode
+npm run validate                                  # check every episode
+npm run build                                     # -> dist/index.html (standalone)
+open dist/index.html                              # play
+```
+
+`dist/index.html` is fully self-contained (episodes inlined, fonts via CDN) - host it as a static
+file anywhere, or open it directly.
 
 ## Handing authoring to Claude Code
 
