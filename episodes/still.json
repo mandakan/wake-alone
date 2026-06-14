@@ -1,0 +1,126 @@
+{
+  "id": "still",
+  "title": "STILL",
+  "byline": "Radiation outpost Ashcroft. The source at its heart reads hotter than its own half-life allows.",
+  "spec": {
+    "size": "short",
+    "punishment": "standard",
+    "escape": "required",
+    "traces": "absent"
+  },
+  "character": {
+    "role": "radiation physicist",
+    "expertise": ["particle-event monitoring", "dose modeling", "radiation shielding", "acute-exposure protocols"],
+    "backstory": "Eleven months alone on a one-person rotation, watching a sealed reference source the way other people watch a clock. You can read your own wrist dosimeter into the acute-exposure table without looking at the table. The thing you cannot read is why the source at the heart of the outpost is hotter than its own decay curve allows - and you have stopped pretending that is a fault in the instrument."
+  },
+  "watching": [
+    "THE SOURCE IS WARMER THAN YOU ARE.",
+    "IT IS NOT DECAYING. YOU ARE.",
+    "EVERY MOVE IS A DOSE.",
+    "STILL READING. STILL CLIMBING.",
+    "HOLD STILL. IT FINDS YOU ANYWAY.",
+    "THE LAST READING ON THE DECK WAS HERS.",
+    "ELEVEN MONTHS. IT WAITED FOR A WARM ONE.",
+    "YOU ARE ABSORBING THIS LINE.",
+    "THE CURVE WAS NEVER GOING TO BEND.",
+    "DO NOT MOVE. DO NOT MOVE."
+  ],
+  "start": "wake",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "wake": {
+      "title": "Reference outpost Ashcroft",
+      "text": "<p>You surface beside the source well, where you should not have let yourself sit down. Eleven months of rotation and the outpost still smells of nothing - scrubbed air, warm electronics, the dry heat of shielding that is doing its work and getting tired of it.</p><p>The dosimeter on your wrist keeps its steady tick. Not the alarm. The patient one. The whole sealed cylinder of the outpost is bathed in field, and the field has a center: the reference source, in its well at the heart of the module, a grey flask the size of your two fists that you have never had reason to open. It reads off its decay curve. Hotter than eleven months should leave it. Hotter than the isotope is allowed to be.</p><p>You know the dose-effect table the way you know your own name, and you cannot turn the field down. But uptake follows exertion. Hold still and the count holds. Move, work, cross the outpost, and you spend what you do not get back.</p>",
+      "onEnter": { "sanity": -5 },
+      "choices": [
+        { "text": "Get up and cross to the duty desk.", "to": "hub", "effects": { "sanity": -8 } }
+      ]
+    },
+    "hub": {
+      "title": "Ops module",
+      "text": "<p>The ops junction. The duty desk and its dead-man console, the station log cycling an amber cursor where you left it. Two short runs lead off the module: the comms crawlway to port, the EVA prep lock to starboard. A ladder drops through the deck grating to the source well below.</p><p>The dosimeter ticks on. Standing here, the count holds. It is the moving that costs.</p>",
+      "sanityText": {
+        "45": "<p>The junction. The desk, the console, the log cursor going amber to black to amber. Port run, starboard run, the ladder down. Your dosimeter reads a number that sits in a row of the table beside a column of effects, and your body is keeping pace with the column now - a fine tremor in the hands, a taste of metal under the tongue. Standing still holds the line. It is the crossings that brought you to this row, and you cannot uncross them.</p>",
+        "20": "<p>The junction, or the shape you have left for it. Desk. Console. The two runs and the ladder down, and the well at the bottom of the ladder is the one thing on the outpost that is not getting colder. The dosimeter does not tick now so much as hold a single long note. You know the row this number lives in. You have known it for a while. Standing still is the one thing that does not make it worse.</p>"
+      },
+      "choices": [
+        { "text": "Read the station log at the desk.", "requires": { "notFlag": "read_log" }, "to": "ops_log" },
+        { "text": "Cross to the comms crawlway (port).", "to": "comms", "effects": { "sanity": -8 } },
+        { "text": "Cross to the EVA prep lock (starboard).", "to": "eva_prep", "effects": { "sanity": -8 } },
+        { "text": "Go down the ladder to the source well.", "to": "core_well", "effects": { "sanity": -8 } }
+      ]
+    },
+    "ops_log": {
+      "title": "Ops module",
+      "text": "<p>You stay at the desk and scroll the log. Eleven months of your own entries, and before them, hers. The retrieval auth code is where the placard promised - a six-figure string you copy across to memory without once letting yourself read it as a number.</p><p>Above it sits the last entry that is not yours. <em>\"Source reads off-curve again. Same as the day before, warmer. I have stopped filing it as instrument error.\"</em> Nothing follows it. You sit with that a beat longer than you should, and holding still is the only free thing you have left.</p>",
+      "onEnter": { "flags": { "read_log": true } },
+      "choices": [
+        { "text": "Back to the desk.", "to": "hub" }
+      ]
+    },
+    "comms": {
+      "title": "Comms crawlway",
+      "text": "<p>The comms run is barely a crawlway. The distress transponder is racked at the end, a hardened orange box with a laminated placard bolted beside it - the procedure, step by step, written for hands that will do this once and never again. The first line wants a retrieval auth code, and notes, in the flat voice of a placard, that the code lives in the station log back in ops. Without it the unit sits dark and vectors no one.</p>",
+      "sanityText": {
+        "30": "<p>The crawlway. The orange box at the end, the placard bolted beside it. The letters on the placard are exactly where they were an hour ago and you read them three times regardless, because the part of you that does arithmetic has started asking the rest of you to confirm everything twice. The procedure has not changed. You have.</p>"
+      },
+      "choices": [
+        { "text": "Enter the auth code and arm the transponder, then crawl back to ops.", "requires": { "flag": "read_log", "notFlag": "transponder_armed" }, "effects": { "flags": { "transponder_armed": true }, "sanity": -8 }, "to": "hub" },
+        { "text": "Crawl back to ops.", "to": "hub", "effects": { "sanity": -8 } }
+      ]
+    },
+    "eva_prep": {
+      "title": "EVA prep lock",
+      "text": "<p>The prep lock, starboard. The EVA suit hangs on its rack with a stress split worked into the shoulder seal - a slow seam you have been meaning to log for a week, and the particle stream past the inner hatch is exactly the wrong thing to wear it into. The suit's service kit is clamped beside the rack. A med-rack is set into the bulkhead. Beyond the hatch the stream runs against the hull in a dry, continuous hiss.</p>",
+      "sanityText": {
+        "30": "<p>The prep lock. The suit, the split seam, the inner hatch, the hiss of the stream on the far side of it. The fine tremor in your hands has climbed the table from where it began, two rows down from the line you are reading now, and you check the seam twice because you no longer trust the first look. The suit does not care how steady you are. It cares only whether it is sealed.</p>"
+      },
+      "choices": [
+        { "text": "Take a patch from the service kit and seal the shoulder seam.", "requires": { "notItem": "suit_patch" }, "effects": { "add": ["suit_patch"] }, "to": "eva_prep" },
+        { "text": "Pocket a counter-agent stim from the med-rack.", "requires": { "notFlag": "took_stim" }, "effects": { "add": ["medgel"], "flags": { "took_stim": true } }, "to": "eva_prep" },
+        { "text": "Seal up, cycle the lock, and cross to the retrieval point.", "requires": { "item": "suit_patch", "flag": "transponder_armed" }, "effects": { "sanity": -12 }, "to": "end_escape" },
+        { "text": "Cycle the lock and cross anyway - transponder dark, no vector.", "requires": { "item": "suit_patch", "notFlag": "transponder_armed" }, "effects": { "sanity": -12 }, "to": "end_drift" },
+        { "text": "Cycle the lock and cross with the seam unsealed.", "requires": { "notItem": "suit_patch" }, "effects": { "sanity": -12 }, "to": "end_suit_fail" },
+        { "text": "Crawl back to ops.", "to": "hub", "effects": { "sanity": -8 } }
+      ]
+    },
+    "core_well": {
+      "title": "Source well",
+      "text": "<p>The ladder lets you down beside the well. Down here the heat is not the tired warmth of the shielding above; it is close and attentive, and it comes off the sealed flask at the center the way a source this small and this old simply cannot. The flask is shut. It has always been shut. It reads, on every instrument you point at it, a thing the instruments should not be able to report.</p><p>A dosimeter lies on the deck plating where it was set down and not picked up again. It is still powered. It is still reading.</p>",
+      "choices": [
+        { "text": "Pick up the dosimeter on the deck and read it.", "requires": { "notFlag": "read_deck" }, "effects": { "flags": { "read_deck": true } }, "to": "core_well" },
+        { "text": "Stay at the well and read the source close, the way she did.", "effects": { "sanity": -12 }, "to": "end_core" },
+        { "text": "Climb back up to ops.", "to": "hub", "effects": { "sanity": -8 } }
+      ]
+    },
+    "end_escape": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// VECTOR CONFIRMED",
+        "text": "<p>The inner hatch seals, the outer opens, and the stream hits you as a pressure you feel in your teeth. The shoulder patch holds. You cross.</p><p>The retrieval skiff is already on your vector when you clear the outpost - they had a fix the moment you armed the transponder, hours ago, while you still had the dose to spend on the crossing. You sealed the suit, you sent the signal, and you spent no move you did not have to.</p><p>Behind you, Ashcroft holds its small grey heart in the dark, still reading, still climbing off a curve that was never going to bend. Someone will have to come back for that. You make it very clear, in the debrief, that it will not be you.</p>"
+      }
+    },
+    "end_drift": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// NO VECTOR",
+        "text": "<p>The patch holds. You cross the stream, and the cold on the far side is clean, and for one whole breath you have done it - outside the outpost and still alive.</p><p>Then the suit's comms reach for something to talk to and find nothing. You never armed the transponder. No vector was sent, no skiff was turned, and the sealed cylinder behind you will not call for help on its own. You saved the suit and left the signal dark. The dose climbs on, and drifting, you have all the time you need to do the arithmetic.</p>"
+      }
+    },
+    "end_suit_fail": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// SEAL FAILURE",
+        "text": "<p>You cycle the lock with the shoulder seam exactly as you found it. Your hands finish the cycle before the part of you that reads tables can object. You cross anyway.</p><p>Through a split seal at this range, the table stops being advisory. You feel it as a line of heat along the joint, then as nothing - which is the row the table gives for the dose now pouring through unsealed cloth. You were never going to outrun what comes through a gap that size.</p>"
+      }
+    },
+    "end_core": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// CEILING",
+        "text": "<p>You stay. You read the source close, the way the last physicist read it, because eleven months of measuring a thing that cannot be is its own kind of question, and down here you want the answer more than you want the hours.</p><p>The heat arrives in the bone of your jaw before you know you have leaned in. Your wrist display stops being a number and becomes a color you cannot look away from. Beside the well the dose is not a slow bleed - it is a flood, because the source is not the field you have spent the day outrunning. It is the field's center, and you have come to sit in it. You have a decay curve of your own now. You understand, far too late, whose was always going to bend first.</p>"
+      }
+    }
+  }
+}
