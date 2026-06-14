@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.9.0](https://github.com/mandakan/wake-alone/compare/v0.8.0...v0.9.0) (2026-06-14)
+
+
+### Features
+
+* **audio:** suspend the context while the page is hidden, with fades ([177949e](https://github.com/mandakan/wake-alone/commit/177949eeb367cbd9643491a376e0acfda1a26f65))
+* chaptered adventures with unlock progression and cross-chapter carryover ([#11](https://github.com/mandakan/wake-alone/issues/11)) ([235ea0a](https://github.com/mandakan/wake-alone/commit/235ea0a02208810594d2b9602eae664b9d93c1ab))
+* **mirror-watch:** a low-sanity surrender slide that can reach madness ([a47bf59](https://github.com/mandakan/wake-alone/commit/a47bf5912d3ec7db190830092a27b0146db1e1f6))
+* **mirror-watch:** her register shifts with sanity at the hub and the climax ([0905711](https://github.com/mandakan/wake-alone/commit/0905711fa41cb7d09911e1827fa56fe742950220))
+* **mirror-watch:** the crewmate who is only ever where you are ([f4a5ff4](https://github.com/mandakan/wake-alone/commit/f4a5ff48f03c5169fdb564fbeeb6cf96cfa19521))
+* SIGNAL LOST - the first chaptered adventure (issue [#3](https://github.com/mandakan/wake-alone/issues/3) phase 3) ([#12](https://github.com/mandakan/wake-alone/issues/12)) ([e41e6a7](https://github.com/mandakan/wake-alone/commit/e41e6a798912701868f5d254fa86939fad0392da))
+* **spec:** add sanityRegister dial (wrong/psychotic) with validation and self-test ([46c3f5d](https://github.com/mandakan/wake-alone/commit/46c3f5da8973a5f0bed2ec2930b964edc9e89342))
+* **spec:** make the size node-count ceiling advisory; restore cut content ([fadeed6](https://github.com/mandakan/wake-alone/commit/fadeed6e48ab7a2a8feabccfba37510b54d60d89))
+* **validate:** catch stale-state prose (L13) and fix every instance in the corpus ([f891eac](https://github.com/mandakan/wake-alone/commit/f891eace0da010de85cb641760e3d9be940c9a31))
+
+
+### Bug Fixes
+
+* **episodes:** craft-review block fixes across graft, fathom, ward ([b045a80](https://github.com/mandakan/wake-alone/commit/b045a80a97447c51fbb3fcaa4b7567a72778a516))
+* **mirror-watch:** give the surrender slide its missing reasoning ([838ab1b](https://github.com/mandakan/wake-alone/commit/838ab1be249c766cbfade6343b25aaa67f0a9c54))
+* **mirror-watch:** make the danger concrete + reviewers read source not paste ([1484069](https://github.com/mandakan/wake-alone/commit/1484069b6f349307033f346665591a1347bf2eaf))
+* **mirror-watch:** seed the distress-call objective before the surrender ending ([c74aa31](https://github.com/mandakan/wake-alone/commit/c74aa3162b88ba8441ddb6da5ccdb5530a87ab38))
+* **mirror-watch:** withhold the mechanism at the tell; keep the observed rule ([61d770a](https://github.com/mandakan/wake-alone/commit/61d770a1ebc2c53146886dccdb201237a171a74f))
+* **tycho:** de-spoil the menu byline; land the big sanity costs in the body (L20, L21) ([7a60d57](https://github.com/mandakan/wake-alone/commit/7a60d577adb0b5d7d2634c37dea9eb5944e99e10))
+
 ## [0.8.0](https://github.com/mandakan/wake-alone/compare/v0.7.0...v0.8.0) (2026-06-11)
 
 
