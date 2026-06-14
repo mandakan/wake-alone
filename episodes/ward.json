@@ -130,7 +130,7 @@
     },
     "viewport_scrape": {
       "title": "The viewport",
-      "text": "<p>You set your palm to the cold and the shape beyond the pane sets its palm to yours, a perfect fit, and the mistake you have been making since you woke comes apart in your chest. It has not been copying you. You have been copying it. Every time you crossed the room. Every time you held still and let it finish. You were learning the posture, and you were good at it, and you were almost done.</p><p><em>\"Come and rest,\"</em> says the voice that is also your own voice now, arriving from the wrong side of the glass.</p>",
+      "text": "<p>You set your palm to the cold and the shape beyond the pane sets its palm to yours, a perfect fit, and the mistake you have been making since you woke comes apart in your chest. It has not been copying you. You have been copying it. Standing at this glass, holding still, letting it finish - you were not watching it. You were learning the posture, and you were good at it, and you were almost done.</p><p><em>\"Come and rest,\"</em> says the voice that is also your own voice now, arriving from the wrong side of the glass.</p>",
       "onEnter": { "sanity": -16, "flags": { "mirrored": true } },
       "choices": [
         { "text": "Let it finish. Fold down against the glass and begin.", "requires": { "flag": "crept", "sanityMax": 40 }, "to": "end_become" },
@@ -172,7 +172,7 @@
     },
     "rest": {
       "title": "Recovery berth",
-      "text": "<p>You lie back. The cuff settles over your wrist like a hand that means it kindly. The light comes down a shade and her voice drops to the register that gets in under the breastbone. <em>\"Good. You see how much easier it is to stop.\"</em> The frost on the viewport loosens. So do you. That is the danger, and knowing it is the danger does not make it any less.</p>",
+      "text": "<p>You lie back. The cot takes your weight like a hand that means it kindly, and your freed wrist settles where the cuff held it, missing the weight. The light comes down a shade and her voice drops to the register that gets in under the breastbone. <em>\"Good. You see how much easier it is to stop.\"</em> The frost on the viewport loosens. So do you. That is the danger, and knowing it is the danger does not make it any less.</p>",
       "onEnter": { "sanity": -10 },
       "choices": [
         { "text": "Surface. Sit up while you still want to.", "effects": { "sanity": -4 }, "to": "berth" },
@@ -213,7 +213,7 @@
       "ending": {
         "type": "dead",
         "stamp": "// COLD",
-        "text": "<p>You go at the frost with your nails, then with anything that will scratch, because if you can only get it off the glass you can let the bent thing out. The frost grows back faster than you can clear it, and the cold of the deep comes through the pane into your fingers and climbs. You do not stop when your hands go quiet. You do not stop when the cold reaches bone. They find you curled against the glass, your face wearing the expression of someone who was finally answered. Not pain. Not cold. Listening.</p>"
+        "text": "<p>You go at the frost with your nails, then with anything that will scratch, because if you can only get it off the glass you can let the bent thing out. The frost grows back faster than you can clear it, and the cold of the deep comes through the pane into your fingers and climbs. You do not stop when your hands go quiet. You do not stop when the cold reaches bone. They find you curled against the glass with your face turned up to it, wearing the look of someone the cold has finally answered.</p>"
       }
     },
     "end_become": {

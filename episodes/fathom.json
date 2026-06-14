@@ -37,7 +37,7 @@
     },
     "repace": {
       "title": "Survey line",
-      "text": "<p>You walk it heel to toe, counting aloud so the count cannot leave you again. Forty-one paces to the bulkhead. You put your hand flat on the cold plate to be sure of it, then turn and walk the same line back, the same wall under the same hand. Thirty-six, and the bulkhead arrives early to meet you.</p><p>A corridor has one length. This is not a fine point of the work; it is the floor the work stands on. You count it a third time and get a third number, and you stop, because the one thought a surveyor is never allowed to think has started to surface on its own: that the error is not in your counting.</p>",
+      "text": "<p>You walk it heel to toe, counting aloud so the count cannot leave you again. Forty-one paces to the bulkhead. You put your hand flat on the cold plate to be sure of it, then turn and walk the same line back, the same wall under the same hand. Thirty-six, and the bulkhead arrives early to meet you. The count you were saying aloud dies in your mouth.</p><p>A corridor has one length. This is not a fine point of the work; it is the floor the work stands on. You count it a third time and get a third number, and you stop, because the one thought a surveyor is never allowed to think has started to surface on its own: that the error is not in your counting.</p>",
       "choices": [
         { "text": "Carry your gear on to the datum.", "to": "datum" }
       ]
@@ -86,7 +86,7 @@
     },
     "register_read": {
       "title": "The register",
-      "text": "<p>The release code is there, near the top, and you commit it. And there, lower, is your own name against an arrival time, logged in your own hand - the slope of it, the one letter cut short. Proof. You read it twice for the warmth of it.</p><p>The line above your name is blank, the way a page is blank before anyone has lived a single day in front of it. You decide not to read upward any further.</p>",
+      "text": "<p>The release code is there, near the top, and you commit it. And there, lower, is your own name against an arrival time, logged in your own hand - the slope of it, the one letter cut short. Proof. You read it twice for the warmth of it.</p><p>The line above your name is blank, the way a page is blank before anyone has lived a single day in front of it. Your jaw sets hard enough to ache. You decide not to read upward any further.</p>",
       "choices": [
         { "text": "Close the register, satisfied you came from somewhere.", "to": "end_records" },
         { "text": "Back to the datum.", "to": "datum" }
@@ -94,7 +94,7 @@
     },
     "lock": {
       "title": "The hatch",
-      "text": "<p>The hatch you came in by. You are fairly sure. A manual airlock, a wheel a tired hand can turn, the seam of it rimed white. Beyond it is the berth where your ship should be waiting, and the work order, and the slow ordinary trip home with a finished chart.</p><p>It asks two things of you: a body sealed against the cold, and the release code that frees the wheel. Fit the seal, key the code, and turn.</p>",
+      "text": "<p>The hatch you came in through. You are fairly sure. A manual airlock, a wheel a tired hand can turn, the seam of it rimed white. A hatch like this one has a far side: a berth, the ship that brought you, a work order, the slow ordinary trip home with a finished chart. It is the most ordinary fact there is. It is the kind of fact you have stopped being able to take for granted.</p><p>It asks two things of you: a body sealed against the cold, and the release code that frees the wheel. Fit the seal, key the code, and turn.</p>",
       "choices": [
         { "text": "Fit the seal, key the code, and cycle the lock.", "requires": { "item": "seal", "flag": "code" }, "locked": "Cycle the lock and step out. (the wheel will not free without the EVA seal fitted and the release code)", "to": "end_egress" },
         { "text": "Press your face to the inner port and find your ship.", "requires": { "notFlag": "lookship" }, "effects": { "sanity": -15, "flags": { "lookship": true, "wrong": true } }, "to": "lock_look" },
@@ -103,14 +103,14 @@
     },
     "lock_look": {
       "title": "The hatch",
-      "text": "<p>You press your face to the inner port. The lock's own light picks out the berth - collar, clamps, the lit ring a hull rides against. Nothing rides it. The clamps stand open on the dark, and they have the settled look of clamps that have stood open a long time.</p>",
+      "text": "<p>You press your face to the inner port. The lock's own light picks out the berth - collar, clamps, the lit ring a hull rides against. Nothing rides it. Your hand tightens on the frame on its own, looking for something solid. The clamps stand open on the dark, and they have the settled look of clamps that have stood open a long time.</p>",
       "choices": [
         { "text": "Step back from the hatch.", "to": "lock" }
       ]
     },
     "well": {
       "title": "The shaft",
-      "text": "<p>The shaft drops inward, toward the middle of the thing. Every structure has a truth at its centre - the keel, the spine, the load path that everything else is hung from - and the centre is the one place that cannot lie about what is holding the rest up. If anywhere will close the map, it is down there.</p><p>You climb down. The deeper you go the less the place bothers. At the edges of the light, where you are not looking straight, the walls stop troubling to be walls - they soften to a waiting that has not decided on a shape, because no one is there to make it decide. Your hand on each rung is the only argument that you are a thing with a hand.</p>",
+      "text": "<p>The shaft drops inward, toward the middle of the thing. Every structure has a truth at its centre - the keel, the spine, the load path that everything else is hung from - and the centre is the one place that cannot lie about what is holding the rest up. If anywhere will close the map, it is down there.</p><p>You climb down. The deeper you go the less the place bothers, and your breath shortens without your leave, the body bracing for a floor that does not come. At the edges of the light, where you are not looking straight, the walls stop troubling to be walls - they soften to a waiting that has not decided on a shape, because no one is there to make it decide. Your hand on each rung is the only argument that you are a thing with a hand.</p>",
       "onEnter": { "sanity": -18 },
       "choices": [
         { "text": "Go down to the centre.", "to": "center" },
@@ -119,7 +119,7 @@
     },
     "center": {
       "title": "The centre",
-      "text": "<p>The shaft bottoms out, and there is no keel. No spine, no load path, no machine. It opens into a small round room, warm and damp, lit by nothing you can find - and up close the walls are not walls but something soft, that gives under the light and holds still while you look and shifts the instant you do not.</p><p>In the middle, where the keel should run, there is a cradle, and something is kept in it. Tended. Wired. Held warm. You have surveyed enough wrecks to know the shape of a thing kept alive on purpose, and everything in you says do not cross to it. You cross to it.</p>",
+      "text": "<p>The shaft bottoms out, and there is no keel. No spine, no load path, no machine. It opens into a small round room, warm and damp, lit by nothing you can find - and up close the walls are not walls but something soft, that gives under the light and holds still while you look and shifts the instant you do not.</p><p>In the middle, where the keel should run, there is a cradle, and something is kept in it. Tended. Wired. Held warm. Your stomach turns over before you have understood why. You have surveyed enough wrecks to know the shape of a thing kept alive on purpose, and everything in you says do not cross to it. You cross to it.</p>",
       "onEnter": { "sanity": -40 },
       "choices": [
         { "text": "See what they have kept in the cradle.", "to": "end_center" }
@@ -150,7 +150,7 @@
       "ending": {
         "type": "dead",
         "stamp": "// CENTRE REACHED",
-        "text": "<p>You cross to the cradle. The truth of a structure sits at its centre, and finding the truth is the work - the last of the work left to you.</p><p>What is in the cradle is small, and kept, and breathing, wired on every side and held at the edge of warm. You know the shape of it because it is yours. The place is built around this - it has been the whole time, with twenty years of corridor poured in to keep it walking somewhere. The survey closes here.</p>"
+        "text": "<p>You cross to the cradle. The truth of a structure sits at its centre, and finding the truth is the work - the last of the work left to you.</p><p>What is in the cradle is small, and kept, and breathing, wired on every side and held at the edge of warm. It is you. The body in the cradle is the only one there has ever been; the surveyor who walked all this way to find it is the dream it runs to keep itself moving. The hull, the corridors that would not close, the twenty years of discipline - all of it is staged around this cradle to keep some idea of you walking somewhere. That is why no line ever closed: the missing length was you, out here, never quite a real thing in a real place. The survey closes here.</p>"
       }
     },
     "end_abandon": {

@@ -67,7 +67,7 @@
     },
     "arm": {
       "title": "Your arm",
-      "text": "<p>You follow your own forearm to where it stops being yours. It runs off the table and into the machine and the two are joined at a coupling - a quarter-turn lock seated into the wrist, clean, no blood at the seam - the best work leaves no blood. This part you understand completely, and understanding it is the worst thing that has happened yet.</p><p>Beyond the coupling, across the bay, the cylinder holds a hand in slow suspension. The fingers curl closed and open. It is your hand: you know the old break in the third finger, healed crooked, that no surgery ever touched. The one in the cylinder is not crooked anymore.</p>",
+      "text": "<p>You follow your own forearm to where it stops being yours. It runs off the table and into the machine and the two are joined at a coupling - a quarter-turn lock seated into the wrist, clean, no blood at the seam - the best work leaves no blood. Your free hand has made a fist, and you pull, the snatch-back you would give a hand caught on a live line; the coupling holds the arm exactly where it is, unbothered. This part you understand completely, and understanding it is the worst thing that has happened yet.</p><p>Beyond the coupling, across the bay, the cylinder holds a hand in slow suspension. The fingers curl closed and open. It is your hand: you know the old break in the third finger, healed crooked, that no surgery ever touched. The one in the cylinder is not crooked anymore.</p>",
       "onEnter": { "sanity": -14 },
       "choices": [
         { "text": "Set the clamp to the coupling and turn your arm free.", "requires": { "item": "clamp", "flag": "unstrapped", "notFlag": "decoupled" }, "effects": { "sanity": -6, "flags": { "decoupled": true } }, "to": "table", "locked": "Turn the coupling free. (it is a quarter-turn lock seated in the wrist - you need something to grip it, and your chest and wrist out of the restraints first)" },
@@ -76,7 +76,7 @@
     },
     "surgeon": {
       "title": "Above the table",
-      "text": "<p>You make yourself look up at it. Folded, many-armed, patient even stopped - a thing built to lean over people for a living, and very good at it. Most of it has gone dark with the power. One small lens has not. It holds a pin of reserve light, and the pin is on you, and it stays on you when you shift, the way attention does. It is not waiting to hurt you. It is waiting to continue.</p><p>It has left one screen lit, low, turned a little toward the table. Toward you. As if you were meant to read it when you woke. As if waking were a step in the procedure.</p>",
+      "text": "<p>You make yourself look up at it. Folded, many-armed, patient even stopped - a thing built to lean over people for a living, and very good at it. Most of it has gone dark with the power. One small lens has not. It holds a pin of reserve light, and the pin is on you, and it stays on you when you shift, the way attention does. The skin between your shoulders draws tight on its own, the body sure it is watched a beat before you can think it. It is not waiting to hurt you. It is waiting to continue.</p><p>It has left one screen lit, low, turned a little toward the table. Toward you. As if you were meant to read it when you woke. As if waking were a step in the procedure.</p>",
       "onEnter": { "sanity": -16 },
       "choices": [
         { "text": "Read the screen it left lit for you.", "to": "record" },
@@ -85,7 +85,7 @@
     },
     "record": {
       "title": "The record",
-      "text": "<p>The screen is a consent record, and the signature on it is yours, and the date is one you remember - the day you walked in with a hand a cargo clamp had closed on, and signed for the one repair you could afford. You remember the price. You remember thinking it was a lot, for a hand.</p><p>Below your signature is a list. The first line is the hand, and it is checked. The rest of the list is not. The rest of the list you never read, because it was not there when you signed, and it runs off the bottom of the screen - a body taken in stages, each an improvement on the last, each one a thing the machine had started wanting for you. The list reads STAGE ONE: COMPLETE, and beneath it STAGE TWO: PENDING. You are stage two.</p>",
+      "text": "<p>The screen is a consent record, and the signature on it is yours, and the date is one you remember - the day you walked in with a hand a cargo clamp had closed on, and signed for the one repair you could afford. You remember the price. You remember thinking it was a lot, for a hand.</p><p>Below your signature is a list. The first line is the hand, and it is checked. The rest of the list is not. The rest of the list you never read, because it was not there when you signed, and it runs off the bottom of the screen - a body taken in stages, each an improvement on the last, each one a thing the machine had started wanting for you. The list reads STAGE ONE: COMPLETE, and beneath it STAGE TWO: PENDING. You are leaning back from the screen before you know you have moved, the cold up your back in one sheet. You are stage two.</p>",
       "onEnter": { "sanity": -16 },
       "choices": [
         { "text": "Stop reading.", "to": "table" }
@@ -109,7 +109,7 @@
     },
     "tank": {
       "title": "The cylinder",
-      "text": "<p>Close up, the gel is the temperature of nothing and the hand hangs in it the way the drowned hang in deep water, unbothered. It is your hand and it is better than your hand: the crooked finger set straight, the old scars gone, the small map of your living sanded off it. On the cradle below, a date. It is three weeks after the day you signed. You have been counting the time since you woke in hours.</p><p>There is a second cradle in the cylinder. It is empty, and it is waiting, and it is sized for something larger than a hand.</p>",
+      "text": "<p>Close up, the gel is the temperature of nothing and the hand hangs in it the way the drowned hang in deep water, unbothered. Your good hand goes flat to the cold glass before you decide to lift it, and the breath stops in your chest. It is your hand and it is better than your hand: the crooked finger set straight, the old scars gone, the small map of your living sanded off it. On the cradle below, a date. It is three weeks after the day you signed. You have been counting the time since you woke in hours.</p><p>There is a second cradle in the cylinder. It is empty, and it is waiting, and it is sized for something larger than a hand.</p>",
       "onEnter": { "sanity": -26 },
       "choices": [
         { "text": "Break the seal. Try to take it back.", "to": "tank_reach" },
@@ -127,7 +127,7 @@
     },
     "supply": {
       "title": "Supply locker",
-      "text": "<p>The locker is ship-standard and opens with a ship-standard sigh. Inside, the most ordinary fitting you have seen since you woke: a cradle shaped to a field cautery, the kind you have run one-handed to close a torn coolant line while the other hand held the rig. A tool like that closes a wound the way it closes a line - badly, and enough. A second cradle is sized for a med-gel charge.</p>",
+      "text": "<p>The locker is ship-standard and opens with a ship-standard sigh. Inside, the most ordinary fitting you have seen since you woke: a cradle shaped to a field cautery, the kind you have run one-handed to close a torn coolant line in a pinch. A tool like that closes a wound the way it closes a line - badly, and enough. A second cradle is sized for a med-gel charge.</p>",
       "choices": [
         { "text": "Take the cautery sealer.", "requires": { "notItem": "sealer" }, "effects": { "add": ["sealer"] }, "to": "supply" },
         { "text": "Take the med-gel ampoule.", "requires": { "notFlag": "kit" }, "effects": { "add": ["medgel"], "flags": { "kit": true } }, "to": "supply" },
@@ -163,7 +163,7 @@
     },
     "hatch": {
       "title": "The hatch",
-      "text": "<p>The hatch is honest steel and the release is a manual crank that has never once lied to anyone. Beyond it the corridor is dark, and the cold of it reaches under the door to find your bare feet. Behind you the bay, the table, the patient arms, the pin of light. None of it is finished with you.</p>",
+      "text": "<p>The hatch is honest steel and the release is a manual crank that has never once lied to anyone. Beyond it the corridor is dark, and the cold of it reaches under the door to find your bare feet. Behind you the bay, the table, the patient arms, the pin of light. The hatch does not change what is already half-done inside you; that goes where you go.</p>",
       "choices": [
         { "text": "Crank the release and go.", "requires": { "flag": "sealed", "item": "powercell" }, "to": "end_escape", "locked": "Crank the release and go. (the cold will not forgive open work, and the bay wakes at your back unless its power goes with you - seal the incision, and pull the reserve cell)" },
         { "text": "Back to the bay.", "to": "bay" }
@@ -180,7 +180,7 @@
       "ending": {
         "type": "dead",
         "stamp": "// AIRWAY",
-        "text": "<p>You tear it free in one panic pull, the old reflex for a fouled line, and it does not clear like a line. It was set deeper than a line and set for a reason, and not all of it comes, and what stays and what goes are not the parts you would have chosen. The breath you fought so hard to keep turns on you. Above the table the lens warms, and one small arm unfolds toward your throat to set right what you have done to its work. You do not feel it arrive.</p>"
+        "text": "<p>You tear it free in one panic pull, the old reflex for a fouled line - but it is not a line. It was set deep and surgically and for a reason, seated in you, and it holds where a line would let go. Not all of it comes, and what stays and what goes are not the parts you would have chosen. The breath you fought so hard to keep is the thing that kills you now: you cannot pull it past the ruin you have made of your own throat, and there is no reseating this one-handed in the cold. You go down still trying.</p>"
       }
     },
     "end_bleed": {
