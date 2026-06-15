@@ -39,6 +39,20 @@ export const ESCAPE_MODES = ["required", "forbidden"];
 //                offered to the player, an answer that poisons an earlier line
 export const TRACE_MODES = ["absent", "restrained", "forward"];
 
+// budget -> opt-in scarcity/move-budget contract (the L22 ceiling).
+// L14 is a FLOOR (the optimal escape must cost at least MIN_FORCED_LOSS); for an
+// episode whose whole mechanic is a depleting budget, L22 adds the mirror CEILING:
+// the best survivable escape must also land NEAR the floor. Slack at the finish
+// (the player walks out with most of the bar intact) silently kills the felt
+// urgency the mechanic promises, even when the math is "hard-won" on paper. Each
+// mode maps to an escapeCeiling -- the highest bestEscapeSanity allowed before the
+// validator warns (advisory). Opt-in only: episodes without a budget dial are
+// never checked, so a non-budget escape landing high is fine.
+//   move - per-move dose/drain budget (every traversal spends the bar)
+export const BUDGET_MODES = {
+  move: { escapeCeiling: 40 },
+};
+
 // sanityRegister -> which grammar the sanityText degrade runs on (the L18 dial).
 // The enum is validated here; the guardrails (lucid cold read, one concrete
 // anchor, one delusional move, standalone + state-true) are judgment -- L18 in
@@ -57,8 +71,8 @@ export const DEFAULT_ESCAPE = "required";
 // spec is declared, or { error } when a dial value is unknown.
 export function resolveSpec(spec) {
   if (!spec || typeof spec !== "object") return null;
-  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null, escape: spec.escape ?? null, traces: spec.traces ?? null, sanityRegister: spec.sanityRegister ?? null };
-  if (out.size == null && out.punishment == null && out.escape == null && out.traces == null && out.sanityRegister == null) return null;
+  const out = { size: spec.size ?? null, punishment: spec.punishment ?? null, escape: spec.escape ?? null, traces: spec.traces ?? null, sanityRegister: spec.sanityRegister ?? null, budget: spec.budget ?? null };
+  if (out.size == null && out.punishment == null && out.escape == null && out.traces == null && out.sanityRegister == null && out.budget == null) return null;
   if (out.size != null) {
     if (!SIZES[out.size]) return { error: `unknown size "${out.size}" (use ${Object.keys(SIZES).join("/")})` };
     Object.assign(out, SIZES[out.size]);
@@ -75,6 +89,10 @@ export function resolveSpec(spec) {
   }
   if (out.sanityRegister != null && !SANITY_REGISTERS.includes(out.sanityRegister)) {
     return { error: `unknown sanityRegister "${out.sanityRegister}" (use ${SANITY_REGISTERS.join("/")})` };
+  }
+  if (out.budget != null) {
+    if (!BUDGET_MODES[out.budget]) return { error: `unknown budget "${out.budget}" (use ${Object.keys(BUDGET_MODES).join("/")})` };
+    Object.assign(out, BUDGET_MODES[out.budget]);
   }
   return out;
 }
@@ -96,5 +114,6 @@ export function describeBrief(resolved) {
   if (resolved.escape === "forbidden") bits.push(`escape=forbidden (no way out -- every path ends in death)`);
   if (resolved.traces) bits.push(`traces=${resolved.traces} (death-evidence register, L17 - judgment-checked)`);
   if (resolved.sanityRegister) bits.push(`sanityRegister=${resolved.sanityRegister} (sanityText register, L18 - judgment-checked)`);
+  if (resolved.budget) bits.push(`budget=${resolved.budget} (scarcity mechanic; best escape must land <=${resolved.escapeCeiling}% sanity, L22)`);
   return bits.join("; ");
 }

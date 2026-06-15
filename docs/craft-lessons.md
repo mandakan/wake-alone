@@ -539,3 +539,22 @@ if the page is calm, the cost reads as bookkeeping and the emotion is outsourced
 This is the bible's "reaction over object" made mandatory at cost beats.
 **Enforced by:** judgment - the `author-episode` final read and the reviewer's register lens
 check every choice/onEnter with sanity <= -12 against its node's prose for an embodied beat.
+
+## L22 - L14 is a floor; for a budget mechanic, also watch the ceiling
+
+**Feedback (2026-06, STILL):** "a bit short and too easy ... even exploring the source I had plenty
+of sanity left when successful. I never got the urgency about movement." The episode passed L14 (the
+optimal escape forced more than 20 loss) and was solvable on paper, yet the best survivable route
+still landed at 76% neural integrity. The whole mechanic was a depleting move budget, and finishing
+with most of the bar intact told the player the budget never mattered.
+**Rule:** L14 sets a FLOOR - the optimal escape must cost at least ~20. For an episode whose mechanic
+IS a depleting budget (every move spends the bar), add the mirror CEILING: the best *survivable*
+escape must also land near the floor, not merely above L14's minimum. Slack at the finish is silent -
+the math reads "hard-won" while the play reads "comfortable," and the urgency the mechanic promises
+dies in the leftover. Concentrate the missing cost where the fiction already points (STILL's fix: the
+acute EVA crossing spike from -18 to -40, which also made the single med-gel mandatory - the best
+escape now lands at 8%). A budget you can ignore is not a budget.
+**Enforced by:** opt-in. An episode declares `spec.budget` ("move"); `validate` then warns (advisory)
+when the best escape's surviving sanity exceeds the mode's ceiling (40 for "move"), self-tested.
+Episodes without the dial are never checked - a non-budget escape landing high is fine. Whether the
+mechanic *feels* like a budget stays judgment (the reviewer's tension lens: "does the bar bite?").

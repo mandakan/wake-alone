@@ -6,7 +6,8 @@
     "size": "standard",
     "punishment": "standard",
     "escape": "required",
-    "traces": "absent"
+    "traces": "absent",
+    "budget": "move"
   },
   "character": {
     "role": "radiation physicist",

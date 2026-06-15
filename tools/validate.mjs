@@ -311,6 +311,21 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
         }
       } catch { /* advisory only */ }
     }
+
+    // L22: the ceiling that mirrors L14's floor. For an episode that opts into a
+    // scarcity/move-budget contract (spec.budget), the best *survivable* escape
+    // must also land near the floor -- a high-sanity finish means the budget never
+    // bit, and the felt urgency the mechanic promises dies in the slack. Advisory,
+    // and strictly opt-in: only checked when spec.budget is declared.
+    if (resolved && !resolved.error && resolved.budget && resolved.escapeCeiling != null &&
+        solver.winnable && escapeMode !== "forbidden" && !solver.truncated && solver.bestEscape) {
+      const landed = solver.bestEscape.sanity;
+      if (landed > resolved.escapeCeiling) {
+        W(`spec(budget=${resolved.budget}): best escape lands at ${landed}% sanity, over the ${resolved.escapeCeiling}% ceiling; ` +
+          `a budget mechanic wants the optimal escape near the floor, not just above L14's forced-loss minimum -- ` +
+          `leftover slack silently kills the felt urgency (L22). Tighten the per-move cost or the climax spike.`);
+      }
+    }
   }
 
   // ---- metrics + spec thresholds ----
@@ -388,7 +403,7 @@ export function validateEpisode(ep, name = ep && ep.id, opts = {}) {
     madnessReachable: solver ? solver.madnessReachable : null,
     statesExplored: solver ? solver.statesExplored : null,
     truncated: solver ? solver.truncated : null,
-    spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment, escape: resolved.escape, traces: resolved.traces, sanityRegister: resolved.sanityRegister } : null,
+    spec: resolved && !resolved.error ? { size: resolved.size, punishment: resolved.punishment, escape: resolved.escape, traces: resolved.traces, sanityRegister: resolved.sanityRegister, budget: resolved.budget } : null,
     character,
     escape: escapeMode,
     words: wordCount,
@@ -567,7 +582,7 @@ function printResult(r) {
           : `${C.red}UNWINNABLE${C.reset}`;
       console.log(`${C.dim}  solver: ${solv}${C.dim} · dead endings: ${rp.deadEndings} · madness reachable: ${rp.madnessReachable ? "yes" : "no"} · states: ${rp.statesExplored}${rp.truncated ? " (truncated)" : ""}${C.reset}`);
       const ratio = rp.deathRatio == null ? "?" : `${Math.round(rp.deathRatio * 100)}%`;
-      console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`, rp.spec.escape === "forbidden" && "escape=forbidden", rp.spec.traces && `traces=${rp.spec.traces}`, rp.spec.sanityRegister && `sanityRegister=${rp.spec.sanityRegister}`].filter(Boolean).join(", ")}` : ""}${C.reset}`);
+      console.log(`${C.dim}  metrics: ${rp.words} words · ~${rp.estMinutes} min · death ratio ${ratio}${rp.spec ? ` · spec: ${[rp.spec.size && `size=${rp.spec.size}`, rp.spec.punishment && `punishment=${rp.spec.punishment}`, rp.spec.escape === "forbidden" && "escape=forbidden", rp.spec.traces && `traces=${rp.spec.traces}`, rp.spec.sanityRegister && `sanityRegister=${rp.spec.sanityRegister}`, rp.spec.budget && `budget=${rp.spec.budget}`].filter(Boolean).join(", ")}` : ""}${C.reset}`);
       if (rp.character) console.log(`${C.dim}  character: ${rp.character.role || "(unspecified role)"}${rp.character.expertise.length ? ` · knows: ${rp.character.expertise.join(", ")}` : ""}${C.reset}`);
     }
   }

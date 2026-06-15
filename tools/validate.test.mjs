@@ -536,6 +536,61 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("gelmask: forced loss 10 still warns despite held gel", hasWarn(r, "escape reads costless"), r.warnings.join("; "));
 }
 
+// --- L22: a budget episode whose best escape lands high warns (advisory ceiling) ---
+{
+  // escape costs -30 (no L14 floor warn: forced loss 30 >= 20), so the best
+  // survivable escape lands at 70% -- over budget=move's 40% ceiling.
+  const ep = { id: "budgethigh", title: "BH", spec: { budget: "move" }, start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "make the crossing", to: "x", effects: { sanity: -30 } },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      x: escape(), d1: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("budgethigh: still ok (advisory)", r.ok, r.errors.join("; "));
+  check("budgethigh: ceiling warn fires", hasWarn(r, "budget=move") && hasWarn(r, "L22"), r.warnings.join("; "));
+  check("budgethigh: not an L14 costless warn (forced loss 30)", !hasWarn(r, "escape reads costless"), r.warnings.join("; "));
+  check("budgethigh: budget reported in spec", r.report.spec && r.report.spec.budget === "move");
+}
+
+// --- L22: a budget episode landing near the floor passes clean ---
+{
+  // escape costs -70 -> best survivable escape lands at 30%, under the ceiling.
+  const ep = { id: "budgetlow", title: "BL", spec: { budget: "move" }, start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "spend nearly everything", to: "x", effects: { sanity: -70 } },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      x: escape(), d1: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("budgetlow: ok", r.ok, r.errors.join("; "));
+  check("budgetlow: no ceiling warn", !hasWarn(r, "L22"), r.warnings.join("; "));
+}
+
+// --- L22: strictly opt-in -- the same high-landing escape without a budget dial is silent ---
+{
+  const ep = { id: "nobudget", title: "NB", start: "hub", startSanity: 100,
+    nodes: {
+      hub: { text: "<p>h</p>", choices: [
+        { text: "make the crossing", to: "x", effects: { sanity: -30 } },
+        { text: "die", to: "d1" }, { text: "die2", to: "d2" },
+      ]},
+      x: escape(), d1: dead("// A"), d2: dead("// B") } };
+  const r = validateEpisode(ep);
+  check("nobudget: no L22 warn without the dial (opt-in)", !hasWarn(r, "L22"), r.warnings.join("; "));
+}
+
+// --- spec: an unknown budget value is an error; a valid one is accepted ---
+{
+  const nodes = { a: { text: "<p>a</p>", choices: [{ text: "go", to: "x", effects: { sanity: -70 } }, { text: "die", to: "d" }] }, x: escape(), d: dead() };
+  let r = validateEpisode({ id: "badbudget", title: "B", spec: { budget: "fuel" }, start: "a", startSanity: 100, nodes });
+  check("badbudget: unknown budget error", hasErr(r, "spec: unknown budget"), r.errors.join("; "));
+  r = validateEpisode({ id: "okbudget", title: "B", spec: { budget: "move" }, start: "a", startSanity: 100, nodes });
+  check("okbudget: valid budget accepted", !hasErr(r, "spec:"), r.errors.join("; "));
+}
+
 // --- L15: one simile scaffold as the episode's default move warns (advisory) ---
 {
   const mk = (i) => ({ text: `<p>It hangs there the way a thing hangs (${i}).</p>`, choices: [{ text: "n", to: i < 6 ? `n${i + 1}` : "x" }] });
