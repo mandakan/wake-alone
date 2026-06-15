@@ -87,9 +87,8 @@
     },
     "core_well": {
       "title": "Source well",
-      "text": "<p>The ladder lets you down beside the well. Down here the heat is not the tired warmth of the shielding above; it is close and attentive, and it comes off the sealed flask at the center the way a source this small and this old simply cannot. The flask is shut. It has always been shut. It reads, on every instrument you point at it, a thing the instruments should not be able to report.</p><p>A dosimeter lies on the deck plating where it was set down and not picked up again. It is still powered. It is still reading.</p>",
+      "text": "<p>The ladder lets you down beside the well. Down here the heat is not the tired warmth of the shielding above; it is close and attentive, and it comes off the sealed flask at the center the way a source this small and this old simply cannot. The flask is shut. It has always been shut. It reads, on every instrument you point at it, a thing the instruments should not be able to report.</p><p>A dosimeter lies on the deck plating where someone set it down and did not pick it up again. It is still powered, still reading the field as faithfully as the one on your own wrist - and there is no wrist left on the outpost for it to ride but yours.</p>",
       "choices": [
-        { "text": "Pick up the dosimeter on the deck and read it.", "requires": { "notFlag": "read_deck" }, "effects": { "flags": { "read_deck": true } }, "to": "core_well" },
         { "text": "Stay at the well and read the source close, the way she did.", "effects": { "sanity": -12 }, "to": "end_core" },
         { "text": "Climb back up to ops.", "to": "hub", "effects": { "sanity": -8 } }
       ]
