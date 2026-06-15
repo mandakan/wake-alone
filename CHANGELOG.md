@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.0](https://github.com/mandakan/wake-alone/compare/v0.9.0...v0.10.0) (2026-06-15)
+
+
+### Features
+
+* **still:** expand to standard size and tighten the move budget ([7ec18ed](https://github.com/mandakan/wake-alone/commit/7ec18edb80515390de5b76216fb64d6449833582))
+* **still:** STILL - a radiation outpost where every move spends dose ([d8fc54d](https://github.com/mandakan/wake-alone/commit/d8fc54df58470433e5e227f3a6037139bcd80e2e))
+* THRESHOLD - two operators, one body, the one you can't reach ([108abcd](https://github.com/mandakan/wake-alone/commit/108abcd8e0a347f7749228113853bdfdb3b3c230))
+
+
+### Bug Fixes
+
+* **still:** drop the no-op dosimeter self-loop; deliver it as found prose ([8432076](https://github.com/mandakan/wake-alone/commit/843207658d24e1ee62325cb9bcb6b00b12aad8db))
+
 ## [0.9.0](https://github.com/mandakan/wake-alone/compare/v0.8.0...v0.9.0) (2026-06-14)
 
 
