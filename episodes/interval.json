@@ -1,0 +1,167 @@
+{
+  "id": "interval",
+  "title": "INTERVAL",
+  "byline": "Pathology vessel 'Carswell'. Twelve cases came aboard. One is open.",
+  "spec": {
+    "size": "standard",
+    "punishment": "cruel",
+    "escape": "required",
+    "traces": "forward",
+    "sanityRegister": "wrong"
+  },
+  "character": {
+    "role": "forensic pathologist",
+    "expertise": ["post-mortem interval estimation", "wound-pattern reading", "evidence chain of custody", "staging versus disturbance", "cold-chain provenance notation"],
+    "backstory": "Twenty years reading the dead for the living - what happened, in what order, how long ago. You boarded the Carswell to examine twelve recovered and sign them home. You can place a death on a timeline to the hour. The one interval you cannot read is the one this ship keeps opening in front of you."
+  },
+  "watching": [
+    "POSITION UPDATED.",
+    "YOU WERE NOT WATCHING.",
+    "SPECIMEN COUNT: TWELVE. CONFIRM.",
+    "IT IS NEARER THAN YOUR LAST ENTRY.",
+    "INTERVAL UNOBSERVED.",
+    "CASE TWELVE: OPEN.",
+    "STILLNESS IS NOT SAFETY.",
+    "DO NOT LOOK DOWN.",
+    "THE LINE ENDS AT YOUR BERTH.",
+    "MARK IT. IT HAS ALREADY MOVED."
+  ],
+  "start": "wake",
+  "startSanity": 100,
+  "startInventory": [],
+  "nodes": {
+    "wake": {
+      "title": "Examiner's berth",
+      "text": "<p>You come up out of the transit doze in the examiner's berth, the cold of the Carswell already in your teeth. Six days out and six back, and twelve cases in the hold to read between - recovered remains, sealed and numbered, yours to examine and sign across to the people who are waiting.</p><p>The berth monitor holds its station list. <em>Specimens received: 12 of 12. Released: 1 of 12. Pending.</em> You signed nothing across. You have not even been to the hold yet.</p>",
+      "choices": [
+        { "text": "Get up. Find the hold.", "to": "hub" },
+        { "text": "Lie still and read the ship first.", "effects": { "sanity": -5 }, "to": "hub" }
+      ]
+    },
+    "hub": {
+      "title": "Central spine",
+      "text": "<p>The Carswell's spine runs her whole length, lit in the low amber of a ship minding itself. The specimen hold opens aft. A provenance archive to one side, an equipment locker to the other. Forward, the observation blister and the comms board - and the long unlit stretch of corridor between you and them.</p>",
+      "sanityText": {
+        "40": "<p>The spine runs the same length it always did, and you keep checking that it does. The amber holds. Aft is the hold, the archive and the locker to either side, the blister forward past the unlit stretch - and the unlit stretch gives nothing back, and the giving-nothing-back has started to feel like a held breath.</p>"
+      },
+      "choices": [
+        { "text": "Specimen hold (aft).", "to": "specimen_hold" },
+        { "text": "Provenance archive.", "to": "provenance" },
+        { "text": "Equipment locker.", "to": "locker" },
+        { "text": "Forward, to the blister.", "requires": { "item": "transit_key" }, "locked": "Forward, to the blister. (the forward hatch is sealed against transit - it wants the transit key from the equipment locker)", "to": "crossing" }
+      ]
+    },
+    "specimen_hold": {
+      "title": "Specimen hold",
+      "text": "<p>Twelve cradles in two ranks, each with its sealed case, each numbered in the cold-chain hand you have read off a hundred manifests. You read the room the way you read a scene: what is where, what has been disturbed, how long since.</p><p>Case twelve stands open, its cradle empty - and still holding temperature, still counting down a thaw clock for an occupant that is not in it. The other eleven sit as the manifest says they should. All but one, and that one is not where the manifest puts it.</p>",
+      "sanityText": {
+        "40": "<p>Twelve cradles in two ranks. You keep wanting to count them, because the number has begun to feel like something that could move while you write it down. The twelfth cradle is empty and still cold, still set for someone, and you do not like how ready it looks. One of the eleven sits nearer the door than the manifest allows.</p>"
+      },
+      "onEnter": { "sanity": -6 },
+      "choices": [
+        { "text": "Log the positions. Read the displacement properly.", "requires": { "notFlag": "interval_mapped" }, "to": "bay_read1" },
+        { "text": "Recount the cases against the manifest.", "to": "dead_census" },
+        { "text": "Open the nearest case and examine the specimen.", "to": "dead_custody" },
+        { "text": "Back to the spine.", "to": "hub" }
+      ]
+    },
+    "bay_read1": {
+      "title": "Specimen hold",
+      "text": "<p>You fix the displaced case in your eye and mark its bearing against the cradle frame - aft rank, third from the bulkhead. You look down to log it. You look back up.</p><p>Second from the bulkhead now. Nearer by one cradle, and you did not see it cross. Your hand stops on the stylus. There was no moment of moving - only the before, and the after, and you on the wrong side of the gap between them.</p>",
+      "onEnter": { "sanity": -10 },
+      "choices": [
+        { "text": "Mark the new bearing. Read it again.", "to": "bay_read2" },
+        { "text": "Don't look away. Hold it in your eye so it cannot move.", "to": "hold" }
+      ]
+    },
+    "bay_read2": {
+      "title": "Specimen hold",
+      "text": "<p>You mark it and read again, slower, trusting the method over the crawl in your gut. Aft rank to forward rank this time, and the bearing is not random. Each stop falls on a straight line, and the line runs out of the hold, up the spine, to the berth where you woke.</p><p>It is not wandering. It is closing, in steps you are never present for.</p>",
+      "onEnter": { "sanity": -8 },
+      "choices": [
+        { "text": "Plot the third stop. Confirm the line.", "to": "bay_read3" },
+        { "text": "You are not certain. Re-measure everything before you commit.", "to": "dead_gap" },
+        { "text": "Hold it in your eye so it cannot move.", "to": "hold" }
+      ]
+    },
+    "bay_read3": {
+      "title": "Specimen hold",
+      "text": "<p>The third stop lands exactly where your plot said it would. Your hands go cold around the stylus. Not because it moves - because the moving keeps a rule, and the rule lets you place it. Stop, gap, stop. Read the stop, and you know the next one before it arrives.</p><p>You breathe out, the first full breath since the hold. You can cross now, if you have to - between its stops, on a still you have confirmed for yourself. The line still ends at your berth. But you can read the line.</p>",
+      "onEnter": { "sanity": -12, "flags": { "interval_mapped": true } },
+      "choices": [
+        { "text": "Back to the spine.", "to": "hub" }
+      ]
+    },
+    "hold": {
+      "title": "Specimen hold",
+      "text": "<p>You stop reading and simply watch. You do not look away. And it does not move - it cannot, not while your eye is on it. Your eyes begin to dry and you hold them open anyway, because being the thing that holds it still is the closest to safe you have felt since you woke.</p><p>But the hold has gone quiet behind you, and you have lost the count of your own pulse. This is a watch with no end, and you are the only one standing it.</p>",
+      "onEnter": { "sanity": -18 },
+      "choices": [
+        { "text": "You cannot look away now. Keep your eyes on it.", "effects": { "sanity": -80 }, "to": "specimen_hold" },
+        { "text": "Tear your eyes off it. Step back to the spine.", "to": "hub" }
+      ]
+    },
+    "locker": {
+      "title": "Equipment locker",
+      "text": "<p>The equipment locker stands open in the bulkhead - the spare kit of any transit run, a med-gel cradle and a row of hooks, the rest of it stripped long ago.</p>",
+      "choices": [
+        { "text": "Take the transit key off the hook.", "requires": { "notItem": "transit_key" }, "effects": { "add": ["transit_key"] }, "to": "locker" },
+        { "text": "Take the med-gel from its cradle.", "requires": { "notFlag": "tookgel_locker" }, "effects": { "add": ["medgel"], "flags": { "tookgel_locker": true } }, "to": "locker" },
+        { "text": "Back to the spine.", "to": "hub" }
+      ]
+    },
+    "provenance": {
+      "title": "Provenance archive",
+      "text": "<p>The archive keeps the paper the cold-chain runs on - intake, custody, every hand a case passed through. Your own assessment file is open on the reader, the entries you have not written yet already here in your shorthand. A med-kit drawer stands open at the side.</p><p>Under your shorthand, in the margins, a second hand. Your mouth goes dry. It is correcting you - finishing the lines you left open, in a script that is not yours and that knows the cases better than you do. The last margin note is dated ahead of now.</p>",
+      "onEnter": { "sanity": -12 },
+      "choices": [
+        { "text": "Take the med-gel from the drawer - the log says you signed it out two days ago.", "requires": { "notFlag": "tookgel_arch" }, "effects": { "add": ["medgel"], "flags": { "tookgel_arch": true } }, "to": "provenance" },
+        { "text": "Back to the spine.", "to": "hub" }
+      ]
+    },
+    "crossing": {
+      "title": "The forward stretch",
+      "text": "<p>The transit key turns and the forward hatch gives. The stretch runs maybe forty steps to the blister, unlit, the comms board a dim green promise at the far end. Halfway down it, something has stopped.</p><p>You cannot say what. Stood still, it is only a shadow lying against the light at an angle the light should not allow. It is not moving. Which means, if you read the hold right, it is between stops - and the next stop is closer.</p>",
+      "choices": [
+        { "text": "Wait for it to stop, fix the position, and cross while it holds.", "requires": { "flag": "interval_mapped" }, "effects": { "sanity": -36 }, "locked": "Wait for it to stop and cross while it holds. (you cannot time this yet - there is reading you have not finished in the specimen hold)", "to": "end_escape" },
+        { "text": "The stretch reads clear. Go now, fast.", "to": "dead_wrongstill" },
+        { "text": "Back to the spine.", "to": "hub" }
+      ]
+    },
+    "end_escape": {
+      "ending": {
+        "type": "escape",
+        "stamp": "// CLEARED FOR TRANSIT",
+        "text": "<p>You wait. It stops - you feel the stop more than see it, the cold settling, the shadow fixing - and you mark it and you go, across the gap between one of its arrivals and the next, not breathing, your legs moving on a count your mind is too loud to hear. The blister hatch slams behind your heel. You seal it by hand.</p><p>The comms board takes your distress ping on the first try. Rescue is hours out. You watch the sealed hatch and you do not look away from it, because you have learned at least that much.</p><p>Behind it, in the hold, eleven cases sit where they sit and one keeps its slow appointment with a berth you are no longer in. On the board the manifest holds its last line, patient. <em>Released: 1 of 12. Pending.</em></p>"
+      }
+    },
+    "dead_wrongstill": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// NO INTERVAL",
+        "text": "<p>The stretch reads empty and you take the empty at its word. You are quick. You are halfway down it when you understand that empty was never the safe reading - empty is the one reading it can always leave you. A thing you cannot see in motion shows you a clear corridor right up until it stops.</p><p>It stops where you are. There is no gap left to be caught in now. The green of the comms board goes on glowing, four steps past your hand.</p>"
+      }
+    },
+    "dead_gap": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// UNMAPPABLE",
+        "text": "<p>You will not commit on two readings. You go back to the first, re-measure, re-mark, build the case the way the work demands - and while you are being certain it stops twice, three times, in the gaps your thoroughness keeps opening. The line you trusted is gone. The stops no longer fall where any plot can hold them.</p><p>You cross on the best guess discipline ever gave you, into the one quarter of the dark it was already in. The cold reaches you before your second step. You had the better part of an hour, and you spent all of it being sure.</p>"
+      }
+    },
+    "dead_custody": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// CHAIN OF CUSTODY",
+        "text": "<p>The work is the work. You break the seal on the nearest case and bend to it, because a body is read up close and you have read a thousand - and for the length of that bend your eyes are on the specimen and on nothing else.</p><p>You do not see what closes the distance while you are looking down. When you straighten, it has stopped very near - near enough to touch the case you opened - having waited the whole time for a professional to look down.</p>"
+      }
+    },
+    "dead_census": {
+      "ending": {
+        "type": "dead",
+        "stamp": "// COUNT UNSETTLED",
+        "text": "<p>Twelve cases. You count twelve and make it thirteen. You count again - the count is a thing you can trust, the count is your floor - and it will not hold still long enough to be a number, because counting takes time and time is the one thing it moves in.</p><p>You are on your fourth recount, certain the next will settle it, when the cold reaches your side of the rank. You never do get a number you can sign.</p>"
+      }
+    }
+  }
+}

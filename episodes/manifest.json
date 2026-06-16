@@ -102,6 +102,10 @@
       "anomaly": true,
       "title": "THE LISTENERS",
       "byline": "archive integrity compromised"
+    },
+    {
+      "file": "interval.json",
+      "locked": false
     }
   ]
 }
