@@ -89,6 +89,10 @@
       "locked": false
     },
     {
+      "file": "interval.json",
+      "locked": false
+    },
+    {
       "anomaly": true,
       "title": "THE RENDEZVOUS",
       "byline": "signal degraded beyond recovery threshold"
