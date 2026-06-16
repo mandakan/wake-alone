@@ -89,6 +89,10 @@
       "locked": false
     },
     {
+      "file": "interval.json",
+      "locked": false
+    },
+    {
       "anomaly": true,
       "title": "THE RENDEZVOUS",
       "byline": "signal degraded beyond recovery threshold"
@@ -102,10 +106,6 @@
       "anomaly": true,
       "title": "THE LISTENERS",
       "byline": "archive integrity compromised"
-    },
-    {
-      "file": "interval.json",
-      "locked": false
     }
   ]
 }

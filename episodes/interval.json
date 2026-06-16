@@ -40,7 +40,7 @@
     },
     "hub": {
       "title": "Central spine",
-      "text": "<p>The Carswell's spine runs her whole length, lit in the low amber of a ship minding itself. The specimen hold opens aft. A provenance archive to one side, an equipment locker to the other. Forward, the observation blister and the comms board - and the long unlit stretch of corridor between you and them.</p>",
+      "text": "<p>The Carswell's spine runs bow to stern, lit in the low amber of a ship minding itself. The specimen hold opens aft. A provenance archive to one side, an equipment locker to the other. Forward, the observation blister and the comms board - and the long unlit stretch of corridor between you and them.</p>",
       "sanityText": {
         "40": "<p>The spine runs the same length it always did, and you keep checking that it does. The amber holds. Aft is the hold, the archive and the locker to either side, the blister forward past the unlit stretch - and the unlit stretch gives nothing back, and the giving-nothing-back has started to feel like a held breath.</p>"
       },
@@ -53,7 +53,7 @@
     },
     "specimen_hold": {
       "title": "Specimen hold",
-      "text": "<p>Twelve cradles in two ranks, each with its sealed case, each numbered in the cold-chain hand you have read off a hundred manifests. You read the room the way you read a scene: what is where, what has been disturbed, how long since.</p><p>Case twelve stands open, its cradle empty - and still holding temperature, still counting down a thaw clock for an occupant that is not in it. The other eleven sit as the manifest says they should. All but one, and that one is not where the manifest puts it.</p>",
+      "text": "<p>Twelve cradles in two ranks, each with its sealed case, each numbered in the cold-chain hand you have read off a hundred manifests. You work the room as a scene: what is where, what has been disturbed, how long since.</p><p>Case twelve stands open, its cradle empty - and still holding temperature, still counting down a thaw clock for an occupant that is not in it. The other eleven sit as the manifest says they should. All but one, and that one is not where the manifest puts it.</p>",
       "sanityText": {
         "40": "<p>Twelve cradles in two ranks. You keep wanting to count them, because the number has begun to feel like something that could move while you write it down. The twelfth cradle is empty and still cold, still set for someone, and you do not like how ready it looks. One of the eleven sits nearer the door than the manifest allows.</p>"
       },
@@ -121,7 +121,7 @@
     },
     "crossing": {
       "title": "The forward stretch",
-      "text": "<p>The transit key turns and the forward hatch gives. The stretch runs maybe forty steps to the blister, unlit, the comms board a dim green promise at the far end. Halfway down it, something has stopped.</p><p>You cannot say what. Stood still, it is only a shadow lying against the light at an angle the light should not allow. It is not moving. Which means, if you read the hold right, it is between stops - and the next stop is closer.</p>",
+      "text": "<p>The transit key turns and the forward hatch gives. The stretch runs maybe forty steps to the blister, unlit, the comms board a dim green promise at the far end. Halfway down it, something has stopped.</p><p>You cannot name it. Stood still, it is only a shadow lying against the light at an angle the light should not allow. It is not moving. Which means, if you read the hold right, it is between stops - and the next stop is closer.</p>",
       "choices": [
         { "text": "Wait for it to stop, fix the position, and cross while it holds.", "requires": { "flag": "interval_mapped" }, "effects": { "sanity": -36 }, "locked": "Wait for it to stop and cross while it holds. (you cannot time this yet - there is reading you have not finished in the specimen hold)", "to": "end_escape" },
         { "text": "The stretch reads clear. Go now, fast.", "to": "dead_wrongstill" },
