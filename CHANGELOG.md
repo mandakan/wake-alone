@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.11.0](https://github.com/mandakan/wake-alone/compare/v0.10.0...v0.11.0) (2026-08-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* **engine:** stacking (non-deduping) inventory
+
+### Features
+
+* **engine:** stacking (non-deduping) inventory ([7866439](https://github.com/mandakan/wake-alone/commit/7866439d7de0b5b01744aafac56902703aa8f93f))
+* **interval:** add INTERVAL - akinetopsia episode ([#15](https://github.com/mandakan/wake-alone/issues/15)) ([a51eb9a](https://github.com/mandakan/wake-alone/commit/a51eb9a511acefbbed28a64cd6aef6a0972f4a74))
+* **judge:** shared rubric + judge-traces skill for credential-free continuity reads ([e37755c](https://github.com/mandakan/wake-alone/commit/e37755c51422b60ea8dc73864e01847271511280))
+* **playtest:** automated headless playthroughs of the real engine + optional LLM continuity judge ([e207f47](https://github.com/mandakan/wake-alone/commit/e207f472875de0bbca98d4d3a76bbfb49ccd9f26))
+* **playtest:** automated headless playthroughs of the real engine + optional LLM continuity judge ([25cd2ca](https://github.com/mandakan/wake-alone/commit/25cd2caa5fe51e71d80f838ac5b009e5e7f06226))
+* **validate:** add L22 budget-ceiling advisory (opt-in spec.budget) ([bfd8289](https://github.com/mandakan/wake-alone/commit/bfd82893cbde3ae616b125888632b4659bf40c85))
+
+
+### Miscellaneous Chores
+
+* **release:** pin next release as 0.11.0 ([6e0bfd9](https://github.com/mandakan/wake-alone/commit/6e0bfd9b58d92a6f08c2e9e62b7d8205de6cb889))
+
 ## [0.10.0](https://github.com/mandakan/wake-alone/compare/v0.9.0...v0.10.0) (2026-06-15)
 
 
