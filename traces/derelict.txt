@@ -316,7 +316,7 @@ choices shown:
   [2] Back to the corridor.
 ACTION: [0] Search the supply cabinet.
 
-[step 9] node "medbay_cab" | SANITY 88 | INV: flashlight, medgel | FLAGS: heardlog, tookgel2
+[step 9] node "medbay_cab" | SANITY 88 | INV: flashlight, medgel, medgel | FLAGS: heardlog, tookgel2
 LOC // Med-bay
 One med-gel ampoule rolls to the back of the cabinet. You pocket it. Small mercy.
 
@@ -325,7 +325,7 @@ choices shown:
   [1] Back to the corridor.
 ACTION: [0] Lift the sheet on the nearest slab.
 
-[step 10] node "medbay_sheet" | SANITY 73 | INV: flashlight, medgel | FLAGS: heardlog, liftedsheet, tookgel2
+[step 10] node "medbay_sheet" | SANITY 73 | INV: flashlight, medgel, medgel | FLAGS: heardlog, liftedsheet, tookgel2
 LOC // Med-bay
 You shouldn't have. The body is intact and entirely wrong - the face fixed mid-expression, not pain, not fear. Attention. Whatever happened, this one was paying attention right to the end. You let the sheet fall.
 
@@ -333,7 +333,7 @@ choices shown:
   [0] Back to the corridor.
 ACTION: [0] Back to the corridor.
 
-[step 11] node "corridor" (revisit) | SANITY 73 | INV: flashlight, medgel | FLAGS: heardlog, liftedsheet, tookgel2
+[step 11] node "corridor" (revisit) | SANITY 73 | INV: flashlight, medgel, medgel | FLAGS: heardlog, liftedsheet, tookgel2
 LOC // Spinal corridor
 You follow the spine of the ship, dust hanging in the still air. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where no light reaches - a black gap that gives nothing back.
 
@@ -345,7 +345,7 @@ choices shown:
   [4] Back to Cryo-bay C.
 ACTION: [2] Engineering (aft).
 
-[step 12] node "engineering" | SANITY 73 | INV: flashlight, medgel | FLAGS: heardlog, liftedsheet, tookgel2
+[step 12] node "engineering" | SANITY 73 | INV: flashlight, medgel, medgel | FLAGS: heardlog, liftedsheet, tookgel2
 LOC // Engineering
 The reactor takes up the whole aft bulkhead, a black slab, the ship's one heart. Without it: no heat, no scrubbers, no voice in the walls. A toolbox lies spilled across the deck plating.
 
@@ -355,7 +355,7 @@ choices shown:
   [2] Back to the corridor.
 ACTION: [0] Take the hydrospanner from the toolbox.
 
-[step 13] node "engineering" (revisit) | SANITY 73 | INV: flashlight, medgel, wrench | FLAGS: heardlog, liftedsheet, tookgel2
+[step 13] node "engineering" (revisit) | SANITY 73 | INV: flashlight, medgel, medgel, wrench | FLAGS: heardlog, liftedsheet, tookgel2
 LOC // Engineering
 The reactor takes up the whole aft bulkhead, a black slab, the ship's one heart. Without it: no heat, no scrubbers, no voice in the walls. A toolbox lies spilled across the deck plating.
 
@@ -364,7 +364,7 @@ choices shown:
   [2] Back to the corridor.
 ACTION: [1] Open the reactor access panel.
 
-[step 14] node "engineering_power" | SANITY 73 | INV: flashlight, medgel, wrench | FLAGS: heardlog, liftedsheet, power, tookgel2
+[step 14] node "engineering_power" | SANITY 73 | INV: flashlight, medgel, medgel, wrench | FLAGS: heardlog, liftedsheet, power, tookgel2
 LOC // Engineering
 The panel comes free. You re-seat the breakers and the reactor catches with a deep, resentful hum. Down the corridor, lights stutter to life one bank at a time - racing toward the dark stretch, then dying again exactly where it begins.
 
@@ -372,7 +372,7 @@ choices shown:
   [0] Back to the corridor.
 ACTION: [0] Back to the corridor.
 
-[step 15] node "corridor" (revisit) | SANITY 73 | INV: flashlight, medgel, wrench | FLAGS: heardlog, liftedsheet, power, tookgel2
+[step 15] node "corridor" (revisit) | SANITY 73 | INV: flashlight, medgel, medgel, wrench | FLAGS: heardlog, liftedsheet, power, tookgel2
 LOC // Spinal corridor
 You follow the spine of the ship, dust hanging in the still air. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where no light reaches - a black gap that gives nothing back.
 
@@ -384,7 +384,7 @@ choices shown:
   [4] Back to Cryo-bay C.
 ACTION: [3] Push into the dark stretch ahead.
 
-[step 16] node "darkgap" | SANITY 63 | INV: flashlight, medgel, wrench | FLAGS: heardlog, liftedsheet, power, tookgel2
+[step 16] node "darkgap" | SANITY 63 | INV: flashlight, medgel, medgel, wrench | FLAGS: heardlog, liftedsheet, power, tookgel2
 LOC // The dark stretch
 The dark here is total. It does not thin as your eyes adjust. Air moves against your face - exhaled, not vented. Something is here with you, between you and the escape bay beyond.
 
@@ -394,7 +394,7 @@ choices shown:
   [4] Back to the corridor.
 ACTION: [0] Raise the torch and look directly at it.
 
-[step 17] node "darkgap_lit" | SANITY 48 | INV: flashlight, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
+[step 17] node "darkgap_lit" | SANITY 48 | INV: flashlight, medgel, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
 LOC // The dark stretch
 You raise the beam. It's the captain - or it's wearing the captain - folded into the ceiling space, head tilted, paying a fixed, total attention. It does not move toward you. It simply lets you see. A keycard hangs from the corpse's belt; you take it with hands that won't stop shaking, and it lets you.
 
@@ -403,7 +403,7 @@ choices shown:
   [1] Retreat to the corridor.
 ACTION: [0] Continue to the escape bay.
 
-[step 18] node "escape" | SANITY 48 | INV: flashlight, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
+[step 18] node "escape" | SANITY 48 | INV: flashlight, medgel, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
 LOC // Escape bay
 One pod remains in its cradle, intact, waiting. Its console asks for two things: command authorisation, and power.
 
@@ -412,7 +412,7 @@ choices shown:
   [2] Back to the corridor.
 ACTION: [2] Back to the corridor.
 
-[step 19] node "corridor" (revisit) | SANITY 48 | INV: flashlight, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
+[step 19] node "corridor" (revisit) | SANITY 48 | INV: flashlight, medgel, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
 LOC // Spinal corridor
 You follow the spine of the ship, dust hanging in the still air. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where no light reaches - a black gap that gives nothing back.
 
@@ -424,7 +424,7 @@ choices shown:
   [4] Back to Cryo-bay C.
 ACTION: [0] Bridge (fore).
 
-[step 20] node "bridge" (revisit) | SANITY 48 | INV: flashlight, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
+[step 20] node "bridge" (revisit) | SANITY 48 | INV: flashlight, medgel, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
 LOC // Bridge
 The viewport is full of stars that aren't any you know. The captain's chair is turned to face the door, empty. The log terminal still has power; the last entry is timestamped, then nothing.
 
@@ -432,7 +432,7 @@ choices shown:
   [1] Back to the corridor.
 ACTION: [1] Back to the corridor.
 
-[step 21] node "corridor" (revisit) | SANITY 48 | INV: flashlight, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
+[step 21] node "corridor" (revisit) | SANITY 48 | INV: flashlight, medgel, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
 LOC // Spinal corridor
 You follow the spine of the ship, dust hanging in the still air. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where no light reaches - a black gap that gives nothing back.
 
@@ -444,7 +444,7 @@ choices shown:
   [4] Back to Cryo-bay C.
 ACTION: [1] Med-bay (port).
 
-[step 22] node "medbay" (revisit) | SANITY 48 | INV: flashlight, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
+[step 22] node "medbay" (revisit) | SANITY 48 | INV: flashlight, medgel, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
 LOC // Med-bay
 The med-bay smells of antiseptic and something underneath it. Two crew lie on the slabs under sheets that were white once. A supply cabinet hangs ajar.
 
@@ -452,7 +452,7 @@ choices shown:
   [2] Back to the corridor.
 ACTION: [2] Back to the corridor.
 
-[step 23] node "corridor" (revisit) | SANITY 48 | INV: flashlight, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
+[step 23] node "corridor" (revisit) | SANITY 48 | INV: flashlight, medgel, medgel, wrench, keycard | FLAGS: heardlog, liftedsheet, power, sawit, tookgel2
 LOC // Spinal corridor
 You follow the spine of the ship, dust hanging in the still air. Three ways lead off it: the bridge fore, the med-bay to port, engineering aft. And straight ahead, a stretch where no light reaches - a black gap that gives nothing back.
 

@@ -561,7 +561,7 @@ choices shown:
   [2] Back to the spine.
 ACTION: [1] Take the med-gel from its cradle.
 
-[step 13] node "locker" (revisit) | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 13] node "locker" (revisit) | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // Equipment locker
 The equipment locker stands open in the bulkhead - the spare kit of any transit run, a med-gel cradle and a row of hooks, the rest of it stripped long ago.
 
@@ -569,7 +569,7 @@ choices shown:
   [2] Back to the spine.
 ACTION: [2] Back to the spine.
 
-[step 14] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 14] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // Central spine
 The Carswell's spine runs bow to stern, lit in the low amber of a ship minding itself. The specimen hold opens aft. A provenance archive to one side, an equipment locker to the other. Forward, the observation blister and the comms board - and the long unlit stretch of corridor between you and them.
 
@@ -580,7 +580,7 @@ choices shown:
   [3] Forward, to the blister.
 ACTION: [3] Forward, to the blister.
 
-[step 15] node "crossing" | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 15] node "crossing" | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // The forward stretch
 The transit key turns and the forward hatch gives. The stretch runs maybe forty steps to the blister, unlit, the comms board a dim green promise at the far end. Halfway down it, something has stopped.
 
@@ -592,7 +592,7 @@ choices shown:
   [2] Back to the spine.
 ACTION: [2] Back to the spine.
 
-[step 16] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 16] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // Central spine
 The Carswell's spine runs bow to stern, lit in the low amber of a ship minding itself. The specimen hold opens aft. A provenance archive to one side, an equipment locker to the other. Forward, the observation blister and the comms board - and the long unlit stretch of corridor between you and them.
 
@@ -603,7 +603,7 @@ choices shown:
   [3] Forward, to the blister.
 ACTION: [0] Specimen hold (aft).
 
-[step 17] node "specimen_hold" (revisit) | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 17] node "specimen_hold" (revisit) | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // Specimen hold
 Twelve cradles in two ranks, each with its sealed case, each numbered in the cold-chain hand you have read off a hundred manifests. You work the room as a scene: what is where, what has been disturbed, how long since.
 
@@ -615,7 +615,7 @@ choices shown:
   [3] Back to the spine.
 ACTION: [3] Back to the spine.
 
-[step 18] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 18] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // Central spine
 The Carswell's spine runs bow to stern, lit in the low amber of a ship minding itself. The specimen hold opens aft. A provenance archive to one side, an equipment locker to the other. Forward, the observation blister and the comms board - and the long unlit stretch of corridor between you and them.
 
@@ -626,7 +626,7 @@ choices shown:
   [3] Forward, to the blister.
 ACTION: [3] Forward, to the blister.
 
-[step 19] node "crossing" (revisit) | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 19] node "crossing" (revisit) | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // The forward stretch
 The transit key turns and the forward hatch gives. The stretch runs maybe forty steps to the blister, unlit, the comms board a dim green promise at the far end. Halfway down it, something has stopped.
 
@@ -638,7 +638,7 @@ choices shown:
   [2] Back to the spine.
 ACTION: [2] Back to the spine.
 
-[step 20] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
+[step 20] node "hub" (revisit) | SANITY 52 | INV: medgel, transit_key, medgel | FLAGS: interval_mapped, tookgel_arch, tookgel_locker
 LOC // Central spine
 The Carswell's spine runs bow to stern, lit in the low amber of a ship minding itself. The specimen hold opens aft. A provenance archive to one side, an equipment locker to the other. Forward, the observation blister and the comms board - and the long unlit stretch of corridor between you and them.
 

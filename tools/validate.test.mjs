@@ -726,5 +726,36 @@ for (const [size, punishment] of [["short", "gentle"], ["standard", "standard"],
   check("hardgate: imports may only gate optional beats -- unwinnable without them", hasErr(r, "unwinnable"), r.errors.join("; "));
 }
 
+// --- stacking inventory: a second copy is a second copy, not a no-op ---
+{
+  // Two med-gels granted while holding, then a -70 hit at 30 sanity: survivable
+  // only if BOTH stack and each use consumes one (30 +25 +25 -70 = 10).
+  const ep = {
+    id: "stack", title: "STACK", start: "intro", startSanity: 30,
+    nodes: {
+      intro: { text: "<p>w</p>", choices: [{ text: "grab both", to: "maw", effects: { add: ["medgel", "medgel"] } }] },
+      maw: { text: "<p>m</p>", choices: [{ text: "through", to: "out", effects: { sanity: -70 } }] },
+      out: escape(),
+    },
+  };
+  const sol = solve(ep);
+  check("stack: two gels both usable (winnable)", sol.winnable === true);
+  check("stack: escape sanity reflects both restores", sol.bestEscape && sol.bestEscape.sanity === 10, `got ${sol.bestEscape && sol.bestEscape.sanity}`);
+}
+
+// --- stacking inventory: remove consumes ONE copy, not the whole stack ---
+{
+  const ep = {
+    id: "removeone", title: "R1", start: "intro", startSanity: 100, startInventory: ["key", "key"],
+    nodes: {
+      intro: { text: "<p>w</p>", choices: [{ text: "feed one key to the slot", to: "gate", effects: { remove: ["key"] } }] },
+      gate: { text: "<p>g</p>", choices: [{ text: "unlock with the spare", to: "out", requires: { item: "key" }, locked: "no key" }] },
+      out: escape(),
+    },
+  };
+  const sol = solve(ep);
+  check("removeone: spare copy survives a remove (winnable)", sol.winnable === true);
+}
+
 console.log(`\n${failed ? C.red : C.green}validate.test: ${passed} passed, ${failed} failed${C.reset}\n`);
 process.exit(failed ? 1 : 0);

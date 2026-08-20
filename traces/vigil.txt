@@ -519,7 +519,7 @@ choices shown:
   [2] Back to the ring.
 ACTION: [0] Take the med-gel from the spilled kit.
 
-[step 11] node "quarters" (revisit) | SANITY 70 | INV: medgel | FLAGS: readsignal, tookgel2, unseen
+[step 11] node "quarters" (revisit) | SANITY 70 | INV: medgel, medgel | FLAGS: readsignal, tookgel2, unseen
 LOC // Crew quarters
 The quarters are worse than empty - they are mid-sentence. A meal long cold in the galley, the fork laid down beside it with care.
 
@@ -529,7 +529,7 @@ choices shown:
   [2] Back to the ring.
 ACTION: [2] Back to the ring.
 
-[step 12] node "ring" (revisit) | SANITY 70 | INV: medgel | FLAGS: readsignal, tookgel2, unseen
+[step 12] node "ring" (revisit) | SANITY 70 | INV: medgel, medgel | FLAGS: readsignal, tookgel2, unseen
 LOC // Central ring
 The ring is the junction where every section of VIGIL meets. A coffee bulb still strapped in its clip. A stylus rolled to a stop at the edge of a console, the log entry under it unfinished. One chair turned to face the corridor mouth, as though its occupant stood and walked toward something. No bodies, no notes - only the shape of people who were here a moment ago.
 
@@ -541,7 +541,7 @@ choices shown:
   [2] The launch bay hatch (forward).
 ACTION: [2] The launch bay hatch (forward).
 
-[step 13] node "bay" | SANITY 65 | INV: medgel | FLAGS: readsignal, tookgel2, unseen
+[step 13] node "bay" | SANITY 65 | INV: medgel, medgel | FLAGS: readsignal, tookgel2, unseen
 LOC // Launch bay hatch
 The pressure hatch unseals with a sigh and the launch bay opens out - a wide cold room, a blast door for its far wall, and across forty meters of bare deck the evac pod in its cradle. No cover between, no console to crouch behind, just the open floor and the immediate certainty that the floor is not empty. The emptiness has a weight to it, and a patience, and it has registered the hatch coming open.
 
@@ -553,7 +553,7 @@ choices shown:
   [3] Back away and seal the hatch.
 ACTION: [3] Back away and seal the hatch.
 
-[step 14] node "ring" (revisit) | SANITY 65 | INV: medgel | FLAGS: readsignal, tookgel2, unseen
+[step 14] node "ring" (revisit) | SANITY 65 | INV: medgel, medgel | FLAGS: readsignal, tookgel2, unseen
 LOC // Central ring
 The ring is the junction where every section of VIGIL meets. A coffee bulb still strapped in its clip. A stylus rolled to a stop at the edge of a console, the log entry under it unfinished. One chair turned to face the corridor mouth, as though its occupant stood and walked toward something. No bodies, no notes - only the shape of people who were here a moment ago.
 
@@ -565,7 +565,7 @@ choices shown:
   [2] The launch bay hatch (forward).
 ACTION: [2] The launch bay hatch (forward).
 
-[step 15] node "bay" (revisit) | SANITY 65 | INV: medgel | FLAGS: readsignal, tookgel2, unseen
+[step 15] node "bay" (revisit) | SANITY 65 | INV: medgel, medgel | FLAGS: readsignal, tookgel2, unseen
 LOC // Launch bay hatch
 The pressure hatch unseals with a sigh and the launch bay opens out - a wide cold room, a blast door for its far wall, and across forty meters of bare deck the evac pod in its cradle. No cover between, no console to crouch behind, just the open floor and the immediate certainty that the floor is not empty. The emptiness has a weight to it, and a patience, and it has registered the hatch coming open.
 
@@ -577,7 +577,7 @@ choices shown:
   [3] Back away and seal the hatch.
 ACTION: [3] Back away and seal the hatch.
 
-[step 16] node "ring" (revisit) | SANITY 65 | INV: medgel | FLAGS: readsignal, tookgel2, unseen
+[step 16] node "ring" (revisit) | SANITY 65 | INV: medgel, medgel | FLAGS: readsignal, tookgel2, unseen
 LOC // Central ring
 The ring is the junction where every section of VIGIL meets. A coffee bulb still strapped in its clip. A stylus rolled to a stop at the edge of a console, the log entry under it unfinished. One chair turned to face the corridor mouth, as though its occupant stood and walked toward something. No bodies, no notes - only the shape of people who were here a moment ago.
 
@@ -589,7 +589,7 @@ choices shown:
   [2] The launch bay hatch (forward).
 ACTION: [0] Comms array (port).
 
-[step 17] node "comms" (revisit) | SANITY 65 | INV: medgel | FLAGS: readsignal, tookgel2, unseen
+[step 17] node "comms" (revisit) | SANITY 65 | INV: medgel, medgel | FLAGS: readsignal, tookgel2, unseen
 LOC // Comms array
 The array room is a gallery of receivers, every dish on the hull feeding down to this warren of screens. Most are dead. One still scrolls a waveform, patient and slow. This is your room - you have spent nine years straining to hear a whisper from very far away. Sometime in the last few hours the listening turned the other way around.
 
@@ -601,7 +601,7 @@ choices shown:
   [3] Back to the ring.
 ACTION: [0] Lift the charged power cell from the rack.
 
-[step 18] node "comms" (revisit) | SANITY 65 | INV: medgel, powercell | FLAGS: readsignal, tookgel2, unseen
+[step 18] node "comms" (revisit) | SANITY 65 | INV: medgel, medgel, powercell | FLAGS: readsignal, tookgel2, unseen
 LOC // Comms array
 The array room is a gallery of receivers, every dish on the hull feeding down to this warren of screens. Most are dead. One still scrolls a waveform, patient and slow. This is your room - you have spent nine years straining to hear a whisper from very far away. Sometime in the last few hours the listening turned the other way around.
 
