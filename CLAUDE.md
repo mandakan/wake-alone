@@ -223,6 +223,11 @@ after a change, items described after being taken, first-arrival narration on a 
 Verdicts are `warn` tier only and cached in `.playtest-cache.json` by transcript hash, so
 unchanged episodes cost nothing. Judge findings are review input, not a gate.
 
+The same read runs without any credential via the `judge-traces` skill (`/judge-traces
+[id ...]`): the session or cheap subagents judge the committed `traces/*.txt` directly.
+Both paths share one rubric - `tools/judge-rubric.md`; edit it there only (the `--judge`
+cache keys on its content, so edits invalidate stale verdicts automatically).
+
 ## Don't
 
 - Don't add story content to `engine/template.html` or `dist/`.

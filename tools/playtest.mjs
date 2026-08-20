@@ -46,7 +46,6 @@ const TRACES_DIR = join(ROOT, "traces");
 const DIST = join(ROOT, "dist", "index.html");
 const CACHE_FILE = join(ROOT, ".playtest-cache.json");
 const JUDGE_MODEL = process.env.PLAYTEST_MODEL || "claude-haiku-4-5";
-const PROMPT_VERSION = "v1"; // bump to invalidate all cached judge verdicts
 
 const TOUR_STEP_CAP = 40;    // hard ceiling on tour length
 const TOUR_STALE_CAP = 6;    // tour ends after this many steps with nothing new
@@ -330,33 +329,15 @@ async function playTarget(browser, distUrl, target) {
 }
 
 // ---- LLM continuity judge (advisory) ----
-const JUDGE_SYSTEM = `You are a continuity checker for a deterministic sci-fi horror text adventure.
-You receive complete playthrough transcripts of one episode. Every step shows ground-truth
-game state (SANITY 0-100, INV = inventory item ids, FLAGS = story events that have happened),
-then the exact prose the player saw, the choices offered, and the action taken. Steps marked
-(revisit) are rooms the player has entered before in that same playthrough.
-
-Report ONLY clear continuity contradictions between prose and state or history:
-1. Prose describing an item as still present or takeable after INV shows the player took it.
-2. Prose on a revisit contradicting an event that already happened (per FLAGS or earlier
-   steps in the same trace) - e.g. a door described as sealed after it was opened, power
-   described as dead after it was restored.
-3. First-arrival narration (waking up, noticing something for the first time) on a revisit.
-4. Prose asserting the player holds or uses an item that is not in INV.
-5. An ending whose text plainly contradicts the choice or state that led to it.
-
-Do NOT report style, tone, pacing, ambiguity, or deliberate wrongness: hallucinated or
-distorted perception is intentional at low SANITY (<= 40), and vague dread is the house
-style. Only report contradictions a careful reader would call a bug. Judge each trace on
-its own; different traces are independent playthroughs. If there are none, return [].
-
-Respond with ONLY a JSON array:
-[{"trace":"<trace heading>","step":<number>,"node":"<node id>","issue":"<one sentence>","quote":"<the contradicting prose fragment>"}]`;
+// The rubric lives in tools/judge-rubric.md — the single source of truth shared with the
+// judge-traces skill (which runs the same read via the session/subagents, no API key).
+// The verdict cache keys on the rubric text, so editing it invalidates cached verdicts.
+const JUDGE_SYSTEM = readFileSync(join(ROOT, "tools", "judge-rubric.md"), "utf8");
 
 function loadCache() { try { return JSON.parse(readFileSync(CACHE_FILE, "utf8")); } catch { return {}; } }
 
 async function judgeEpisode(client, epId, transcript, cache) {
-  const key = createHash("sha256").update(`${PROMPT_VERSION}\n${JUDGE_MODEL}\n${transcript}`).digest("hex");
+  const key = createHash("sha256").update(`${JUDGE_SYSTEM}\n${JUDGE_MODEL}\n${transcript}`).digest("hex");
   if (cache[epId] && cache[epId].key === key) return { findings: cache[epId].findings, cached: true };
   const res = await client.messages.create({
     model: JUDGE_MODEL,
