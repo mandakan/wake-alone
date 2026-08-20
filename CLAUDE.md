@@ -29,7 +29,9 @@ tools/
   adventure.mjs     cross-chapter contract for chaptered adventures (unlock + carryover)
   build.mjs         node tools/build.mjs     (validates, then inlines -> dist/index.html)
   new.mjs           node tools/new.mjs --id x --title "..."  (valid skeleton)
+  playtest.mjs      npm run playtest  (plays every episode in the real engine, headless; see Playthrough automation)
   audio-bench.html  open directly: tune skein-audio constants by ear
+traces/*.txt        committed playthrough transcripts (golden files; regenerate via npm run playtest)
 dist/index.html     build output: standalone, open directly in a browser
 ```
 
@@ -44,6 +46,9 @@ dist/index.html     build output: standalone, open directly in a browser
 5. `npm run build` — produces `dist/index.html`.
 6. Open `dist/index.html` to playtest. Confirm at least one path reaches an escape ending
    and that sanity along the intended "good" path stays survivable (see Sanity economy).
+7. `npm run playtest` — regenerates `traces/` from real headless playthroughs; commit the
+   diff (it is the review surface for how the episode actually plays). Fix any hard error
+   (engine/planner drift) and read any warn.
 
 ## Schema (authoritative reference is the bottom of `engine/template.html`)
 
@@ -199,6 +204,24 @@ only gate optional beats** -- every chapter must still reach a survivable escape
 with zero imports (`tools/adventure.mjs` + the solver enforce the whole contract;
 chapter ids share one namespace with episode and adventure ids). Reverse
 chronology is the house authoring convention for adventures, not an engine rule.
+
+## Playthrough automation (`npm run playtest`)
+
+`tools/playtest.mjs` builds `dist/index.html` and plays it for real in headless Chromium
+(Playwright): it boots the CRT, clicks the actual choice buttons, and scrapes what a player
+sees. The solver only plans routes (shortest survivable run to every reachable ending, plus
+the shortest run into madness); every prediction is checked against live engine state, so
+solver/engine drift is a hard failure. Each episode also gets a greedy "tour" trace that
+revisits rooms after state changes. Transcripts land in `traces/<id>.txt` — committed golden
+files; a PR diff on an episode shows exactly how its playthroughs changed. Never edit them
+by hand, and never commit an episode change without regenerating them.
+
+`npm run playtest -- --judge` adds an advisory LLM continuity read: one cheap-model call per
+episode (default `claude-haiku-4-5`, override with `PLAYTEST_MODEL`; needs an Anthropic
+credential) that flags prose contradicting ground-truth state - stale room descriptions
+after a change, items described after being taken, first-arrival narration on a revisit.
+Verdicts are `warn` tier only and cached in `.playtest-cache.json` by transcript hash, so
+unchanged episodes cost nothing. Judge findings are review input, not a gate.
 
 ## Don't
 

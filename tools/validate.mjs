@@ -462,11 +462,15 @@ export function solve(ep, useGel = true, seedFlags = []) {
   if (init.sanity <= 0 && !startNode.ending) {
     return { startMadness: true, winnable: false, escapeEndings: new Set(), deadEndings: new Set(),
       madnessReachable: true, openableChoices: new Set(), bestEscape: null, statesExplored: 0, truncated: false,
-      nodeItems: new Map(), nodeMinSanity: new Map(), endingFlags: new Map(), madnessFlags: new Set(init.flags) };
+      nodeItems: new Map(), nodeMinSanity: new Map(), endingFlags: new Map(), madnessFlags: new Set(init.flags),
+      endingRuns: new Map(), madnessRun: { acts: [] } };
   }
 
   const escapeEndings = new Set();
   const deadEndings = new Set();
+  const endingRuns = new Map();   // endingNodeId -> {acts, sanity}: shortest survivable run, as structured
+                                  // actions ({kind:"choice", idx} | {kind:"gel"}) a driver can replay (playtest)
+  let madnessRun = null;          // {acts}: shortest run that hits sanity 0 (last act is the fatal one)
   const openableChoices = new Set();
   const nodeItems = new Map();      // nodeId -> Set of items possibly held when at the node
   const nodeMinSanity = new Map();  // nodeId -> lowest sanity the node is ever rendered at
@@ -489,11 +493,17 @@ export function solve(ep, useGel = true, seedFlags = []) {
     while (k && parent.get(k)) { labels.push(parent.get(k).label); k = parent.get(k).prev; }
     return labels.reverse();
   };
-  const enqueue = (st, prevKey, label) => {
+  const actsTo = (key) => {
+    const acts = [];
+    let k = key;
+    while (k && parent.get(k)) { acts.push(parent.get(k).act); k = parent.get(k).prev; }
+    return acts.reverse();
+  };
+  const enqueue = (st, prevKey, label, act) => {
     const k = keyOf(st);
     if (visited.has(k)) return;
     visited.add(k);
-    parent.set(k, { prev: prevKey, label });
+    parent.set(k, { prev: prevKey, label, act });
     queue.push({ st, key: k });
   };
 
@@ -510,6 +520,8 @@ export function solve(ep, useGel = true, seedFlags = []) {
     nodeMinSanity.set(st.cur, prevMin === undefined ? st.sanity : Math.min(prevMin, st.sanity));
 
     if (node.ending) {
+      // BFS dequeues in step order, so the first arrival is a shortest survivable run.
+      if (!endingRuns.has(st.cur)) endingRuns.set(st.cur, { acts: actsTo(key), sanity: st.sanity });
       if (!endingFlags.has(st.cur)) endingFlags.set(st.cur, new Set());
       const ef = endingFlags.get(st.cur);
       for (const f of st.flags) ef.add(f);
@@ -527,7 +539,7 @@ export function solve(ep, useGel = true, seedFlags = []) {
     // free action: use med-gel (any node, while held)
     if (useGel && st.inv.has("medgel")) {
       const r = applyEff({ sanity: +25, remove: ["medgel"] }, st);
-      enqueue({ cur: st.cur, sanity: r.sanity, inv: r.inv, flags: r.flags, entered: st.entered }, key, "use med-gel [+25]");
+      enqueue({ cur: st.cur, sanity: r.sanity, inv: r.inv, flags: r.flags, entered: st.entered }, key, "use med-gel [+25]", { kind: "gel" });
     }
 
     // choices
@@ -538,7 +550,11 @@ export function solve(ep, useGel = true, seedFlags = []) {
       if (c.to === undefined || !ep.nodes[c.to]) return; // locked hint / dangling (dangling already an error)
 
       const afterChoice = applyEff(c.effects, st);
-      if (afterChoice.sanity <= 0) { madnessReachable = true; afterChoice.flags.forEach((f) => madnessFlags.add(f)); return; } // choose(): madness before goto
+      if (afterChoice.sanity <= 0) {
+        madnessReachable = true; afterChoice.flags.forEach((f) => madnessFlags.add(f));
+        if (!madnessRun) madnessRun = { acts: [...actsTo(key), { kind: "choice", idx: i }] };
+        return; // choose(): madness before goto
+      }
 
       // goto(c.to): apply target's onEnter once
       let sanity = afterChoice.sanity, inv = afterChoice.inv, flags = afterChoice.flags, entered = st.entered;
@@ -548,10 +564,14 @@ export function solve(ep, useGel = true, seedFlags = []) {
         entered = new Set(st.entered); entered.add(c.to);
       }
       const target = ep.nodes[c.to];
-      if (sanity <= 0 && !target.ending) { madnessReachable = true; flags.forEach((f) => madnessFlags.add(f)); return; } // goto(): madness on entry
+      if (sanity <= 0 && !target.ending) {
+        madnessReachable = true; flags.forEach((f) => madnessFlags.add(f));
+        if (!madnessRun) madnessRun = { acts: [...actsTo(key), { kind: "choice", idx: i }] };
+        return; // goto(): madness on entry
+      }
 
       const label = `${st.cur} -> ${c.to}` + (c.text ? ` ("${String(c.text).slice(0, 40)}")` : "");
-      enqueue({ cur: c.to, sanity, inv, flags, entered }, key, label);
+      enqueue({ cur: c.to, sanity, inv, flags, entered }, key, label, { kind: "choice", idx: i });
     });
   }
 
@@ -561,6 +581,7 @@ export function solve(ep, useGel = true, seedFlags = []) {
     escapeEndings, deadEndings, madnessReachable, openableChoices,
     bestEscape, statesExplored: visited.size, truncated,
     nodeItems, nodeMinSanity, endingFlags, madnessFlags,
+    endingRuns, madnessRun,
   };
 }
 
