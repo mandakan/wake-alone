@@ -7,7 +7,8 @@
     "validate": "node tools/validate.mjs",
     "lint": "node tools/prose-lint.mjs",
     "diversity": "node tools/diversity.mjs",
-    "test": "node tools/validate.test.mjs && node tools/diversity.test.mjs && node tools/adventure.test.mjs",
+    "test": "node tools/validate.test.mjs && node tools/diversity.test.mjs && node tools/adventure.test.mjs && node tools/playtest.test.mjs",
+    "playtest": "node tools/playtest.mjs",
     "build": "node tools/build.mjs",
     "new": "node tools/new.mjs",
     "deploy": "wrangler deploy",
@@ -15,6 +16,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.120.0",
+    "playwright": "^1.62.1",
     "wrangler": "^4.94.0"
   }
 }
