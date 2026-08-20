@@ -468,8 +468,10 @@ function applyEffects(e){
   if(!e) return;
   const before=state.sanity;
   if(typeof e.sanity==="number") state.sanity=clamp(state.sanity+e.sanity,0,100);
-  (e.add||[]).forEach(i=>{ if(!state.inventory.includes(i)) state.inventory.push(i); });
-  (e.remove||[]).forEach(i=>{ state.inventory=state.inventory.filter(x=>x!==i); });
+  /* inventory is a multiset: adds always append (a second med-gel is a second
+     med-gel), removes consume one copy per listed id */
+  (e.add||[]).forEach(i=>{ state.inventory.push(i); });
+  (e.remove||[]).forEach(i=>{ const ix=state.inventory.indexOf(i); if(ix>=0) state.inventory.splice(ix,1); });
   if(e.flags) Object.assign(state.flags, e.flags);
   // a sharp hit gets a stinger; sanity-zero is renderMadness's beat, not this one
   if(AUDIO && before-state.sanity>=15 && state.sanity>0) AUDIO.stinger("sanity");
@@ -521,8 +523,11 @@ function sanityColor(){
   return "var(--red)";
 }
 function hudHTML(node){
-  const inv = state.inventory.length
-    ? state.inventory.map(i=>`<b>${ITEM_NAMES[i]||i}</b>`).join(" · ") : "<span>— nothing —</span>";
+  /* group stacked copies (first-acquired order): "med-gel ampoule x2" */
+  const invIds = state.inventory.filter((i,ix)=>state.inventory.indexOf(i)===ix);
+  const inv = invIds.length
+    ? invIds.map(i=>{ const n=state.inventory.filter(x=>x===i).length;
+        return `<b>${ITEM_NAMES[i]||i}${n>1?` x${n}`:""}</b>`; }).join(" · ") : "<span>— nothing —</span>";
   const med = state.inventory.includes("medgel")
     ? `<button class="medbtn" onclick="useGel()">USE MED-GEL [+25]</button>` : "";
   const tier = tierOf(state.sanity);

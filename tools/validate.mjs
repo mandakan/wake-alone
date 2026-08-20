@@ -21,8 +21,8 @@
 //
 // The solver models the engine precisely: onEnter fires once per node, sanity
 // clamps to 0..100, sanity <= 0 at a non-ending point is instant madness, and
-// med-gel is a free +25 action usable at ANY node while held (inventory dedups,
-// so at most one is held at a time).
+// med-gel is a free +25 action usable at ANY node while held. Inventory is a
+// multiset (a second med-gel stacks; each use consumes one copy).
 //
 // Usage:  node tools/validate.mjs [--json] [episodes/foo.json ...]
 //         (no file args -> validate every non-locked episode in the manifest)
@@ -431,26 +431,30 @@ export function solve(ep, useGel = true, seedFlags = []) {
     if (req.notFlag && st.flags.has(req.notFlag)) return false;
     return true;
   };
+  // st.inv is a multiset (Map id -> count, zero-count entries deleted so .has()
+  // still means "holds at least one") -- mirrors the engine's stacking inventory.
   const applyEff = (eff, st) => {
     let sanity = st.sanity;
-    const inv = new Set(st.inv);
+    const inv = new Map(st.inv);
     const flags = new Set(st.flags);
     if (eff) {
       if (typeof eff.sanity === "number") sanity = clamp(sanity + eff.sanity, 0, 100);
-      (eff.add || []).forEach((i) => inv.add(i));
-      (eff.remove || []).forEach((i) => inv.delete(i));
+      (eff.add || []).forEach((i) => inv.set(i, (inv.get(i) || 0) + 1));
+      (eff.remove || []).forEach((i) => { const n = inv.get(i) || 0; if (n <= 1) inv.delete(i); else inv.set(i, n - 1); });
       if (eff.flags) for (const [k, v] of Object.entries(eff.flags)) { if (v) flags.add(k); else flags.delete(k); }
     }
     return { sanity, inv, flags };
   };
   const keyOf = (st) =>
-    `${st.cur}|${st.sanity}|${[...st.inv].sort().join(",")}|${[...st.flags].sort().join(",")}|${[...st.entered].sort().join(",")}`;
+    `${st.cur}|${st.sanity}|${[...st.inv.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)).map(([i, n]) => `${i}:${n}`).join(",")}|${[...st.flags].sort().join(",")}|${[...st.entered].sort().join(",")}`;
 
   // initial state: startEpisode + goto(start) applying start's onEnter once
+  const startInv = new Map();
+  (ep.startInventory || []).forEach((i) => startInv.set(i, (startInv.get(i) || 0) + 1));
   let init = {
     cur: ep.start,
     sanity: clamp(ep.startSanity ?? 100, 0, 100),
-    inv: new Set(ep.startInventory || []),
+    inv: startInv,
     flags: new Set(seedFlags),
     entered: new Set(),
   };
@@ -515,7 +519,7 @@ export function solve(ep, useGel = true, seedFlags = []) {
     // record what is true at this node, for prose state-coherence
     if (!nodeItems.has(st.cur)) nodeItems.set(st.cur, new Set());
     const bag = nodeItems.get(st.cur);
-    for (const it of st.inv) bag.add(it);
+    for (const it of st.inv.keys()) bag.add(it);
     const prevMin = nodeMinSanity.get(st.cur);
     nodeMinSanity.set(st.cur, prevMin === undefined ? st.sanity : Math.min(prevMin, st.sanity));
 
